@@ -27,6 +27,7 @@ async function startServer() {
         const authRoutes = require('./src/routes/auth')(db);
         const statsRoutes = require('./src/routes/stats')(db);
         const edfRoutes = require('./src/routes/edf')(db);
+        const inventoryRoutes = require('./src/routes/inventory')(db);
         const programsRoutes = require('./src/routes/programs')(db);
         const formsRoutes = require('./src/routes/forms')(db);
         const logsRoutes = require('./src/routes/logs')(db);
@@ -42,6 +43,7 @@ async function startServer() {
         app.use('/api/auth', authRoutes);
         app.use('/api/stats', statsRoutes);
         app.use('/api/edf', edfRoutes);
+        app.use('/api/inventory', inventoryRoutes);
         app.use('/api/programs', programsRoutes);
         app.use('/api/forms', formsRoutes);
         app.use('/api/logs', logsRoutes);

@@ -393,6 +393,59 @@ async function initDb() {
             FOREIGN KEY (collected_by) REFERENCES users(id),
             UNIQUE(distribution_id, beneficiary_id)
         );
+        CREATE TABLE IF NOT EXISTS inventory_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            category TEXT,
+            tracking_type TEXT,
+            serial_number TEXT,
+            quantity INTEGER DEFAULT 1,
+            min_threshold INTEGER DEFAULT 0,
+            status TEXT DEFAULT 'available',
+            condition TEXT DEFAULT 'working',
+            purchase_price REAL,
+            current_value REAL,
+            warranty_info TEXT,
+            qr_code TEXT UNIQUE,
+            book_author TEXT,
+            book_language TEXT,
+            book_subject TEXT,
+            library_type TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_loans (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item_id INTEGER,
+            borrower_name TEXT,
+            borrower_type TEXT,
+            loan_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+            expected_return_date DATETIME,
+            return_date DATETIME,
+            return_condition TEXT,
+            notes TEXT,
+            FOREIGN KEY(item_id) REFERENCES inventory_items(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_maintenance (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item_id INTEGER,
+            service_date DATETIME,
+            description TEXT,
+            cost REAL,
+            next_service_date DATETIME,
+            FOREIGN KEY(item_id) REFERENCES inventory_items(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_usage (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item_id INTEGER,
+            quantity_used INTEGER,
+            department TEXT,
+            usage_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(item_id) REFERENCES inventory_items(id)
+        );
     `);
 
     // Create a default admin user if it doesn't exist
