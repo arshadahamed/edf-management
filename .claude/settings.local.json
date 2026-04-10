@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(head -50 /d/Freelance/EDF/src/routes/*.js)",
+      "Bash(node replace_customizer.js)",
+      "Bash(curl -s http://localhost:5001/api/health)",
+      "Bash(npx kill-port:*)",
+      "Bash(node server.js)",
+      "Bash(grep -E \"\\\\.\\(html|js|json\\)$\")",
+      "Bash(sqlite3 /d/Freelance/EDF/src/db/database.sqlite \".schema\")"
+    ]
+  }
+}

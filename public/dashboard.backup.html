@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | EDF Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <!-- Ambient Glow -->
+    <div id="ambientGlow"
+        style="position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: var(--glow-bg); z-index: 0; pointer-events: none; border-radius: 50%;">
+    </div>
+    <div class="dashboard-container" style="position: relative; z-index: 1;">
+        <!-- Floating Toggle Icon (Only visible on mobile) -->
+        <button class="sidebar-toggle-floating" id="sidebarToggle">
+            <i data-lucide="menu"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand-section">
+                <div class="logo-container">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <h1 class="brand-text">EDF PORTAL</h1>
+            </div>
+
+            <nav class="nav-menu" id="mainNav">
+                <ul style="list-style: none;">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-tab="overview">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span class="nav-text">Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="members">
+                            <i data-lucide="users"></i>
+                            <span class="nav-text">Members</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="families">
+                            <i data-lucide="home"></i>
+                            <span class="nav-text">Family Registry</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="beneficiaries" id="beneficiariesMenu">
+                            <i data-lucide="heart-handshake"></i>
+                            <span class="nav-text">Beneficiaries</span>
+                            <i data-lucide="chevron-down" class="menu-arrow"></i>
+                        </a>
+                        <ul class="nav-submenu" id="beneficiariesSubmenu">
+                            <li>
+                                <a href="#" class="nav-submenu-link" data-tab="beneficiaries">
+                                    <i data-lucide="list"></i> All Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-submenu-link" onclick="openAddBeneficiaryModal()">
+                                    <i data-lucide="user-plus"></i> Register New
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="nav-submenu-link" onclick="openBeneficiaryCategories()">
+                                    <i data-lucide="tag"></i> Beneficiary Categories
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="courses">
+                            <i data-lucide="graduation-cap"></i>
+                            <span class="nav-text">Programs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="subscriptions">
+                            <i data-lucide="credit-card"></i>
+                            <span class="nav-text">Subscriptions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="donations">
+                            <i data-lucide="heart"></i>
+                            <span class="nav-text">Donations</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-tab="volunteers">
+                            <i data-lucide="user-plus"></i>
+                            <span class="nav-text">Volunteers</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-card">
+                    <h4><i data-lucide="zap" style="width: 14px; color: var(--accent);"></i> System Status</h4>
+                    <p>All services are operational. Last sync: Just now.</p>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="top-bar-toggle" id="desktopToggle">
+                        <i data-lucide="align-left"></i>
+                    </button>
+                    <div class="breadcrumb">
+                        <a href="#" class="breadcrumb-root" onclick="switchTab('overview')">Dashboard</a>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-current" id="currentTabTitle">Overview</span>
+                    </div>
+                </div>
+
+                <div class="top-bar-right">
+                    <!-- Theme Toggle -->
+                    <button class="top-bar-toggle" id="themeToggleBtn" title="Toggle Theme">
+                        <i data-lucide="moon" id="themeIcon"></i>
+                    </button>
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" placeholder="Search members, programs..." class="search-input">
+                    </div>
+
+                    <div class="notification-bell">
+                        <i data-lucide="bell" style="width: 22px;"></i>
+                        <span
+                            style="position: absolute; top: -5px; right: -5px; background: var(--danger); width: 8px; height: 8px; border-radius: 50%;"></span>
+                    </div>
+
+                    <div class="user-profile">
+                        <img src="" id="userAvatar" class="user-avatar" alt="User">
+                        <div style="line-height: 1.2;">
+                            <div id="userFullName" style="font-weight: 600; font-size: 0.875rem;">Loading...</div>
+                            <div id="userRole" style="font-size: 0.75rem; color: var(--text-muted);">...</div>
+                        </div>
+
+                        <!-- Profile Dropdown -->
+                        <div class="user-dropdown">
+                            <a href="#" class="dropdown-item">
+                                <i data-lucide="user" style="width:16px;"></i> My Profile
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i data-lucide="settings" style="width:16px;"></i> Settings
+                            </a>
+                            <div style="margin: 0.5rem 0; border-top: 1px solid #f1f5f9;"></div>
+                            <a href="#" class="dropdown-item danger" id="logoutBtn">
+                                <i data-lucide="log-out" style="width:16px;"></i> Sign Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- TAB: OVERVIEW -->
+                <div id="overviewTab" class="tab-content active">
+                    <div
+                        style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div>
+                            <h1 id="welcomeUser" style="font-size: 1.75rem; color: var(--text-main);">Welcome Back</h1>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Here is what's happening today at
+                                EDF.</p>
+                        </div>
+                        <button class="btn btn-outline" style="border-color: var(--accent); color: var(--accent);"
+                            onclick="openModal('zakatCalcModal')">
+                            <i data-lucide="calculator"></i> Zakat Calculator
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="card stat-card">
+                            <div class="stat-icon-wrapper"
+                                style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color);">
+                                <i data-lucide="banknote"></i>
+                            </div>
+                            <div>
+                                <div class="stat-title">Total Funds</div>
+                                <div class="stat-value" id="totalDonations">LKR 0</div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon-wrapper"
+                                style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color);">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div>
+                                <div class="stat-title">Registered Members</div>
+                                <div class="stat-value" id="memberCount">0</div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon-wrapper"
+                                style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color);">
+                                <i data-lucide="home"></i>
+                            </div>
+                            <div>
+                                <div class="stat-title">Families Assisted</div>
+                                <div class="stat-value" id="familyCount">0</div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon-wrapper"
+                                style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color);">
+                                <i data-lucide="graduation-cap"></i>
+                            </div>
+                            <div>
+                                <div class="stat-title">Active Programs</div>
+                                <div class="stat-value" id="courseCount">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.1rem;">Recent Transactions</h3>
+                            <button class="btn btn-outline">View All</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: MEMBERS -->
+                <div id="membersTab" class="tab-content">
+                    <div class="tab-header-premium">
+                        <div class="header-left">
+                            <h2 style="font-size: 1.5rem; color: var(--text-main);">Founders & Members</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Manage organization membership and
+                                subscriptions.</p>
+                        </div>
+                        <div class="header-actions">
+                            <div class="search-mini">
+                                <i data-lucide="search" style="width:16px; color: var(--text-muted);"></i>
+                                <input type="text" placeholder="Filter members..." id="memberSearchInput">
+                            </div>
+                            <button class="btn btn-primary" onclick="openAddMemberModal()">
+                                <i data-lucide="user-plus"></i> New Member
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Membership</th>
+                                        <th>Monthly Sub.</th>
+                                        <th>Status</th>
+                                        <th style="text-align:right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="membersBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: FAMILIES -->
+                <div id="familiesTab" class="tab-content">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2 style="font-size: 1.5rem;">Family Registry</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Tracking city families requiring
+                                humanitarian support.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('familyModal')">
+                            <i data-lucide="plus"></i> Register Family
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Head of Family</th>
+                                        <th>Address</th>
+                                        <th>Members</th>
+                                        <th>Poverty Level</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="familiesBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: BENEFICIARIES -->
+                <div id="beneficiariesTab" class="tab-content">
+                    <div class="tab-header-premium">
+                        <div class="header-left">
+                            <h2 style="font-size: 1.5rem; color: var(--text-main);">Low-Income Families (Beneficiaries)
+                            </h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Comprehensive tracking of families
+                                needing assistance.</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-outline" onclick="openBeneficiaryCategories()"
+                                style="border-color: var(--primary); color: var(--primary);">
+                                <i data-lucide="tag"></i> Categories
+                            </button>
+                            <button class="btn btn-primary" onclick="openAddBeneficiaryModal()">
+                                <i data-lucide="plus"></i> Register Beneficiary
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>App #</th>
+                                        <th>Leader (Male)</th>
+                                        <th>Contact</th>
+                                        <th>Town</th>
+                                        <th>NIC</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="beneficiariesBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: COURSES -->
+                <div id="coursesTab" class="tab-content">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2 style="font-size: 1.5rem;">Educational Programs</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Batches and vocational training
+                                management.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="alert('Program management enabled')">
+                            <i data-lucide="plus"></i> Create Program
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Program Title</th>
+                                        <th>Category</th>
+                                        <th>Audience</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursesBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: DONATIONS -->
+                <div id="donationsTab" class="tab-content">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2 style="font-size: 1.5rem;">Donations Management</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Track Zakat, Sadaqah, and other
+                                external contributions.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('donationModal')">
+                            <i data-lucide="plus"></i> Record Donation
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Donor Name</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="donationsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: VOLUNTEERS -->
+                <div id="volunteersTab" class="tab-content">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <h2 style="font-size: 1.5rem;">Volunteer Registry</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Manage dedicated individuals
+                                helping organization activities.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('volunteerModal')">
+                            <i data-lucide="plus"></i> Register Volunteer
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Phone</th>
+                                        <th>Skills</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="volunteersBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Member Modal -->
+    <div id="memberModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i data-lucide="user-plus" style="color: var(--primary);"></i> <span id="memberModalTitle">Member
+                        Profile</span></h3>
+                <button class="btn-close" onclick="closeModal('memberModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="memberForm">
+                    <input type="hidden" name="id">
+
+                    <!-- Premium Tabs -->
+                    <div class="modal-tabs">
+                        <div class="modal-tab active" data-modal-tab="tab-general">General Profile</div>
+                        <div class="modal-tab" data-modal-tab="tab-financial">Financials & Bank</div>
+                        <div class="modal-tab" data-modal-tab="tab-family">Family & Dependents</div>
+                    </div>
+
+                    <div>
+                        <!-- Tab 1: General -->
+                        <div class="modal-tab-content active" id="tab-general">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" name="full_name" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">NIC Number</label>
+                                    <input type="text" name="nic_number" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-select">
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Age</label>
+                                    <input type="number" name="age" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Marital Status</label>
+                                    <select name="marital_status" class="form-select">
+                                        <option value="unmarried">Unmarried</option>
+                                        <option value="married">Married</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Blood Group</label>
+                                    <select name="blood_group" class="form-select">
+                                        <option value="">Select</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone *</label>
+                                    <input type="text" name="phone" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-input">
+                                </div>
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label class="form-label">Residential Address</label>
+                                    <input type="text" name="address" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">City</label>
+                                    <input type="text" name="city" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Occupation</label>
+                                    <input type="text" name="occupation" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Financial -->
+                        <div class="modal-tab-content" id="tab-financial">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Member Type</label>
+                                    <select name="member_type" class="form-select">
+                                        <option value="executive">Executive Member</option>
+                                        <option value="founder">Founder</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Monthly Sub. (LKR)</label>
+                                    <input type="number" name="monthly_subscription" class="form-input" value="5000">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Join Date</label>
+                                    <input type="date" name="join_date" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Monthly Income</label>
+                                    <input type="number" name="monthly_income" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Previous Balance</label>
+                                    <input type="number" name="previous_balance" class="form-input" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Sibling Link</label>
+                                    <select name="sibling_id" id="editMemberSiblingSelect" class="form-select">
+                                        <option value="">None</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Account Status</label>
+                                    <select name="status" class="form-select">
+                                        <option value="active">Active</option>
+                                        <option value="deactivate">Deactivate</option>
+                                    </select>
+                                </div>
+                                <div
+                                    style="grid-column: span 2; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                                    <h4 style="margin-bottom: 1rem; font-size: 0.9rem;">Bank Information</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bank Name</label>
+                                    <input type="text" name="bank_name" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Branch</label>
+                                    <input type="text" name="bank_branch" class="form-input">
+                                </div>
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label class="form-label">Account Number</label>
+                                    <input type="text" name="account_number" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: Family -->
+                        <div class="modal-tab-content" id="tab-family">
+                            <div class="form-section-header">
+                                <h4>Family Details (Dependents)</h4>
+                                <button type="button" class="add-relative-btn" id="addRelativeRowBtn">
+                                    <i data-lucide="plus-circle" style="width:14px;"></i> Add Relative
+                                </button>
+                            </div>
+
+                            <div id="relativesContainer">
+                                <!-- Dynamic Rows -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('memberModal')">
+                            <i data-lucide="x-circle"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="saveMemberBtn" style="padding: 0.75rem 2rem;">
+                            <i data-lucide="check-circle"></i> Save Member Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Member Modal -->
+    <div id="viewMemberModal" class="modal">
+        <div class="modal-content large" style="max-width: 900px;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:1.25rem;">
+                    <div id="viewMemberInitial" class="logo" style="width: 48px; height: 48px; font-size: 1.25rem;">?
+                    </div>
+                    <div>
+                        <h2 id="viewMemberName" style="margin:0; font-size: 1.25rem;"></h2>
+                        <div id="viewMemberBadge"></div>
+                    </div>
+                </div>
+                <button class="btn-close" onclick="closeModal('viewMemberModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="memberDetailsDisplay" class="detail-grid"></div>
+
+                <div style="margin-top: 3rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1.5rem;">Family & Dependents</h3>
+                    <div id="relativesList"></div>
+
+                    <div class="card mini-form" style="margin-top: 1.5rem; background: #f8fafc;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 1rem;">Add Dependent</h4>
+                        <form id="relativeForm"
+                            style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                            <input type="hidden" name="member_id">
+                            <input type="text" name="full_name" placeholder="Name" class="form-input" required>
+                            <select name="relationship" class="form-select">
+                                <option value="wife">Wife</option>
+                                <option value="son">Son</option>
+                                <option value="daughter">Daughter</option>
+                            </select>
+                            <input type="number" name="age" placeholder="Age" class="form-input">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="editFromViewBtn">
+                    <i data-lucide="edit-3"></i> Edit Profile
+                </button>
+                <button class="btn btn-outline" onclick="closeModal('viewMemberModal')">
+                    <i data-lucide="log-out"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Family Modal -->
+    <div id="familyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="home" style="color: var(--primary);"></i> Register Family</h3>
+                <button class="btn-close" onclick="closeModal('familyModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="familyForm">
+                    <div class="form-group">
+                        <label class="form-label">Head of Family</label>
+                        <input type="text" name="head_name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="address" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Member Count</label>
+                        <input type="number" name="member_count" class="form-input" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Poverty Level</label>
+                        <select name="poverty_level" class="form-select">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('familyModal')">
+                            <i data-lucide="x-circle"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="check"></i> Register Family
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donation Modal -->
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="heart" style="color: var(--primary);"></i> Record External Donation</h3>
+                <button class="btn-close" onclick="closeModal('donationModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="donationForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Donor Name</label>
+                            <input type="text" name="donor_name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="donor_phone" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount (LKR)</label>
+                            <input type="number" name="amount" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Donation Type</label>
+                            <select name="donation_type" class="form-select">
+                                <option value="zakat">Zakat</option>
+                                <option value="sadaqah">Sadaqah</option>
+                                <option value="fitrana">Fitrana</option>
+                                <option value="lillah">Lillah</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Method</label>
+                            <select name="payment_method" class="form-select">
+                                <option value="cash">Cash</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="online">Online</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" name="description" class="form-input">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('donationModal')">
+                            <i data-lucide="x-circle"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save"></i> Save Donation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volunteer Modal -->
+    <div id="volunteerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="user-check" style="color: var(--primary);"></i> Register Volunteer</h3>
+                <button class="btn-close" onclick="closeModal('volunteerModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="volunteerForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-input" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Skills (Interests)</label>
+                        <input type="text" name="skills" class="form-input"
+                            placeholder="e.g. teaching, events, distribution">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('volunteerModal')">
+                            <i data-lucide="x-circle"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="user-plus"></i> Register Volunteer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aid Distribution Modal -->
+    <div id="aidDistributionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="gift" style="color: var(--primary);"></i> Distribute Aid: <span
+                        id="targetFamilyNameAid"></span></h3>
+                <button class="btn-close" onclick="closeModal('aidDistributionModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="aidForm">
+                    <input type="hidden" name="family_id" id="aidFamilyId">
+                    <div class="form-group">
+                        <label class="form-label">Aid Type</label>
+                        <select name="donation_type" class="form-select">
+                            <option value="cash">Cash Grant</option>
+                            <option value="zakat">Zakat Distribution</option>
+                            <option value="dry_ration">Dry Ration Pack</option>
+                            <option value="medical">Medical Assistance</option>
+                            <option value="education">Educational Support</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount / Value (LKR)</label>
+                        <input type="number" name="amount" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Remarks / Description</label>
+                        <textarea name="description" class="form-input" rows="3"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('aidDistributionModal')">
+                            <i data-lucide="x-circle"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="send"></i> Process Aid
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aid History Modal -->
+    <div id="aidHistoryModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i data-lucide="history" style="color: var(--primary);"></i> Aid History: <span
+                        id="targetFamilyNameHistory"></span></h3>
+                <button class="btn-close" onclick="closeModal('aidHistoryModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount / Value</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aidHistoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('aidHistoryModal')">
+                    <i data-lucide="check"></i> Close History
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zakat Calculator Modal -->
+    <div id="zakatCalcModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="calculator" style="color: var(--primary);"></i> Zakat Calculator (2.5%)</h3>
+                <button class="btn-close" onclick="closeModal('zakatCalcModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">Calculate your annual
+                    Zakat based on your liquid assets.</p>
+                <div class="form-group">
+                    <label class="form-label">Cash (Hand & Bank)</label>
+                    <input type="number" id="zakatCash" class="form-input" placeholder="0" oninput="calculateZakat()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Gold & Silver Value</label>
+                    <input type="number" id="zakatGold" class="form-input" placeholder="0" oninput="calculateZakat()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Investments / Business Assets</label>
+                    <input type="number" id="zakatInvest" class="form-input" placeholder="0" oninput="calculateZakat()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Debts (To be deducted)</label>
+                    <input type="number" id="zakatDebts" class="form-input" placeholder="0" oninput="calculateZakat()">
+                </div>
+
+                <div
+                    style="margin-top: 2rem; padding: 1.5rem; background: #f0fdf4; border-radius: 16px; border: 1px dashed #22c55e;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; color: #166534;">Your Zakat Payable:</span>
+                        <span id="zakatResult" style="font-size: 1.5rem; font-weight: 700; color: #15803d;">LKR
+                            0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" style="width: 100%; justify-content: center;"
+                    onclick="closeModal('zakatCalcModal')">Done</button>
+            </div>
+        </div>
+    </div>
+
+        <div id="beneficiaryModal" class="modal">
+        <div class="modal-content large-xl crm-wizard-modal">
+            
+            <form id="beneficiaryForm" class="crm-wizard-form">
+                <input type="hidden" name="id">
+
+                <!-- Header & Horizontal Stepper -->
+                <div class="wizard-header-container">
+                    <div class="wizard-header-top">
+                        <div>
+                            <h3 class="wizard-title"><i data-lucide="heart-handshake"></i> <span id="beneficiaryModalTitle">Beneficiary Profile</span></h3>
+                            <p class="wizard-subtitle">Complete the registration parameters for humanitarian assistance tracking.</p>
+                        </div>
+                        <button type="button" class="btn-close" onclick="closeModal('beneficiaryModal')">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+
+                    <div class="stepper-horizontal">
+                        <div class="stepper-item active" data-step="1" data-modal-tab="ben-male">
+                            <div class="step-circle"><i data-lucide="user"></i></div>
+                            <div class="step-label">Primary</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="stepper-item" data-step="2" data-modal-tab="ben-female">
+                            <div class="step-circle"><i data-lucide="users"></i></div>
+                            <div class="step-label">Secondary</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="stepper-item" data-step="3" data-modal-tab="ben-children">
+                            <div class="step-circle"><i data-lucide="baby"></i></div>
+                            <div class="step-label">Dependents</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="stepper-item" data-step="4" data-modal-tab="ben-family">
+                            <div class="step-circle"><i data-lucide="home"></i></div>
+                            <div class="step-label">Living</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="stepper-item" data-step="5" data-modal-tab="ben-status">
+                            <div class="step-circle"><i data-lucide="clipboard-check"></i></div>
+                            <div class="step-label">Assessment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="beneficiary-modal-body custom-scroll">
+                    <!-- Step 1: MALE LEADER -->
+                    <div class="modal-tab-content active" id="ben-male">
+                        <h4 class="modern-section-title">Primary Information (Male Leader)</h4>
+                        <div class="modern-form-grid">
+                            <div class="form-group span-half">
+                                <label class="modern-label">Application Number</label>
+                                <div class="input-with-icon">
+                                    <i data-lucide="hash"></i>
+                                    <input type="text" name="application_number" class="form-input" placeholder="e.g. EDF-2024-001">
+                                </div>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Full Name *</label>
+                                <input type="text" name="male_head_name" class="form-input" placeholder="Enter full name" required>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">NIC Number</label>
+                                <input type="text" name="nic_number" class="form-input" placeholder="National ID card">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Gender</label>
+                                <select name="male_head_gender" class="form-select">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Date of Birth</label>
+                                <input type="date" name="male_head_dob" class="form-input">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Occupation</label>
+                                <input type="text" name="male_head_occupation" class="form-input" placeholder="Current job">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Contact Number</label>
+                                <div class="input-with-icon">
+                                    <i data-lucide="phone"></i>
+                                    <input type="text" name="contact_number" class="form-input" placeholder="+94 xxxxxxxxx">
+                                </div>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">City/Town</label>
+                                <input type="text" name="home_town" class="form-input" placeholder="Home Town">
+                            </div>
+                            <div class="form-group span-full">
+                                <label class="modern-label">Residential Address</label>
+                                <input type="text" name="male_head_address" class="form-input" placeholder="Complete Street Address">
+                            </div>
+                            <div class="form-group span-full">
+                                <label class="modern-label">Special Qualifications</label>
+                                <input type="text" name="male_head_special_qualifications" class="form-input" placeholder="Other skills">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: FEMALE LEADER -->
+                    <div class="modal-tab-content" id="ben-female">
+                        <h4 class="modern-section-title">Secondary Information (Female Leader)</h4>
+                        <div class="modern-form-grid">
+                            <div class="form-group span-half">
+                                <label class="modern-label">Full Name</label>
+                                <input type="text" name="female_head_name" class="form-input" placeholder="Enter full name">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">NIC Number</label>
+                                <input type="text" name="female_head_nic" class="form-input" placeholder="National ID card">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Date of Birth</label>
+                                <input type="date" name="female_head_dob" class="form-input">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Occupation</label>
+                                <input type="text" name="female_head_occupation" class="form-input" placeholder="Current job">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">City/Town</label>
+                                <input type="text" name="female_head_home_town" class="form-input" placeholder="Home Town">
+                            </div>
+                            <div class="form-group span-full">
+                                <label class="modern-label">Residential Address</label>
+                                <input type="text" name="female_head_address" class="form-input" placeholder="Complete Street Address">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: CHILDREN -->
+                    <div class="modal-tab-content" id="ben-children">
+                        <h4 class="modern-section-title">Children Overview</h4>
+                        <div class="modern-form-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                            <div class="form-group span-half">
+                                <label class="modern-label">Male</label>
+                                <input type="number" name="children_count_male" class="form-input" value="0">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Female</label>
+                                <input type="number" name="children_count_female" class="form-input" value="0">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Total</label>
+                                <input type="number" name="children_total_count" class="form-input" value="0">
+                            </div>
+                        </div>
+
+                        <div class="modern-sub-section">
+                            <div class="section-flex-header">
+                                <h5><i data-lucide="book-open"></i> Education (Schooling)</h5>
+                                <button type="button" class="btn btn-outline btn-sm" id="addStudyRowBtn"><i data-lucide="plus"></i> Add</button>
+                            </div>
+                            <div id="studyContainer" class="dynamic-entries-grid"></div>
+                        </div>
+
+                        <div class="modern-sub-section">
+                            <div class="section-flex-header">
+                                <h5><i data-lucide="user-minus"></i> School Dropouts</h5>
+                                <button type="button" class="btn btn-outline btn-sm" id="addDropoutRowBtn"><i data-lucide="plus"></i> Add</button>
+                            </div>
+                            <div id="dropoutContainer" class="dynamic-entries-grid"></div>
+                        </div>
+
+                        <div class="modern-sub-section">
+                            <div class="section-flex-header">
+                                <h5><i data-lucide="graduation-cap"></i> University Selected</h5>
+                                <button type="button" class="btn btn-outline btn-sm" id="addUniRowBtn"><i data-lucide="plus"></i> Add</button>
+                            </div>
+                            <div id="uniContainer" class="dynamic-entries-grid"></div>
+                        </div>
+
+                        <div class="modern-sub-section">
+                            <div class="section-flex-header">
+                                <h5><i data-lucide="plane"></i> Working Abroad</h5>
+                                <button type="button" class="btn btn-outline btn-sm" id="addAbroadRowBtn"><i data-lucide="plus"></i> Add</button>
+                            </div>
+                            <div id="abroadContainer" class="dynamic-entries-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: FAMILY & LIVING -->
+                    <div class="modal-tab-content" id="ben-family">
+                        <h4 class="modern-section-title">Living Conditions</h4>
+                        <div class="modern-form-grid">
+                            <div class="form-group span-half">
+                                <label class="modern-label">Category Classification</label>
+                                <select name="category" id="beneficiaryCategorySelect" class="form-select">
+                                    <option value="">Select Category</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Monthly Income (LKR)</label>
+                                <input type="number" name="monthly_income" class="form-input" placeholder="0.00">
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Home Ownership</label>
+                                <select name="living_home_details" class="form-select">
+                                    <option value="own house">Own House</option>
+                                    <option value="rent house">Rent House</option>
+                                    <option value="joint Family">Joint Family</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Family Status</label>
+                                <select name="family_status" class="form-select">
+                                    <option value="">General</option>
+                                    <option value="Divorced">Divorced</option>
+                                    <option value="widow">Widow / Widower</option>
+                                    <option value="sicker">Health Issues</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-full">
+                                <label class="modern-label">Vehicles in Use</label>
+                                <input type="text" name="vehicles_in_use" class="form-input" placeholder="e.g. Motor Cycle (WP-ABC-1234)">
+                            </div>
+                            <div class="form-group span-full">
+                                <label class="modern-label">Family Abroad Details</label>
+                                <input type="text" name="abroad_details" class="form-input" placeholder="Who and where?">
+                            </div>
+                            <div class="form-group span-full">
+                                <label class="modern-label">General Special Needs</label>
+                                <input type="text" name="special_needs" class="form-input" placeholder="Any specific requirements">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: STATUS & MISC -->
+                    <div class="modal-tab-content" id="ben-status">
+                        <h4 class="modern-section-title">Assessment Evaluation</h4>
+                        
+                        <div class="modern-form-grid">
+                            <div class="modern-switch-card">
+                                <div><h5>Parents live with head?</h5><p>Are elderly parents supported?</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="parents_live_with_head_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="parents_live_with_head" value="no">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Special Needs at Home?</h5><p>Patients or disabilities</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="special_needs_at_home_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="special_needs_at_home" value="no">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Seeking Job?</h5><p>Children searching for work</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="children_seeking_job_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="children_seeking_job" value="no">
+                            </div>
+                            <div class="form-group span-half">
+                                <input type="text" name="children_seeking_job_details" class="form-input" placeholder="Elaborate details if yes">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Marriageable Age?</h5><p>Children pending marriage</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="children_marriageable_age_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="children_marriageable_age" value="no">
+                            </div>
+                            <div class="form-group span-half">
+                                <input type="text" name="children_marriageable_age_details" class="form-input" placeholder="Elaborate details if yes">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Drug Usage History?</h5><p>Substance abuse in family</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="children_drugs_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="children_drugs" value="no">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Severe Family Problems?</h5><p>Internal disputes</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="family_problems_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="family_problems" value="no">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Applied Before?</h5><p>Previous EDF interactions</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="applied_before_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="applied_before" value="no">
+                            </div>
+
+                            <div class="modern-switch-card">
+                                <div><h5>Assistance Received?</h5><p>Prior aid from any org</p></div>
+                                <label class="modern-switch">
+                                    <input type="checkbox" name="received_assistance_before_toggle">
+                                    <span class="modern-slider"></span>
+                                </label>
+                                <input type="hidden" name="received_assistance_before" value="no">
+                            </div>
+                        </div>
+
+                        <div class="modern-form-grid" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                            <div class="form-group span-half">
+                                <label class="modern-label">Assistance Details Needed</label>
+                                <select name="assistance_details" class="form-select">
+                                    <option value="">None</option>
+                                    <option value="dry ration">Dry Ration</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-half">
+                                <label class="modern-label">Application Status</label>
+                                <select name="status" class="form-select" style="font-weight: 600;">
+                                    <option value="pending">Pending</option>
+                                    <option value="Active">Active / Approved</option>
+                                    <option value="deactivate">Deactivate / Hold</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer area fixed to the bottom (Wizard controls) -->
+                <div class="modern-modal-footer">
+                    <button type="button" class="btn btn-outline btn-wizard-prev" style="display: none; padding: 12px 24px;">
+                        <i data-lucide="chevron-left"></i> Previous Step
+                    </button>
+                    <div class="spacer" style="flex: 1;"></div>
+                    <button type="button" class="btn btn-primary btn-wizard-next" style="padding: 12px 32px; font-weight: 600;">
+                        Next Step <i data-lucide="chevron-right"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-wizard-submit" style="display: none; padding: 12px 32px; font-weight: 600; background: var(--success); border-color: var(--success); color: white;">
+                        <i data-lucide="check-circle"></i> Complete Registration
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Beneficiary Category Management Modal -->
+    <div id="beneficiaryCategoryModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i data-lucide="tag" style="color: var(--primary);"></i> Manage Categories</h3>
+                <button class="btn-close" onclick="closeModal('beneficiaryCategoryModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                    <button class="btn btn-primary btn-sm" onclick="openAddCategoryModal()">
+                        <i data-lucide="plus"></i> Add Category
+                    </button>
+                </div>
+                <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="beneficiaryCategoriesBody">
+                            <!-- Categories will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beneficiary Category Add/Edit Modal -->
+    <div id="beneficiaryCategoryEntryModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Add Category</h3>
+                <button class="btn-close" onclick="closeModal('beneficiaryCategoryEntryModal')">
+                    <i data-lucide="x" style="width: 20px;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="beneficiaryCategoryForm">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" name="name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-input" style="height: 100px;"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button type="button" class="btn btn-outline" style="flex: 1;"
+                            onclick="closeModal('beneficiaryCategoryEntryModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">Save Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    <script>
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const currentTheme = localStorage.getItem('theme') || 'dark'; // default to dark
+
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+
+        themeBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let newTheme = theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.setAttribute('data-lucide', 'sun');
+            } else {
+                themeIcon.setAttribute('data-lucide', 'moon');
+            }
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+    </script>
+
+<script>
+    // Wizard Logic for Beneficiary Modal
+    document.addEventListener('DOMContentLoaded', () => {
+        const wizardModal = document.getElementById('beneficiaryModal');
+        if(!wizardModal) return;
+
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        const tabs = wizardModal.querySelectorAll('.modal-tab-content');
+        const steppers = wizardModal.querySelectorAll('.stepper-item');
+        const nextBtn = wizardModal.querySelector('.btn-wizard-next');
+        const prevBtn = wizardModal.querySelector('.btn-wizard-prev');
+        const submitBtn = wizardModal.querySelector('.btn-wizard-submit');
+
+        function updateWizardUI() {
+            // Update steppers
+            steppers.forEach((step, idx) => {
+                const stepNum = parseInt(step.getAttribute('data-step'));
+                if (stepNum < currentStep) {
+                    step.className = 'stepper-item completed';
+                } else if (stepNum === currentStep) {
+                    step.className = 'stepper-item active';
+                } else {
+                    step.className = 'stepper-item';
+                }
+            });
+
+            // Update content tabs
+            tabs.forEach((tab, idx) => {
+                if (idx + 1 === currentStep) {
+                    tab.classList.add('active');
+                    tab.style.display = 'block';
+                } else {
+                    tab.classList.remove('active');
+                    tab.style.display = 'none';
+                }
+            });
+
+            // Update Buttons
+            if (currentStep === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'inline-flex';
+            }
+
+            if (currentStep === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                submitBtn.style.display = 'none';
+            }
+            
+            // Re-render lucide icons
+            if(window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateWizardUI();
+            }
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizardUI();
+            }
+        });
+
+        // Allow clicking on stepper items directly to navigate tabs
+        steppers.forEach(step => {
+            step.addEventListener('click', () => {
+                const targetStep = parseInt(step.getAttribute('data-step'));
+                currentStep = targetStep;
+                updateWizardUI();
+            });
+        });
+
+        // Reset wizard on open modal (Optional globally intercept logic, but good practice here)
+        const ogOpenModal = window.openModal;
+        if(typeof ogOpenModal === 'function') {
+            window.openModal = function(id) {
+                if (id === 'beneficiaryModal') {
+                    currentStep = 1;
+                    updateWizardUI();
+                }
+                ogOpenModal(id);
+            }
+        } else {
+             window.openModal = function(id) {
+                const targetNode = document.getElementById(id);
+                if (targetNode) {
+                    targetNode.style.display = "flex";
+                     if (id === 'beneficiaryModal') {
+                        currentStep = 1;
+                        updateWizardUI();
+                    }
+                }
+            }
+        }
+        
+        // ensure default UI on load
+        tabs.forEach(t => t.style.display = 'none');
+        if(tabs[0]) tabs[0].style.display = 'block';
+    });
+</script>
+
+</body>
+
+</html>

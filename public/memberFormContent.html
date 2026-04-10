@@ -1,0 +1,155 @@
+<form id="memberForm">
+    <input type="hidden" name="id">
+
+    <!-- Premium Tabs -->
+    <div class="modal-tabs">
+        <div class="modal-tab active" data-modal-tab="tab-general">General Profile</div>
+        <div class="modal-tab" data-modal-tab="tab-financial">Financials & Bank</div>
+        <div class="modal-tab" data-modal-tab="tab-family">Family & Dependents</div>
+    </div>
+
+    <div>
+        <!-- Tab 1: General -->
+        <div class="modal-tab-content active" id="tab-general">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" name="full_name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">NIC Number <span style="color: var(--accent); font-size: 0.7rem;">(Unique
+                            ID)</span></label>
+                    <input type="text" name="nic_number" class="form-input" placeholder="e.g. 199012345678" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Gender</label>
+                    <select name="gender" class="form-select">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Age</label>
+                    <input type="number" name="age" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Marital Status</label>
+                    <select name="marital_status" class="form-select">
+                        <option value="unmarried">Unmarried</option>
+                        <option value="married">Married</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Blood Group</label>
+                    <select name="blood_group" class="form-select">
+                        <option value="">Select</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone *</label>
+                    <input type="text" name="phone" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-input">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">Residential Address</label>
+                    <input type="text" name="address" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Occupation</label>
+                    <input type="text" name="occupation" class="form-input">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Financial -->
+        <div class="modal-tab-content" id="tab-financial">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Member Type</label>
+                    <select name="member_type" class="form-select">
+                        <option value="executive">Executive Member</option>
+                        <option value="founder">Founder</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monthly Sub. (LKR)</label>
+                    <input type="number" name="monthly_subscription" class="form-input" value="5000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Join Date</label>
+                    <input type="date" name="join_date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monthly Income</label>
+                    <input type="number" name="monthly_income" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Previous Balance</label>
+                    <input type="number" name="previous_balance" class="form-input" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sibling Link</label>
+                    <select name="sibling_id" id="editMemberSiblingSelect" class="form-select">
+                        <option value="">None</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Account Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active">Active</option>
+                        <option value="deactivate">Deactivate</option>
+                    </select>
+                </div>
+                <div style="grid-column: span 2; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                    <h4 style="margin-bottom: 1rem; font-size: 0.9rem;">Bank Information</h4>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bank Name</label>
+                    <input type="text" name="bank_name" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Branch</label>
+                    <input type="text" name="bank_branch" class="form-input">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">Account Number</label>
+                    <input type="text" name="account_number" class="form-input">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Family -->
+        <div class="modal-tab-content" id="tab-family">
+            <div class="form-section-header">
+                <h4>Family Details (Dependents)</h4>
+                <button type="button" class="add-relative-btn" id="addRelativeRowBtn">
+                    <i data-lucide="plus-circle" style="width:14px;"></i> Add Relative
+                </button>
+            </div>
+
+            <div id="relativesContainer">
+                <!-- Dynamic Rows -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('memberModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveMemberBtn">Save Member Profile</button>
+    </div>
+</form>
