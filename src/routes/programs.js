@@ -26,6 +26,10 @@ module.exports = (db) => {
     `).catch(() => {});
 
     db.exec(`
+        ALTER TABLE courses ADD COLUMN duration_type TEXT DEFAULT 'weeks';
+    `).catch(() => {});
+
+    db.exec(`
         ALTER TABLE batches ADD COLUMN max_seats INTEGER DEFAULT 30;
     `).catch(() => {});
 
@@ -103,12 +107,12 @@ module.exports = (db) => {
 
     // POST create program
     router.post('/programs', authenticateToken, async (req, res) => {
-        const { title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, form_template_id } = req.body;
+        const { title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, duration_type, form_template_id } = req.body;
         try {
             const result = await db.run(
-                `INSERT INTO courses (title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, form_template_id)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [title, category, target_audience, description, status || 'active', max_capacity || 30, fee || 0, location, duration_weeks || 8, form_template_id || null]
+                `INSERT INTO courses (title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, duration_type, form_template_id)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [title, category, target_audience, description, status || 'active', max_capacity || 30, fee || 0, location, duration_weeks || 8, duration_type || 'weeks', form_template_id || null]
             );
             res.json({ id: result.lastID, message: 'Program created successfully' });
         } catch (err) { res.status(500).json({ message: err.message }); }
@@ -116,12 +120,12 @@ module.exports = (db) => {
 
     // PUT update program
     router.put('/programs/:id', authenticateToken, async (req, res) => {
-        const { title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, form_template_id } = req.body;
+        const { title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, duration_type, form_template_id } = req.body;
         try {
             await db.run(
                 `UPDATE courses SET title=?, category=?, target_audience=?, description=?, status=?,
-                 max_capacity=?, fee=?, location=?, duration_weeks=?, form_template_id=? WHERE id=?`,
-                [title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, form_template_id || null, req.params.id]
+                 max_capacity=?, fee=?, location=?, duration_weeks=?, duration_type=?, form_template_id=? WHERE id=?`,
+                [title, category, target_audience, description, status, max_capacity, fee, location, duration_weeks, duration_type || 'weeks', form_template_id || null, req.params.id]
             );
             res.json({ message: 'Program updated successfully' });
         } catch (err) { res.status(500).json({ message: err.message }); }

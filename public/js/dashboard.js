@@ -3126,28 +3126,41 @@ function renderDonations() {
     const filtered = donationData.filter(d => {
         const matchType = _donationTypeFilter === 'all' || d.donation_type === _donationTypeFilter;
         const matchSearch = !search ||
-            d.donor_name.toLowerCase().includes(search) ||
+            (d.donor_name||'').toLowerCase().includes(search) ||
+            (d.recipient_name||'').toLowerCase().includes(search) ||
             d.donation_type.toLowerCase().includes(search) ||
-            (d.donor_phone || '').includes(search) ||
             (d.description || '').toLowerCase().includes(search);
         return matchType && matchSearch;
     });
 
     const tbody = document.getElementById('donationsBody');
-    tbody.innerHTML = filtered.map(d => `
+    tbody.innerHTML = filtered.map(d => {
+        let nameStr = '', typeStr = '';
+        if (d.direction === 'expense') {
+            typeStr = '<span style="color:#ef4444;font-weight:600;font-size:0.75rem;"><i data-lucide="arrow-up-right" style="width:12px;vertical-align:middle;"></i> EXPENSE</span>';
+            if (d.recipient_type === 'beneficiary') nameStr = `Beneficiary: ${d.beneficiary_name || '#' + d.beneficiary_id} <div style="font-size:0.7rem;color:var(--text-muted);">${d.beneficiary_number||''}</div>`;
+            else if (d.recipient_type === 'family') nameStr = `Family: ${d.family_name || '#' + d.family_id}`;
+            else nameStr = `${d.recipient_name || 'External Organization'}`;
+        } else {
+            typeStr = '<span style="color:#10b981;font-weight:600;font-size:0.75rem;"><i data-lucide="arrow-down-left" style="width:12px;vertical-align:middle;"></i> INCOME</span>';
+            if (d.donor_type === 'member') nameStr = `Member: ${d.member_name || '#' + d.member_id}`;
+            else nameStr = `${d.donor_name || 'External Donor'}`;
+        }
+        
+        return `
         <tr>
-            <td style="font-weight:500">${d.donor_name}</td>
-            <td style="color:var(--text-muted)">${d.donor_phone || '—'}</td>
+            <td>${typeStr}</td>
+            <td style="font-weight:500;line-height:1.2;">${nameStr}</td>
             <td><span class="status-badge" style="${typeBadgeColors[d.donation_type] || typeBadgeColors.other} text-transform:capitalize;">${d.donation_type}</span></td>
             <td style="font-weight:600">LKR ${Number(d.amount).toLocaleString()}</td>
-            <td style="text-transform:capitalize">${d.payment_method}</td>
-            <td>${new Date(d.date).toLocaleDateString()}</td>
+            <td style="text-transform:capitalize;color:var(--text-muted);font-size:0.8rem;">${d.payment_method}</td>
+            <td style="font-size:0.85rem;">${new Date(d.date).toLocaleDateString()}</td>
             <td style="text-align:right; white-space:nowrap;">
                 <button class="btn" style="padding:0.4rem 0.5rem; background:var(--glow-bg);" onclick="openDonationModal('edit',${d.id})" title="Edit"><i data-lucide="edit-2" style="width:15px;"></i></button>
                 <button class="btn" style="padding:0.4rem 0.5rem; background:#fee2e2; color:#ef4444;" onclick="deleteDonation(${d.id})" title="Delete"><i data-lucide="trash-2" style="width:15px;"></i></button>
             </td>
         </tr>
-    `).join('') || `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No donations found</td></tr>`;
+    `}).join('') || `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No donations/transactions found</td></tr>`;
     lucide.createIcons();
 }
 
@@ -3161,11 +3174,56 @@ function setDonationTypeFilter(type) {
     renderDonations();
 }
 
+window.onDonationDirectionChange = function() {
+    const dir = document.getElementById('donationDirection').value;
+    document.querySelectorAll('.income-field').forEach(el => el.style.display = dir === 'income' ? 'block' : 'none');
+    document.querySelectorAll('.expense-field').forEach(el => el.style.display = dir === 'expense' ? 'block' : 'none');
+    if(dir === 'income') onDonorTypeChange();
+    if(dir === 'expense') onRecipientTypeChange();
+};
+window.onDonorTypeChange = function() {
+    const dType = document.getElementById('donationDonorType').value;
+    const dir = document.getElementById('donationDirection').value;
+    if(dir !== 'income') return;
+    document.getElementById('donorMemberContainer').style.display = dType === 'member' ? 'block' : 'none';
+    document.getElementById('donorNameContainer').style.display = dType === 'external' ? 'block' : 'none';
+};
+window.onRecipientTypeChange = function() {
+    const rType = document.getElementById('donationRecipientType').value;
+    const dir = document.getElementById('donationDirection').value;
+    if(dir !== 'expense') return;
+    document.getElementById('recipientBenContainer').style.display = rType === 'beneficiary' ? 'block' : 'none';
+    document.getElementById('recipientFamContainer').style.display = rType === 'family' ? 'block' : 'none';
+    document.getElementById('recipientNameContainer').style.display = rType === 'external' ? 'block' : 'none';
+};
+
 function openDonationModal(mode, donId = null) {
     const don = donId ? donationData.find(d => d.id === donId) : null;
+    
+    // Populate Selects
+    document.getElementById('donationMemberId').innerHTML = '<option value="">Select Member...</option>' + 
+        (typeof currentMembers !== 'undefined' ? currentMembers.map(m => `<option value="${m.id}">${m.full_name}</option>`).join('') : '');
+    document.getElementById('donationBeneficiaryId').innerHTML = '<option value="">Select Beneficiary...</option>' + 
+        (typeof currentBeneficiaries !== 'undefined' ? currentBeneficiaries.map(b => `<option value="${b.id}">${b.male_head_name} (${b.application_number})</option>`).join('') : '');
+    document.getElementById('donationFamilyId').innerHTML = '<option value="">Select Family...</option>' + 
+        (typeof currentFamilies !== 'undefined' ? currentFamilies.map(f => `<option value="${f.id}">${f.head_name}</option>`).join('') : '');
+
     document.getElementById('donationRecordId').value = don ? don.id : '';
-    document.getElementById('donationDonorName').value = don ? don.donor_name : '';
+    document.getElementById('donationDirection').value = don ? (don.direction || 'income') : 'income';
+    
+    // Income
+    document.getElementById('donationDonorType').value = don ? (don.donor_type || 'external') : 'external';
+    document.getElementById('donationMemberId').value = don ? (don.member_id || '') : '';
+    document.getElementById('donationDonorName').value = don ? (don.donor_name || '') : '';
     document.getElementById('donationDonorPhone').value = don ? (don.donor_phone || '') : '';
+    
+    // Expense
+    document.getElementById('donationRecipientType').value = don ? (don.recipient_type || 'beneficiary') : 'beneficiary';
+    document.getElementById('donationBeneficiaryId').value = don ? (don.beneficiary_id || '') : '';
+    document.getElementById('donationFamilyId').value = don ? (don.family_id || '') : '';
+    document.getElementById('donationRecipientName').value = don ? (don.recipient_name || '') : '';
+
+    // Shared
     document.getElementById('donationAmount').value = don ? don.amount : '';
     document.getElementById('donationDonationType').value = don ? don.donation_type : 'zakat';
     document.getElementById('donationPaymentMethod').value = don ? don.payment_method : 'cash';
@@ -3174,10 +3232,12 @@ function openDonationModal(mode, donId = null) {
         ? new Date(don.date).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0];
 
-    document.getElementById('donationModalTitle').textContent = mode === 'edit' ? 'Edit Donation' : 'Record External Donation';
+    onDonationDirectionChange(); // Setup Visibility
+
+    document.getElementById('donationModalTitle').textContent = mode === 'edit' ? 'Edit Transaction' : 'Record Transaction';
     document.getElementById('donationSubmitBtn').innerHTML = mode === 'edit'
-        ? '<i data-lucide="save"></i> Update Donation'
-        : '<i data-lucide="save"></i> Save Donation';
+        ? '<i data-lucide="save"></i> Update'
+        : '<i data-lucide="save"></i> Save';
     lucide.createIcons();
     openModal('donationModal');
 }
@@ -3186,8 +3246,17 @@ async function saveDonation(e) {
     e.preventDefault();
     const id = document.getElementById('donationRecordId').value;
     const payload = {
+        direction:      document.getElementById('donationDirection').value,
+        donor_type:     document.getElementById('donationDonorType').value,
+        member_id:      document.getElementById('donationMemberId').value,
         donor_name:     document.getElementById('donationDonorName').value.trim(),
         donor_phone:    document.getElementById('donationDonorPhone').value.trim(),
+        
+        recipient_type: document.getElementById('donationRecipientType').value,
+        beneficiary_id: document.getElementById('donationBeneficiaryId').value,
+        family_id:      document.getElementById('donationFamilyId').value,
+        recipient_name: document.getElementById('donationRecipientName').value.trim(),
+
         amount:         document.getElementById('donationAmount').value,
         donation_type:  document.getElementById('donationDonationType').value,
         payment_method: document.getElementById('donationPaymentMethod').value,

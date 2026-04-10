@@ -175,7 +175,7 @@ function renderProgramCards() {
             <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.875rem;">
                 ${catBadge(p.category)}
                 ${audBadge(p.target_audience)}
-                ${p.duration_weeks ? `<span style="padding:0.2rem 0.55rem;border-radius:20px;font-size:0.68rem;font-weight:600;background:var(--border-color);color:var(--text-muted);">${p.duration_weeks}w</span>` : ''}
+                ${p.duration_weeks ? `<span style="padding:0.2rem 0.55rem;border-radius:20px;font-size:0.68rem;font-weight:600;background:var(--border-color);color:var(--text-muted);">${p.duration_weeks}${p.duration_type === 'days' ? 'd' : 'w'}</span>` : ''}
                 ${p.form_template_id ? `<span style="padding:0.2rem 0.55rem;border-radius:20px;font-size:0.68rem;font-weight:600;background:rgba(99,102,241,0.08);color:#6366f1;border:1px solid rgba(99,102,241,0.2);" title="Custom application form linked"><i data-lucide="file-text" style="width:10px;height:10px;vertical-align:middle;margin-right:2px;"></i>Form</span>` : ''}
             </div>
 
@@ -240,7 +240,7 @@ function renderProgramDetail(p) {
     document.getElementById('pdMeta').innerHTML = `${catBadge(p.category)} ${audBadge(p.target_audience)} ${statusBadge(p.status)}`;
     document.getElementById('pdDescription').textContent = p.description || 'No description.';
     document.getElementById('pdLocation').textContent = p.location || '—';
-    document.getElementById('pdDuration').textContent = p.duration_weeks ? `${p.duration_weeks} weeks` : '—';
+    document.getElementById('pdDuration').textContent = p.duration_weeks ? `${p.duration_weeks} ${p.duration_type || 'weeks'}` : '—';
     document.getElementById('pdFee').textContent = p.fee > 0 ? `LKR ${Number(p.fee).toLocaleString()}` : 'Free';
     document.getElementById('pdCapacity').textContent = p.max_capacity || '—';
 
@@ -356,7 +356,7 @@ async function openEditProgramModal(id) {
         document.getElementById('programModalTitle').textContent = 'Edit Program';
         const form = document.getElementById('programForm');
         form.reset();
-        ['title','category','target_audience','description','status','max_capacity','fee','location','duration_weeks','form_template_id']
+        ['title','category','target_audience','description','status','max_capacity','fee','location','duration_weeks','duration_type','form_template_id']
             .forEach(k => { if (form.elements[k]) form.elements[k].value = p[k] || ''; });
         populateCourseTemplateSelect(p.form_template_id);
         openModal('programModal');

@@ -523,7 +523,18 @@ module.exports = (db) => {
     // EXTERNAL DONATIONS (Zakat, Sadaqah, etc.)
     router.get('/external-donations', authenticateToken, async (req, res) => {
         try {
-            const donations = await db.all('SELECT * FROM external_donations ORDER BY date DESC');
+            const donations = await db.all(`
+                SELECT e.*, 
+                    m.full_name as member_name, 
+                    b.male_head_name as beneficiary_name, 
+                    b.application_number as beneficiary_number,
+                    f.head_name as family_name
+                FROM external_donations e
+                LEFT JOIN members m ON e.member_id = m.id
+                LEFT JOIN beneficiaries b ON e.beneficiary_id = b.id
+                LEFT JOIN families f ON e.family_id = f.id
+                ORDER BY e.date DESC
+            `);
             res.json(donations);
         } catch (err) {
             res.status(500).json({ message: err.message });
@@ -531,18 +542,42 @@ module.exports = (db) => {
     });
 
     router.post('/external-donations', authenticateToken, async (req, res) => {
-        const { donor_name, donor_phone, amount, donation_type, payment_method, description, date } = req.body;
+        const { 
+            direction, donor_type, member_id, 
+            recipient_type, beneficiary_id, family_id, recipient_name, 
+            donor_name, donor_phone, amount, donation_type, payment_method, description, date 
+        } = req.body;
+        
         try {
             const result = await db.run(
-                `INSERT INTO external_donations (donor_name, donor_phone, amount, donation_type, payment_method, description, date)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [donor_name, donor_phone, amount, donation_type, payment_method, description, date || new Date().toISOString()]
+                `INSERT INTO external_donations (
+                    direction, donor_type, member_id, recipient_type, beneficiary_id, family_id, recipient_name,
+                    donor_name, donor_phone, amount, donation_type, payment_method, description, date
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    direction || 'income', donor_type || 'external', member_id || null, 
+                    recipient_type || null, beneficiary_id || null, family_id || null, recipient_name || null,
+                    donor_name || '', donor_phone || '', amount, donation_type, payment_method, description, date || new Date().toISOString()
+                ]
             );
 
-            // Log to general transactions
+            // Log to general transactions (income or expense)
+            const resolvedDirection = direction || 'income';
+            
+            let txDescription = description || '';
+            if (resolvedDirection === 'income') {
+                const name = donor_type === 'member' ? `Member #${member_id}` : donor_name;
+                txDescription = `${donation_type.toUpperCase()} received from ${name}`;
+            } else {
+                let rec = recipient_name;
+                if (recipient_type === 'beneficiary') rec = `Beneficiary #${beneficiary_id}`;
+                if (recipient_type === 'family') rec = `Family #${family_id}`;
+                txDescription = `${donation_type.toUpperCase()} given to ${rec}`;
+            }
+
             await db.run(
                 'INSERT INTO transactions (type, category, amount, description, reference_id) VALUES (?, ?, ?, ?, ?)',
-                ['income', 'donation', amount, `${donation_type.toUpperCase()} from ${donor_name}`, result.lastID]
+                [resolvedDirection, 'donation', amount, txDescription, result.lastID]
             );
 
             res.json({ id: result.lastID, message: 'Donation recorded successfully' });
@@ -552,21 +587,44 @@ module.exports = (db) => {
     });
 
     router.put('/external-donations/:id', authenticateToken, async (req, res) => {
-        const { donor_name, donor_phone, amount, donation_type, payment_method, description, date } = req.body;
+        const { 
+            direction, donor_type, member_id, 
+            recipient_type, beneficiary_id, family_id, recipient_name,
+            donor_name, donor_phone, amount, donation_type, payment_method, description, date 
+        } = req.body;
         const id = req.params.id;
         try {
             const existing = await db.get('SELECT * FROM external_donations WHERE id = ?', [id]);
             if (!existing) return res.status(404).json({ message: 'Donation not found' });
 
             await db.run(
-                `UPDATE external_donations SET donor_name=?, donor_phone=?, amount=?, donation_type=?, payment_method=?, description=?, date=? WHERE id=?`,
-                [donor_name, donor_phone, amount, donation_type, payment_method, description, date || existing.date, id]
+                `UPDATE external_donations SET 
+                    direction=?, donor_type=?, member_id=?, recipient_type=?, beneficiary_id=?, family_id=?, recipient_name=?,
+                    donor_name=?, donor_phone=?, amount=?, donation_type=?, payment_method=?, description=?, date=? 
+                 WHERE id=?`,
+                [
+                    direction || existing.direction, donor_type || existing.donor_type, member_id || existing.member_id,
+                    recipient_type || existing.recipient_type, beneficiary_id || existing.beneficiary_id, family_id || existing.family_id, recipient_name || existing.recipient_name,
+                    donor_name || existing.donor_name, donor_phone || existing.donor_phone, amount, donation_type, payment_method, description, date || existing.date, id
+                ]
             );
 
             // Update the linked transaction record
+            const resolvedDirection = direction || existing.direction;
+            let txDescription = description || '';
+            if (resolvedDirection === 'income') {
+                const name = donor_type === 'member' ? `Member #${member_id}` : (donor_name || existing.donor_name);
+                txDescription = `${donation_type.toUpperCase()} received from ${name}`;
+            } else {
+                let rec = recipient_name || existing.recipient_name;
+                if (recipient_type === 'beneficiary') rec = `Beneficiary #${beneficiary_id || existing.beneficiary_id}`;
+                if (recipient_type === 'family') rec = `Family #${family_id || existing.family_id}`;
+                txDescription = `${donation_type.toUpperCase()} given to ${rec}`;
+            }
+
             await db.run(
-                `UPDATE transactions SET amount=?, description=? WHERE reference_id=? AND category='donation'`,
-                [amount, `${donation_type.toUpperCase()} from ${donor_name}`, id]
+                `UPDATE transactions SET type=?, amount=?, description=? WHERE reference_id=? AND category='donation'`,
+                [resolvedDirection, amount, txDescription, id]
             );
 
             res.json({ message: 'Donation updated successfully' });
@@ -687,11 +745,18 @@ module.exports = (db) => {
                     continue;
                 }
 
-                // Check for duplicate NIC
-                const existing = await db.get(
+                // Check for duplicate NIC or Application Number
+                const existingNic = await db.get(
                     'SELECT id FROM beneficiaries WHERE nic_number = ?', [row.nic_number]
                 );
-                if (existing) { skipped++; continue; }
+                if (existingNic) { skipped++; continue; }
+
+                if (row.application_number) {
+                    const existingApp = await db.get(
+                        'SELECT id FROM beneficiaries WHERE application_number = ?', [row.application_number]
+                    );
+                    if (existingApp) { skipped++; continue; }
+                }
 
                 // Auto-generate application_number if missing
                 if (!row.application_number) {
@@ -759,6 +824,10 @@ module.exports = (db) => {
                 const existingNic = await db.get('SELECT id FROM beneficiaries WHERE nic_number = ?', [mainData.nic_number]);
                 if (existingNic) return res.status(400).json({ message: 'NIC number already registered' });
             }
+            if (mainData.application_number) {
+                const existingApp = await db.get('SELECT id FROM beneficiaries WHERE application_number = ?', [mainData.application_number]);
+                if (existingApp) return res.status(400).json({ message: 'Application number already registered' });
+            }
 
             const keys = Object.keys(mainData).join(', ');
             const placeholders = Object.keys(mainData).map(() => '?').join(', ');
@@ -818,6 +887,16 @@ module.exports = (db) => {
         );
 
         try {
+            // Check NIC/Application unique for update
+            if (mainData.nic_number) {
+                const existingNic = await db.get('SELECT id FROM beneficiaries WHERE nic_number = ? AND id != ?', [mainData.nic_number, beneficiaryId]);
+                if (existingNic) return res.status(400).json({ message: 'NIC number already registered to another beneficiary' });
+            }
+            if (mainData.application_number) {
+                const existingApp = await db.get('SELECT id FROM beneficiaries WHERE application_number = ? AND id != ?', [mainData.application_number, beneficiaryId]);
+                if (existingApp) return res.status(400).json({ message: 'Application number already registered to another beneficiary' });
+            }
+
             const keys = Object.keys(mainData).map(k => `${k} = ?`).join(', ');
             const values = Object.values(mainData);
             values.push(beneficiaryId);

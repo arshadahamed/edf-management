@@ -3485,8 +3485,14 @@
                             <input type="number" name="max_capacity" class="form-input" placeholder="30" min="1">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Duration (weeks)</label>
-                            <input type="number" name="duration_weeks" class="form-input" placeholder="8" min="1">
+                            <label class="form-label">Duration</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="number" name="duration_weeks" class="form-input" placeholder="8" min="1" style="flex: 1;">
+                                <select name="duration_type" class="form-select" style="width: auto;">
+                                    <option value="days">Days</option>
+                                    <option value="weeks" selected>Weeks</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Fee (LKR) — 0 for free</label>
@@ -4152,7 +4158,7 @@
     <div id="donationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i data-lucide="heart" style="color: var(--primary);"></i> <span id="donationModalTitle">Record External Donation</span></h3>
+                <h3><i data-lucide="heart" style="color: var(--primary);"></i> <span id="donationModalTitle">Record Donation / Transaction</span></h3>
                 <button class="btn-close" onclick="closeModal('donationModal')">
                     <i data-lucide="x" style="width: 20px;"></i>
                 </button>
@@ -4161,20 +4167,70 @@
                 <form id="donationForm" onsubmit="saveDonation(event)">
                     <input type="hidden" id="donationRecordId">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Donor Name</label>
-                            <input type="text" id="donationDonorName" class="form-input" placeholder="Full name" required>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Transaction Direction</label>
+                            <select id="donationDirection" class="form-select" onchange="onDonationDirectionChange()">
+                                <option value="income">Donation Received (Income)</option>
+                                <option value="expense">Donation Given (Expense)</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Phone Number</label>
+                        
+                        <!-- INCOME FIELDS -->
+                        <div class="form-group income-field">
+                            <label class="form-label">Donor Type</label>
+                            <select id="donationDonorType" class="form-select" onchange="onDonorTypeChange()">
+                                <option value="external">External Donor</option>
+                                <option value="member">Registered Member</option>
+                            </select>
+                        </div>
+                        <div class="form-group income-field" id="donorMemberContainer" style="display: none;">
+                            <label class="form-label">Select Member</label>
+                            <select id="donationMemberId" class="form-select">
+                                <option value="">Loading...</option>
+                            </select>
+                        </div>
+                        <div class="form-group income-field" id="donorNameContainer">
+                            <label class="form-label">Donor Name</label>
+                            <input type="text" id="donationDonorName" class="form-input" placeholder="Full name">
+                        </div>
+                        <div class="form-group income-field">
+                            <label class="form-label">Donor Phone</label>
                             <input type="text" id="donationDonorPhone" class="form-input" placeholder="Optional">
                         </div>
+
+                        <!-- EXPENSE FIELDS -->
+                        <div class="form-group expense-field" style="display: none;">
+                            <label class="form-label">Recipient Type</label>
+                            <select id="donationRecipientType" class="form-select" onchange="onRecipientTypeChange()">
+                                <option value="beneficiary">Beneficiary (Low-Income)</option>
+                                <option value="family">Registered Family</option>
+                                <option value="external">Other Organization/External</option>
+                            </select>
+                        </div>
+                        <div class="form-group expense-field" id="recipientBenContainer" style="display: none;">
+                            <label class="form-label">Select Beneficiary</label>
+                            <select id="donationBeneficiaryId" class="form-select">
+                                <option value="">Loading...</option>
+                            </select>
+                        </div>
+                        <div class="form-group expense-field" id="recipientFamContainer" style="display: none;">
+                            <label class="form-label">Select Family</label>
+                            <select id="donationFamilyId" class="form-select">
+                                <option value="">Loading...</option>
+                            </select>
+                        </div>
+                        <div class="form-group expense-field" id="recipientNameContainer" style="display: none;">
+                            <label class="form-label">Recipient Name</label>
+                            <input type="text" id="donationRecipientName" class="form-input" placeholder="Organization / Person Name">
+                        </div>
+
+                        <!-- SHARED FIELDS -->
                         <div class="form-group">
-                            <label class="form-label">Amount (LKR)</label>
+                            <label class="form-label">Amount (LKR) *</label>
                             <input type="number" id="donationAmount" class="form-input" placeholder="0" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Donation Type</label>
+                            <label class="form-label">Category</label>
                             <select id="donationDonationType" class="form-select">
                                 <option value="zakat">Zakat</option>
                                 <option value="sadaqah">Sadaqah</option>
@@ -4187,7 +4243,7 @@
                             <label class="form-label">Payment Method</label>
                             <select id="donationPaymentMethod" class="form-select">
                                 <option value="cash">Cash</option>
-                                <option value="bank">Bank Transfer</option>
+                                <option value="bank">Bank Transfer / Cheque</option>
                                 <option value="online">Online</option>
                             </select>
                         </div>

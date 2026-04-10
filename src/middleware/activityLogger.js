@@ -147,6 +147,7 @@ module.exports = (db) => {
                 '/api/stats',
                 '/api/auth/verify',
                 '/api/auth/me',
+                '/api/auth/heartbeat',
                 '/api/logs/',
                 '/api/logs/stats',
                 '/api/logs/users',
