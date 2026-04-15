@@ -1,0 +1,210 @@
+- generic [ref=e2]:
+  - button [ref=e3] [cursor=pointer]:
+    - img [ref=e901]
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e902]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e905]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e910]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e915]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e918]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e920]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e922]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e923]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e926]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e929]
+              - generic [ref=e51]: Programs
+              - img [ref=e932]
+          - listitem [ref=e54]:
+            - link "Subscriptions" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e934]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e936]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e938]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e942]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e944]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e947]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e951]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e953]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e957]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e118]:
+        - link "Dashboard" [ref=e119] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=e120]: /
+        - generic [ref=e121]: Beneficiaries
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e960]
+          - generic [ref=e127]: Apr 11, 2026, 03:42 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e963]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e966]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138] [cursor=pointer]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e968]
+        - img "User" [ref=e145] [cursor=pointer]
+    - generic [ref=e787]:
+      - generic [ref=e788]:
+        - generic [ref=e789]:
+          - heading "Low-Income Families (Beneficiaries)" [level=2] [ref=e790]
+          - paragraph [ref=e791]: Comprehensive tracking of families needing assistance.
+        - generic [ref=e792]:
+          - generic [ref=e793]:
+            - img [ref=e971]
+            - textbox "Search name, app#, town..." [ref=e797]
+          - button "Import" [ref=e798] [cursor=pointer]:
+            - img [ref=e974]
+            - text: Import
+          - button "Export" [ref=e803] [cursor=pointer]:
+            - img [ref=e977]
+            - text: Export
+            - img [ref=e980]
+          - button "Categories" [ref=e809] [cursor=pointer]:
+            - img [ref=e982]
+            - text: Categories
+          - button "Register" [ref=e813] [cursor=pointer]:
+            - img [ref=e985]
+            - text: Register
+      - generic [ref=e815]:
+        - generic [ref=e817]:
+          - generic [ref=e818]:
+            - generic [ref=e819]: Total Registered
+            - generic [ref=e820]: "0"
+          - img [ref=e986]
+        - generic [ref=e828]:
+          - generic [ref=e829]:
+            - generic [ref=e830]: Active / Approved
+            - generic [ref=e831]: "0"
+          - img [ref=e991]
+        - generic [ref=e837]:
+          - generic [ref=e838]:
+            - generic [ref=e839]: Pending Review
+            - generic [ref=e840]: "0"
+          - img [ref=e994]
+        - generic [ref=e846]:
+          - generic [ref=e847]:
+            - generic [ref=e848]: Rejected
+            - generic [ref=e849]: "0"
+          - img [ref=e997]
+      - generic [ref=e855]:
+        - generic [ref=e856]: "STATUS:"
+        - generic [ref=e857]:
+          - button "All" [ref=e858] [cursor=pointer]
+          - button "Active" [ref=e859] [cursor=pointer]
+          - button "Pending" [ref=e860] [cursor=pointer]
+          - button "On Hold" [ref=e861] [cursor=pointer]
+          - button "Rejected" [ref=e862] [cursor=pointer]
+        - generic [ref=e863]: "CATEGORY:"
+        - combobox [ref=e864]:
+          - option "All Categories" [selected]
+          - option "Education"
+        - generic [ref=e865]: 1–0 of 0 records
+      - table [ref=e868]:
+        - rowgroup [ref=e869]:
+          - 'row "# App # Head of Family Contact Town Category Monthly Income Status Actions" [ref=e870]':
+            - columnheader "#" [ref=e871]
+            - 'columnheader "App #" [ref=e872] [cursor=pointer]':
+              - text: "App #"
+              - img [ref=e1001]
+            - columnheader "Head of Family" [ref=e876] [cursor=pointer]:
+              - text: Head of Family
+              - img [ref=e1004]
+            - columnheader "Contact" [ref=e880]
+            - columnheader "Town" [ref=e881] [cursor=pointer]:
+              - text: Town
+              - img [ref=e1007]
+            - columnheader "Category" [ref=e885] [cursor=pointer]:
+              - text: Category
+              - img [ref=e1010]
+            - columnheader "Monthly Income" [ref=e889] [cursor=pointer]:
+              - text: Monthly Income
+              - img [ref=e1013]
+            - columnheader "Status" [ref=e893] [cursor=pointer]:
+              - text: Status
+              - img [ref=e1016]
+            - columnheader "Actions" [ref=e897]
+        - rowgroup [ref=e898]:
+          - row "No beneficiaries found" [ref=e899]:
+            - cell "No beneficiaries found" [ref=e900]

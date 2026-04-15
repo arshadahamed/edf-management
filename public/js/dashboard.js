@@ -53,7 +53,8 @@ function switchTab(tabId, clickedLink = null) {
     }
     if (tabId === 'volunteers') fetchVolunteers();
     if (tabId === 'notifications') renderNotificationsPage();
-    if (tabId === 'customizer') Customizer.init();
+    if (tabId === 'customizer') FB.init();
+    if (tabId === 'frontdesk') { if (typeof fdLoadAll === 'function') fdLoadAll(); lucide.createIcons(); }
     if (tabId === 'logs') {
         fetchLogStats(); fetchSystemLogs(true); loadLogUserFilter();
     } else {
@@ -140,20 +141,62 @@ async function fetchUser() {
         const user = await response.json();
         _currentUser = user;
 
-        document.getElementById('welcomeUser').textContent = `Welcome, ${user.full_name.split(' ')[0]}`;
-        document.getElementById('userFullName').textContent = user.full_name;
-        document.getElementById('userRole').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+        let displayRole = user.role;
+        if (user.role === 'super_user') displayRole = 'System Administrator';
+        else if (user.role === 'admin') displayRole = 'Admin';
+        else displayRole = user.role.charAt(0).toUpperCase() + user.role.slice(1);
 
-        if (user.avatar_url) {
-            document.getElementById('userAvatar').src = user.avatar_url;
-        } else {
-            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=4f46e5&color=fff`;
+        // Populate left sidebar or old generic elements
+        const welcomeUserEl = document.getElementById('welcomeUser');
+        if (welcomeUserEl) welcomeUserEl.textContent = `Welcome, ${user.full_name.split(' ')[0]}`;
+        
+        // Populate Topbar
+        const userFullNameEl = document.getElementById('userFullName');
+        if (userFullNameEl) userFullNameEl.textContent = user.full_name;
+        
+        const userRoleEl = document.getElementById('userRole');
+        if (userRoleEl) userRoleEl.textContent = displayRole;
+
+        const avatarUrl = user.avatar_url ? user.avatar_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=4f46e5&color=fff`;
+
+        // Handle old userAvatar ID if it exists
+        const oldAvatarEl = document.getElementById('userAvatar');
+        if (oldAvatarEl) oldAvatarEl.src = avatarUrl;
+        
+        // Handle new topbar avatar
+        const topUserAvatar = document.getElementById('topUserAvatar');
+        const topUserInitials = document.getElementById('topUserInitials');
+        if (topUserAvatar && topUserInitials) {
+            if (user.avatar_url) {
+                topUserAvatar.src = user.avatar_url;
+                topUserAvatar.style.display = 'block';
+                topUserInitials.style.display = 'none';
+            } else {
+                topUserAvatar.style.display = 'none';
+                topUserInitials.style.display = 'flex';
+                const names = user.full_name.split(' ');
+                topUserInitials.textContent = (names[0][0] + (names.length>1?names[names.length-1][0]:'')).toUpperCase();
+                topUserInitials.style.background = 'var(--primary)';
+            }
         }
 
-        // Show User Accounts nav item in sidebar only for admin / super_user
+        // Populate Profile Tab Hero Card
+        const profName = document.getElementById('profileHeroName');
+        const profRole = document.getElementById('profileHeroRole');
+        const profEmail = document.getElementById('profileHeroEmail');
+        const profImg = document.getElementById('profileAvatarImg');
+        
+        if (profName) profName.textContent = user.full_name;
+        if (profRole) profRole.textContent = displayRole;
+        if (profEmail) profEmail.textContent = user.email;
+        if (profImg) profImg.src = avatarUrl;
+
+        // Show admin-only nav items (User Accounts + Front Desk) for admin / super_user
         if (user.role === 'admin' || user.role === 'super_user') {
             const navItem = document.getElementById('usersNavItem');
             if (navItem) navItem.style.display = '';
+            const fdNav = document.getElementById('frontdeskNavItem');
+            if (fdNav) fdNav.style.display = '';
             // Show the Active Users widget on overview
             const auCard = document.getElementById('ovActiveUsersCard');
             if (auCard) auCard.style.display = '';
@@ -4046,6 +4089,13 @@ function calculateZakat() {
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+// Close any open modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = document.querySelector('.modal[style*="flex"]');
+    if (open) closeModal(open.id);
+});
+
 // Logout Handler
 async function doLogout() {
     try {
@@ -4823,6 +4873,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchUser();
     fetchStats();
     initTopBar();
+    updateSidebarBranding();
     // Heartbeat: ping every 10 s to keep last_seen accurate AND detect force-logout / block.
     setInterval(async () => {
         try {
@@ -5672,4 +5723,124 @@ async function addAndCollectBeneficiary(beneficiaryId, collect) {
             showToast(r.message || 'Failed', 'error');
         }
     } catch (err) { showToast('Network error', 'error'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BRANDING & SETTINGS MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function saveBrandSetting(key, value) {
+    try {
+        const formData = new FormData();
+        formData.append(key, value);
+        const res = await fetch('/api/settings', {
+            method: 'POST',
+            body: formData
+        });
+        if (res.ok) {
+            showToast('Branding updated', 'success');
+            if (key === 'brand_text' || key === 'brand_subtitle') {
+                updateSidebarBranding();
+            }
+        } else {
+            const data = await res.json();
+            showToast(data.message || 'Failed to update branding', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Failed to save branding', 'error');
+    }
+}
+
+async function handleBrandAssetUpload(input, type) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    
+    // Preview immediately
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const containerId = type === 'logo' ? 'logoPreviewContainer' : 'faviconPreviewContainer';
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:contain;">`;
+        }
+    };
+    reader.readAsDataURL(file);
+
+    try {
+        const formData = new FormData();
+        formData.append(type, file);
+        const res = await fetch('/api/settings', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+        if (res.ok) {
+            showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully`, 'success');
+            updateSidebarBranding();
+            
+            // Apply favicon immediately to the document head
+            if (type === 'favicon' && data.settings?.favicon_url) {
+                let link = document.querySelector("link[rel*='icon']");
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'shortcut icon';
+                    document.head.appendChild(link);
+                }
+                link.href = data.settings.favicon_url + '?v=' + Date.now();
+            }
+        } else {
+            showToast(data.message || 'Upload failed', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Network error during upload', 'error');
+    }
+}
+
+async function updateSidebarBranding() {
+    try {
+        const res = await fetch('/api/settings');
+        if (!res.ok) return;
+        const config = await res.json();
+        
+        if (config.brand_text) {
+            const el = document.getElementById('sidebarBrandText');
+            if (el) el.textContent = config.brand_text;
+            const brandTextInp = document.getElementById('settingBrandText');
+            if (brandTextInp) brandTextInp.value = config.brand_text;
+        }
+        if (config.brand_subtitle) {
+            const el = document.getElementById('sidebarBrandSubtitle');
+            if (el) el.textContent = config.brand_subtitle;
+            const brandSubInp = document.getElementById('settingBrandSubtitle');
+            if (brandSubInp) brandSubInp.value = config.brand_subtitle;
+        }
+        if (config.logo_url) {
+            const logoContainer = document.getElementById('sidebarLogoContainer');
+            if (logoContainer) {
+                logoContainer.innerHTML = `<img src="${config.logo_url}" style="width:100%; height:100%; object-fit:contain;">`;
+            }
+            const previewContainer = document.getElementById('logoPreviewContainer');
+            if (previewContainer) {
+                previewContainer.innerHTML = `<img src="${config.logo_url}" style="width:100%; height:100%; object-fit:contain;">`;
+            }
+        }
+        if (config.favicon_url) {
+            let link = document.querySelector("link[rel*='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'shortcut icon';
+                document.head.appendChild(link);
+            }
+            link.href = config.favicon_url + '?v=' + Date.now();
+            
+            const favPreview = document.getElementById('faviconPreviewContainer');
+            if (favPreview) {
+                favPreview.innerHTML = `<img src="${config.favicon_url}" style="width:100%; height:100%; object-fit:contain;">`;
+            }
+        }
+    } catch (e) {
+        console.error('Failed to load branding:', e);
+    }
 }

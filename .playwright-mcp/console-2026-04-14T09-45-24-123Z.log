@@ -1,0 +1,8 @@
+[    7765ms] [WARNING] GSAP target #hair not found. https://gsap.com @ https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js:9
+[    7765ms] [WARNING] GSAP target  not found. https://gsap.com @ https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js:9
+[  107639ms] [WARNING] GSAP target #hair not found. https://gsap.com @ https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js:9
+[  107639ms] [WARNING] GSAP target  not found. https://gsap.com @ https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js:9
+[  153592ms] [WARNING] GSAP target #hair not found. https://gsap.com @ https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js:9
+[  153593ms] [WARNING] GSAP target  not found. https://gsap.com @ https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js:9
+[ 1030541ms] SyntaxError: Failed to execute 'querySelector' on 'Document': '#' is not a valid selector.
+    at HTMLAnchorElement.<anonymous> (http://localhost:5001/:3815:33)

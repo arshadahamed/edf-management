@@ -7,7 +7,8 @@
       "Bash(npx kill-port:*)",
       "Bash(node server.js)",
       "Bash(grep -E \"\\\\.\\(html|js|json\\)$\")",
-      "Bash(sqlite3 /d/Freelance/EDF/src/db/database.sqlite \".schema\")"
+      "Bash(sqlite3 /d/Freelance/EDF/src/db/database.sqlite \".schema\")",
+      "Bash(node -e ':*)"
     ]
   }
 }

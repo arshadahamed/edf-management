@@ -2,81 +2,3934 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDF Galgamuwa - Landing Page</title>
-    <!-- General Sans Font from Fontshare -->
-    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
-    <!-- Hero Styles -->
-    <link rel="stylesheet" href="css/hero.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EDF Galgamuwa — Education & Development Foundation</title>
+  <meta name="description"
+    content="Education & Development Foundation, Galgamuwa — building lasting resilience through education, livelihood support, and healthcare in Sri Lanka since 2018.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Bebas+Neue&family=Great+Vibes&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Snap.svg (for student book morphing animation) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+
+  <style>
+    /* ═══════════════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════════════ */
+    :root {
+      --cream: #F9F4EC;
+      --linen: #EDE3D0;
+      --linen-dk: #D9CAAF;
+      --crimson: #295742;
+      --crimson-dk: #295742;
+      --crimson-lt: #295742;
+      --crimson-glow: rgba(194, 24, 51, 0.18);
+      --navy: #0C1A34;
+      --navy-mid: #162A50;
+      --amber: #E8A020;
+      --amber-lt: #F5B840;
+      --amber-dim: rgba(232, 160, 32, 0.15);
+      --emerald: #0A6B4A;
+      --emerald-lt: #0F8E62;
+      --emerald-dim: rgba(10, 107, 74, 0.12);
+      --violet: #5E35B1;
+      --text: #18100A;
+      --text-soft: #5E4E3E;
+      --text-muted: #9A8A78;
+      --border: rgba(24, 16, 10, 0.09);
+      --border-md: rgba(24, 16, 10, 0.15);
+      --serif: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --display: 'Bebas Neue', sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-smooth: cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    /* ── Reset ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    ::selection {
+      background: var(--crimson);
+      color: white;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CURSOR
+    ═══════════════════════════════════════════════════ */
+    #cur-dot {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      background: var(--crimson);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width .2s var(--ease-out), height .2s var(--ease-out), background .2s;
+    }
+
+    #cur-ring {
+      position: fixed;
+      width: 38px;
+      height: 38px;
+      border: 1.5px solid rgba(194, 24, 51, 0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width .4s var(--ease-out), height .4s var(--ease-out), border-color .3s;
+    }
+
+    body:has(a:hover) #cur-dot,
+    body:has(button:hover) #cur-dot {
+      width: 14px;
+      height: 14px;
+    }
+
+    body:has(a:hover) #cur-ring,
+    body:has(button:hover) #cur-ring {
+      width: 54px;
+      height: 54px;
+      border-color: var(--crimson);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       GRAIN OVERLAY
+    ═══════════════════════════════════════════════════ */
+    #grain {
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain .75s steps(2) infinite;
+    }
+
+    @keyframes grain {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      25% {
+        transform: translate(-2%, -3%);
+      }
+
+      50% {
+        transform: translate(3%, 2%);
+      }
+
+      75% {
+        transform: translate(-1%, 3%);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SCROLL PROGRESS
+    ═══════════════════════════════════════════════════ */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10001;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(to right, var(--crimson), var(--amber));
+      box-shadow: 0 0 10px var(--crimson-glow);
+      transition: width .05s linear;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PRELOADER
+    ═══════════════════════════════════════════════════ */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      z-index: 20000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .pl-emblem {
+      width: 64px;
+      height: 64px;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pl-emblem svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .pl-word {
+      font-family: var(--serif);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+      opacity: 0;
+    }
+
+    .pl-word em {
+      color: var(--amber);
+      font-style: normal;
+    }
+
+    .pl-bar-wrap {
+      width: 180px;
+      height: 1px;
+      background: rgba(255, 255, 255, .08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pl-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, var(--crimson), var(--amber));
+    }
+
+    .pl-pct {
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: rgba(255, 255, 255, .3);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════════════ */
+    #nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 72px;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      background: transparent;
+      transition: background .35s var(--ease-out), box-shadow .35s var(--ease-out);
+    }
+
+    /* Scroll progress bar */
+    #nav-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--crimson), var(--emerald-lt));
+      border-radius: 0 2px 2px 0;
+      transition: width .1s linear;
+      z-index: 1;
+    }
+
+    #nav.scrolled {
+      background: rgba(249, 244, 236, 0.96);
+      box-shadow: 0 1px 0 rgba(24, 16, 10, .08), 0 8px 32px rgba(24, 16, 10, .06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+      margin-right: auto;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      width: 36px;
+      height: 36px;
+      background: var(--crimson);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-radius .3s var(--ease-out);
+    }
+
+    .nav-badge:hover {
+      border-radius: 50%;
+    }
+
+    .nav-badge svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-wordmark {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .nav-wordmark span {
+      display: block;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--crimson);
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0;
+      list-style: none;
+      z-index: 1;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-soft);
+      letter-spacing: -0.01em;
+      transition: color .2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      left: 18px;
+      right: 18px;
+      height: 1.5px;
+      background: var(--crimson);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform .3s var(--ease-out);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(0.5);
+    }
+
+    .nav-links a.active {
+      color: var(--crimson);
+      font-weight: 600;
+    }
+
+    .nav-links a.active::after {
+      transform: scaleX(1);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .nav-login {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-soft);
+      padding: 8px 10px;
+      transition: color .2s;
+    }
+
+    .nav-login:hover {
+      color: var(--text);
+    }
+
+    .nav-donate {
+      background: var(--crimson);
+      color: white;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .nav-donate:hover {
+      background: var(--crimson-dk);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px var(--crimson-glow);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════════════ */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background: var(--cream);
+      overflow: hidden;
+      padding: 0 80px;
+    }
+
+    /* Geometric SVG tiling pattern */
+    .geo-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpolygon points='40,2 50,20 70,10 62,28 78,40 62,52 70,70 50,60 40,78 30,60 10,70 18,52 2,40 18,28 10,10 30,20' fill='none' stroke='%2318100A' stroke-width='0.6'/%3E%3Ccircle cx='40' cy='40' r='8' fill='none' stroke='%2318100A' stroke-width='0.4'/%3E%3C/svg%3E");
+      background-size: 80px 80px;
+    }
+
+    /* Warm gradient blobs */
+    .hero-blob-1 {
+      position: absolute;
+      right: -100px;
+      top: -100px;
+      z-index: 0;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232, 160, 32, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-blob-2 {
+      position: absolute;
+      left: -60px;
+      bottom: -80px;
+      z-index: 0;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(194, 24, 51, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Hero visual panel (replaces canvas) ── */
+    #hero-visual {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 54%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Student character wrapper */
+    .student-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    #student {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Floating edu/faith info cards */
+    .hero-float-card {
+      position: absolute;
+      background: rgba(255, 252, 245, 0.82);
+      border: 1px solid var(--border-md);
+      border-radius: 18px;
+      padding: 12px 16px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      box-shadow: 0 8px 30px rgba(24, 16, 10, 0.07), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hero-float-card .fc-icon {
+      font-size: 22px;
+      width: 42px;
+      height: 42px;
+      background: var(--amber-dim);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hero-float-card .fc-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .hero-float-card .fc-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Floating keyword/Arabic tags */
+    .hero-kw-tag {
+      position: absolute;
+      background: rgba(249, 244, 236, 0.85);
+      border: 1px solid rgba(232, 160, 32, 0.28);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-soft);
+      letter-spacing: .04em;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Split-text char & word spans */
+    .st-char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .st-word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+
+    .st-word-inner {
+      display: inline-block;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 640px;
+      padding: 140px 0 100px;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(194, 24, 51, 0.07);
+      border: 1px solid rgba(194, 24, 51, 0.2);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--crimson);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    .hero-pill-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--crimson);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: .5;
+        transform: scale(1.4);
+      }
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      margin-bottom: 28px;
+      line-height: 1.03;
+    }
+
+    .ht-italic {
+      display: block;
+      font-size: clamp(52px, 6.5vw, 96px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-soft);
+    }
+
+    #ht1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.25em;
+      font-style: normal;
+      margin-bottom: -15px;
+      padding-left: 5px;
+    }
+
+    .ht-bold {
+      display: block;
+      font-size: clamp(68px, 8.5vw, 124px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: .95;
+      letter-spacing: -.02em;
+    }
+
+    .ht-accent {
+      display: block;
+      font-size: clamp(52px, 6.5vw, 96px);
+      font-weight: 700;
+      color: var(--crimson);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin-bottom: 48px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-crim {
+      background: var(--crimson);
+      color: white;
+      padding: 16px 38px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all .3s var(--ease-out);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-crim:hover {
+      background: var(--crimson-dk);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px var(--crimson-glow);
+    }
+
+    .btn-ghost {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1.5px solid rgba(24, 16, 10, 0.3);
+      padding-bottom: 3px;
+      transition: color .2s, border-color .2s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--crimson);
+      border-color: var(--crimson);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 64px;
+      border-top: 1px solid var(--border);
+      padding-top: 36px;
+    }
+
+    .hstat-num {
+      font-family: var(--display);
+      font-size: 38px;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .hstat-lbl {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 4px;
+      letter-spacing: .04em;
+    }
+
+    .hstat-div {
+      width: 1px;
+      background: var(--border);
+    }
+
+    .hero-scroll-ind {
+      position: absolute;
+      bottom: 44px;
+      left: 80px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .hscroll-line {
+      width: 56px;
+      height: 1px;
+      background: var(--linen-dk);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hscroll-line::after {
+      content: '';
+      position: absolute;
+      left: -100%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--crimson);
+      animation: sline 2s ease-in-out infinite;
+    }
+
+    @keyframes sline {
+      0% {
+        left: -100%
+      }
+
+      50% {
+        left: 0
+      }
+
+      100% {
+        left: 100%
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TICKER BAND
+    ═══════════════════════════════════════════════════ */
+    #ticker {
+      background: var(--crimson);
+      color: white;
+      padding: 14px 0;
+      overflow: hidden;
+    }
+
+    .ticker-inner {
+      display: flex;
+      white-space: nowrap;
+      animation: tickerMove 28s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 28px;
+      padding-right: 56px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .ticker-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--amber);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    @keyframes tickerMove {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       IMPACT BAND
+    ═══════════════════════════════════════════════════ */
+    #impact {
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+      padding: 100px 80px;
+    }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      position: relative;
+      z-index: 1;
+    }
+
+    .impact-cell {
+      padding: 48px 44px;
+      border-right: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .impact-cell:last-child {
+      border-right: none;
+    }
+
+    .impact-num {
+      font-family: var(--display);
+      font-size: clamp(56px, 5.5vw, 88px);
+      color: var(--amber);
+      line-height: 1;
+      margin-bottom: 14px;
+      letter-spacing: .02em;
+    }
+
+    .impact-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+      letter-spacing: .03em;
+    }
+
+    .impact-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, .35);
+    }
+
+    .impact-bg-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232, 160, 32, .05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .impact-deco {
+      position: absolute;
+      bottom: -40px;
+      right: -20px;
+      font-family: var(--display);
+      font-size: 280px;
+      color: rgba(255, 255, 255, .015);
+      line-height: 1;
+      pointer-events: none;
+      z-index: 0;
+      user-select: none;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       MISSION
+    ═══════════════════════════════════════════════════ */
+    #mission {
+      padding: 140px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: start;
+    }
+
+    .mission-sticky {
+      position: sticky;
+      top: 120px;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 28px;
+    }
+
+    .section-tag::before {
+      content: '';
+      width: 36px;
+      height: 2px;
+      background: var(--crimson);
+    }
+
+    .mission-heading {
+      font-family: var(--serif);
+      font-size: clamp(40px, 4.5vw, 68px);
+      font-weight: 700;
+      line-height: 1.08;
+      margin-bottom: 32px;
+    }
+
+    .mission-heading em {
+      color: var(--crimson);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .mission-body {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      margin-bottom: 44px;
+      max-width: 460px;
+    }
+
+    .mission-right {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-top: 16px;
+    }
+
+    .pillar {
+      background: var(--linen);
+      border-radius: 22px;
+      padding: 38px;
+      border-left: 3px solid transparent;
+      transition: border-color .35s, transform .4s var(--ease-out), box-shadow .3s;
+      cursor: default;
+    }
+
+    .pillar:hover {
+      border-color: var(--crimson);
+      transform: translateX(10px);
+      box-shadow: 0 8px 40px rgba(24, 16, 10, .06);
+    }
+
+    .pillar-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 22px;
+    }
+
+    .pillar h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .pillar p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-soft);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PROGRAMS — Horizontal Pinned Scroll
+    ═══════════════════════════════════════════════════ */
+    #programs-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #programs {
+      background: var(--navy);
+      display: flex;
+      align-items: stretch;
+      height: 100vh;
+      will-change: transform;
+    }
+
+    .prog-panel {
+      min-width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 120px;
+      gap: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .prog-panel-0 {
+      background: var(--navy);
+    }
+
+    .prog-panel-1 {
+      background: #0D2218;
+    }
+
+    .prog-panel-2 {
+      background: #1A0E20;
+    }
+
+    .prog-panel-intro {
+      max-width: 480px;
+    }
+
+    .prog-intro-label {
+      font-family: var(--display);
+      font-size: 14px;
+      letter-spacing: .28em;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .prog-intro-heading {
+      font-family: var(--serif);
+      font-size: clamp(42px, 5vw, 72px);
+      font-weight: 700;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 28px;
+    }
+
+    .prog-intro-heading em {
+      color: var(--amber);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .prog-intro-sub {
+      font-size: 16px;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, .45);
+    }
+
+    .prog-card-main {
+      flex: 1;
+      max-width: 520px;
+      border-radius: 28px;
+      padding: 56px;
+      position: relative;
+      overflow: hidden;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .prog-card-main.amber {
+      background: linear-gradient(145deg, #C87A00, #E8A020);
+    }
+
+    .prog-card-main.emerald {
+      background: linear-gradient(145deg, #074D36, #0A6B4A);
+    }
+
+    .prog-card-main.violet {
+      background: linear-gradient(145deg, #3D1E7A, #5E35B1);
+    }
+
+    .prog-bg-num {
+      position: absolute;
+      top: 20px;
+      right: 36px;
+      font-family: var(--display);
+      font-size: 160px;
+      color: rgba(0, 0, 0, .12);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .prog-tag {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .6);
+    }
+
+    .prog-emoji {
+      font-size: 56px;
+      margin-bottom: 24px;
+    }
+
+    .prog-name {
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+
+    .prog-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, .75);
+      margin-bottom: 32px;
+    }
+
+    .prog-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, .18);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+      transition: background .2s;
+      width: fit-content;
+    }
+
+    .prog-cta:hover {
+      background: rgba(255, 255, 255, .32);
+    }
+
+    .prog-counter {
+      position: absolute;
+      bottom: 40px;
+      right: 80px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .2);
+      letter-spacing: .1em;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       STORIES — 3D CAROUSEL
+    ═══════════════════════════════════════════════════ */
+    #stories {
+      padding: 140px 80px 120px;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #stories::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(232, 160, 32, 0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    #stories::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .06), transparent);
+    }
+
+    .stories-hdr {
+      margin-bottom: 72px;
+      text-align: center;
+    }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: clamp(36px, 4vw, 58px);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .section-heading em {
+      color: var(--crimson);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* Carousel viewport */
+    .carousel-wrapper {
+      position: relative;
+      height: 380px;
+      perspective: 1600px;
+      perspective-origin: 50% 40%;
+    }
+
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.85s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    .story-card-3d {
+      position: absolute;
+      width: 400px;
+      height: 320px;
+      left: calc(50% - 200px);
+      top: 15px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      padding: 40px 36px 32px;
+      backdrop-filter: blur(16px);
+      transition: opacity 0.75s ease, box-shadow 0.75s ease;
+      will-change: transform, opacity;
+    }
+
+    .story-oquote {
+      position: absolute;
+      top: -8px;
+      left: 18px;
+      font-family: var(--serif);
+      font-size: 120px;
+      color: var(--amber);
+      opacity: .1;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .story-text {
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.72;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+      font-style: italic;
+    }
+
+    .story-foot {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .story-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .story-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .story-role {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.38);
+      margin-top: 2px;
+    }
+
+    /* Navigation */
+    .car-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 52px;
+    }
+
+    .car-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .25s, border-color .25s, transform .25s;
+    }
+
+    .car-btn:hover {
+      background: rgba(232, 160, 32, 0.2);
+      border-color: var(--amber);
+      transform: scale(1.1);
+    }
+
+    .car-dots {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .car-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all .35s var(--ease-out);
+    }
+
+    .car-dot.active {
+      background: var(--amber);
+      width: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       GALLERY
+    ═══════════════════════════════════════════════════ */
+    #gallery {
+      background: var(--navy);
+      padding: 120px 80px;
+    }
+
+    .gallery-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 60px;
+    }
+
+    .gallery-hdr .section-heading {
+      color: white;
+    }
+
+    .gallery-hdr .section-heading em {
+      color: var(--amber);
+    }
+
+    .gallery-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .4);
+      border-bottom: 1px solid rgba(255, 255, 255, .15);
+      padding-bottom: 3px;
+      transition: color .2s, border-color .2s;
+    }
+
+    .gallery-link:hover {
+      color: var(--amber);
+      border-color: var(--amber);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: repeat(2, 200px);
+      gap: 16px;
+    }
+
+    .gal-item {
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gal-item:first-child {
+      grid-row: 1 / 3;
+    }
+
+    .gal-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+      position: relative;
+    }
+
+    .gal-cap {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .8);
+      background: rgba(0, 0, 0, .4);
+      padding: 8px 14px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .3s, transform .3s;
+    }
+
+    .gal-item:hover .gal-cap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Colored placeholder gradients (replace with real images) */
+    .g1 .gal-inner {
+      background: linear-gradient(145deg, #0A6B4A, #0D9B6A);
+    }
+
+    .g2 .gal-inner {
+      background: linear-gradient(145deg, #C21833, #E52545);
+    }
+
+    .g3 .gal-inner {
+      background: linear-gradient(145deg, #162A50, #1E3C72);
+    }
+
+    .g4 .gal-inner {
+      background: linear-gradient(145deg, #7B5EA7, #9B73CA);
+    }
+
+    .g5 .gal-inner {
+      background: linear-gradient(145deg, #C87A00, #E8A020);
+    }
+
+    /* Photo overlay (if using real images) */
+    .gal-photo {
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      transition: transform .5s var(--ease-out);
+    }
+
+    .gal-item:hover .gal-photo {
+      transform: scale(1.05);
+    }
+
+    .gal-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .5) 0%, transparent 60%);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       GET INVOLVED
+    ═══════════════════════════════════════════════════ */
+    #get-involved {
+      padding: 140px 80px;
+      background: var(--cream);
+    }
+
+    .gi-hdr {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .gi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .gi-card {
+      border-radius: 24px;
+      padding: 52px 44px;
+      border: 1.5px solid var(--border);
+      transition: border-color .3s, transform .4s var(--ease-out), box-shadow .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gi-card:hover {
+      border-color: transparent;
+      transform: translateY(-8px);
+      box-shadow: 0 24px 64px rgba(24, 16, 10, .09);
+    }
+
+    .gi-card-crim {
+      background: linear-gradient(145deg, #f9f4ec, #fde8ec);
+    }
+
+    .gi-card-amber {
+      background: linear-gradient(145deg, #f9f4ec, #fef3dc);
+    }
+
+    .gi-card-emerald {
+      background: linear-gradient(145deg, #f9f4ec, #e0f4ed);
+    }
+
+    .gi-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 28px;
+    }
+
+    .gi-icon-crim {
+      background: var(--crimson-glow);
+    }
+
+    .gi-icon-amber {
+      background: var(--amber-dim);
+    }
+
+    .gi-icon-emerald {
+      background: var(--emerald-dim);
+    }
+
+    .gi-title {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .gi-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-soft);
+      margin-bottom: 32px;
+    }
+
+    .gi-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      padding-bottom: 3px;
+      border-bottom: 2px solid currentColor;
+      transition: gap .2s;
+    }
+
+    .gi-cta:hover {
+      gap: 14px;
+    }
+
+    .gi-cta-crim {
+      color: var(--crimson);
+    }
+
+    .gi-cta-amber {
+      color: var(--amber);
+    }
+
+    .gi-cta-emerald {
+      color: var(--emerald);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SPLINE 3D BANNER
+    ═══════════════════════════════════════════════════ */
+    #spline-banner {
+      background: var(--navy);
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .spline-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 80px;
+      max-width: 560px;
+    }
+
+    .spline-tag {
+      font-family: var(--display);
+      font-size: 12px;
+      letter-spacing: .3em;
+      color: var(--amber);
+      margin-bottom: 20px;
+    }
+
+    .spline-heading {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 54px);
+      font-weight: 700;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 28px;
+    }
+
+    .spline-heading em {
+      color: var(--amber);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    #spline-canvas-wrap {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 55%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    #spline-canvas-wrap spline-viewer,
+    #spline-canvas-wrap canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .spline-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #spline-3d {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       DONATE
+    ═══════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════
+       MEMBERSHIP / JOIN SECTION
+    ═══════════════════════════════════════════════════ */
+    #join {
+      background: var(--crimson);
+      padding: 140px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .donate-blob-1 {
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .08);
+      pointer-events: none;
+    }
+
+    .donate-blob-2 {
+      position: absolute;
+      left: -80px;
+      bottom: -100px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .04);
+      pointer-events: none;
+    }
+
+    .donate-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .donate-eyebrow {
+      font-family: var(--display);
+      font-size: 12px;
+      letter-spacing: .28em;
+      color: rgba(255, 255, 255, .55);
+      margin-bottom: 24px;
+    }
+
+    .donate-heading {
+      font-family: var(--serif);
+      font-size: clamp(44px, 6vw, 80px);
+      font-weight: 900;
+      color: white;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .donate-heading em {
+      font-style: italic;
+      font-weight: 400;
+      color: rgba(255, 255, 255, .65);
+    }
+
+    .donate-sub {
+      font-size: 18px;
+      color: rgba(255, 255, 255, .65);
+      line-height: 1.7;
+      max-width: 580px;
+      margin: 0 auto 52px;
+    }
+
+    /* Membership tiers */
+    .mem-tiers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 44px;
+      text-align: left;
+    }
+
+    .mem-tier {
+      background: rgba(255, 255, 255, .08);
+      border: 1.5px solid rgba(255, 255, 255, .14);
+      border-radius: 20px;
+      padding: 28px 24px;
+      transition: background .3s, border-color .3s, transform .35s var(--ease-out);
+    }
+
+    .mem-tier:hover {
+      background: rgba(255, 255, 255, .14);
+      border-color: rgba(255, 255, 255, .32);
+      transform: translateY(-4px);
+    }
+
+    .mem-tier-label {
+      font-family: var(--display);
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .38);
+      margin-bottom: 8px;
+    }
+
+    .mem-tier-name {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .mem-tier-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .52);
+      line-height: 1.72;
+    }
+
+    /* CTA buttons */
+    .join-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+
+    .donate-submit {
+      background: white;
+      color: var(--crimson);
+      border: none;
+      border-radius: 100px;
+      padding: 18px 48px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all .3s var(--ease-out);
+      text-decoration: none;
+    }
+
+    .donate-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .22);
+    }
+
+    .join-ghost {
+      background: rgba(255, 255, 255, .1);
+      color: white;
+      border: 1.5px solid rgba(255, 255, 255, .22);
+      border-radius: 100px;
+      padding: 18px 40px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all .3s;
+      text-decoration: none;
+    }
+
+    .join-ghost:hover {
+      background: rgba(255, 255, 255, .18);
+      border-color: rgba(255, 255, 255, .5);
+    }
+
+    /* Member stat strip */
+    .mem-stat {
+      border-top: 1px solid rgba(255, 255, 255, .12);
+      padding-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .5);
+    }
+
+    .mem-stat strong {
+      color: white;
+    }
+
+    .mem-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .2);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PARTNERS MARQUEE
+    ═══════════════════════════════════════════════════ */
+    #partners {
+      padding: 72px 80px;
+      border-top: 1px solid var(--border);
+    }
+
+    .partners-lbl {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+
+    .marquee-outer {
+      overflow: hidden;
+    }
+
+    .marquee-row {
+      display: flex;
+      gap: 72px;
+      align-items: center;
+      animation: mq 24s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-row:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes mq {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    .partner-name {
+      font-family: var(--serif);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--linen-dk);
+      white-space: nowrap;
+      transition: color .2s;
+    }
+
+    .partner-name:hover {
+      color: var(--crimson);
+    }
+
+    .partner-sep {
+      width: 4px;
+      height: 4px;
+      background: var(--linen-dk);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════ */
+    footer {
+      background: var(--navy);
+      color: white;
+      padding: 88px 80px 44px;
+    }
+
+    .foot-grid {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr 1fr 1.2fr;
+      gap: 60px;
+      margin-bottom: 72px;
+    }
+
+    .foot-brand {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .foot-brand span {
+      color: var(--amber);
+    }
+
+    .foot-tagline {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: 36px;
+      max-width: 340px;
+    }
+
+    .foot-newsletter-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .35);
+      margin-bottom: 14px;
+    }
+
+    .foot-newsletter {
+      display: flex;
+      gap: 8px;
+    }
+
+    .foot-email {
+      flex: 1;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 100px;
+      padding: 12px 20px;
+      font-size: 14px;
+      color: white;
+      outline: none;
+      font-family: var(--sans);
+      transition: border-color .2s;
+    }
+
+    .foot-email:focus {
+      border-color: rgba(255, 255, 255, .3);
+    }
+
+    .foot-email::placeholder {
+      color: rgba(255, 255, 255, .25);
+    }
+
+    .foot-sub-btn {
+      background: var(--crimson);
+      border: none;
+      border-radius: 100px;
+      padding: 12px 22px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: 14px;
+      transition: background .2s;
+    }
+
+    .foot-sub-btn:hover {
+      background: var(--crimson-lt);
+    }
+
+    .foot-col-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .3);
+      margin-bottom: 28px;
+    }
+
+    .foot-links {
+      list-style: none;
+    }
+
+    .foot-links li {
+      margin-bottom: 14px;
+    }
+
+    .foot-links a {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .5);
+      transition: color .2s;
+    }
+
+    .foot-links a:hover {
+      color: white;
+    }
+
+    .foot-contact p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .45);
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+
+    .foot-contact strong {
+      color: rgba(255, 255, 255, .7);
+    }
+
+    .foot-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, .06);
+      margin-bottom: 36px;
+    }
+
+    .foot-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .foot-copy {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .25);
+    }
+
+    .foot-socials {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: rgba(255, 255, 255, .4);
+      transition: all .2s;
+    }
+
+    .social-btn:hover {
+      background: var(--crimson);
+      border-color: var(--crimson);
+      color: white;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       REVEAL STATES
+    ═══════════════════════════════════════════════════ */
+    /* Initial reveal states set by GSAP — not CSS — so fromTo() works correctly */
+    .js-reveal,
+    .js-revealL,
+    .js-revealR,
+    .js-revealS {
+      will-change: opacity, transform;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════ */
+    @media (max-width: 1200px) {
+      #mission {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+
+      .mission-sticky {
+        position: static;
+      }
+
+      .foot-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+
+      #hero,
+      #impact,
+      #stories,
+      #gallery,
+      #get-involved,
+      #join,
+      #partners {
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+
+      #mission {
+        padding: 100px 48px;
+      }
+
+      .impact-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 200px);
+      }
+
+      .gal-item:first-child {
+        grid-row: auto;
+      }
+
+      footer {
+        padding: 72px 48px 40px;
+      }
+
+      .prog-panel {
+        padding: 0 60px;
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #nav {
+        padding: 16px 24px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      #hero {
+        padding: 0 24px;
+      }
+
+      #hero-visual {
+        display: none;
+      }
+
+      #impact,
+      #stories,
+      #gallery,
+      #get-involved,
+      #join,
+      #partners {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      #mission {
+        padding: 80px 24px;
+      }
+
+      .impact-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5, 180px);
+      }
+
+      footer {
+        padding: 60px 24px 32px;
+      }
+
+      .foot-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .foot-bottom {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .prog-panel {
+        flex-direction: column;
+        padding: 80px 24px;
+        justify-content: center;
+      }
+
+      .prog-intro-sub {
+        display: none;
+      }
+
+      .spline-content {
+        padding: 0 24px;
+      }
+
+      #spline-canvas-wrap {
+        display: none;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       BACK TO TOP BUTTON
+    ══════════════════════════════════════════ */
+    .back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--amber);
+      border: 1px solid rgba(232, 160, 32, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: none;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+      transition: all 0.4s var(--ease);
+      box-shadow: 0 10px 30px rgba(12, 26, 52, 0.3);
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: var(--amber);
+      color: var(--navy);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(232, 160, 32, 0.4);
+    }
+
+    @media (max-width: 720px) {
+      .back-to-top {
+        bottom: 24px;
+        right: 24px;
+        width: 44px;
+        height: 44px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <section class="hero-section">
-        <!-- Background Video -->
-        <video class="hero-bg-video"
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260217_030345_246c0224-10a4-422c-b324-070b7c0eceda.mp4"
-            autoplay loop muted playsinline></video>
 
-        <!-- Video Overlay 50% Black -->
-        <div class="video-overlay"></div>
+  <!-- Custom Cursor -->
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
 
-        <!-- Content Layer -->
-        <div class="hero-content-layer">
+  <!-- Film Grain -->
+  <div id="grain"></div>
 
-            <!-- Navbar -->
-            <nav class="navbar">
-                <div class="nav-left">
-                    <a href="/" class="logo">EDF GALGAMUWA</a>
-                    <ul class="nav-links">
-                        <li>
-                            <a href="">Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">Services
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">Galary
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">Contact Us
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="nav-right">
-                    <a href="/login" class="btn-pill btn-pill-outline">
-                        <span class="btn-glow"></span>
-                        <span class="btn-inner">Login</span>
-                    </a>
-                </div>
-            </nav>
+  <!-- Scroll Progress -->
+  <div id="progress"></div>
 
-            <!-- Hero Main Content -->
-            <div class="hero-main">
-                <div class="badge-pill">
-                    <span class="badge-dot"></span>
-                    <span class="badge-text-dim">Early access available from</span>
-                    <span class="badge-text-solid"> May 1, 2026</span>
-                </div>
+  <!-- ═══════════════════════════════════════════
+       PRELOADER
+  ═══════════════════════════════════════════ -->
+  <div id="preloader">
+    <div class="pl-emblem" id="pl-emblem">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="32,4 40,20 56,12 48,28 62,36 48,42 56,60 40,52 32,60 24,52 8,60 16,42 2,36 16,28 8,12 24,20"
+          fill="none" stroke="#E8A020" stroke-width="1.5" stroke-linejoin="round" />
+        <circle cx="32" cy="32" r="10" fill="none" stroke="#C21833" stroke-width="1.5" />
+        <circle cx="32" cy="32" r="4" fill="#E8A020" />
+      </svg>
+    </div>
+    <div class="pl-word" id="pl-word">EDF <em>Galgamuwa</em></div>
+    <div class="pl-bar-wrap">
+      <div class="pl-bar" id="pl-bar"></div>
+    </div>
+    <div class="pl-pct" id="pl-pct">0%</div>
+  </div>
 
-                <div class="heading-block">
-                    <h1 class="main-heading">Empowering Minds. Transforming Futures.</h1>
-                    <p class="hero-subtitle">Supporting underprivileged students in Galgamuwa through education,
-                        mentorship, and community-driven development initiatives.</p>
-                </div>
+  <!-- ═══════════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════════ -->
+  <nav id="nav">
+    <div id="nav-progress"></div>
 
-                <a href="" class="btn-pill btn-pill-solid">
-                    <span class="btn-glow"></span>
-                    <span class="btn-inner">Contact Us</span>
-                </a>
-            </div>
+    <a href="#" class="nav-logo">
+      <div class="nav-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+          stroke-linecap="round">
+          <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8Z" />
+        </svg>
+      </div>
+      <div class="nav-wordmark">
+        EDF Galgamuwa
+        <span>Education &amp; Development Foundation</span>
+      </div>
+    </a>
 
+    <ul class="nav-links">
+      <li><a href="/about">About Us</a></li>
+      <li><a href="#programs-wrap">Programs</a></li>
+      <li><a href="#stories">Impact</a></li>
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="#get-involved">Get Involved</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="/login" class="nav-login">Staff Login</a>
+      <a href="#join" class="nav-donate">
+        Join Us
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="geo-bg"></div>
+    <div class="hero-blob-1"></div>
+    <div class="hero-blob-2"></div>
+    <div id="hero-visual">
+
+      <!-- ── Animated student character (adapted from CodePen wBNNRx) ── -->
+      <div class="student-wrap">
+        <svg id="student" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 385">
+
+          <!-- Background circle (amber tint on cream) -->
+          <circle class="circle" style="display:none;" id="BG" fill="#E8A020" opacity="0.13" cx="200.011" cy="208"
+            r="157.657" />
+
+          <!-- Dashed orbit ring (EDF green) -->
+          <circle class="circle" style="display:none;" id="dashed" opacity="0.2" fill="none" stroke="#295742"
+            stroke-width="1.9" stroke-miterlimit="10" stroke-dasharray="6.5" cx="200.333" cy="208" r="176.666" />
+
+          <!-- Student character group -->
+          <g id="stud_whole" style="display:none;">
+            <g id="stud_body">
+              <path fill="#FFFFFF" d="M300,323v-9.401C300,268.536,255.131,232,200.241,232h-1.482
+                C143.869,232,99,268.536,99,313.599V323H300z" />
+              <path fill="#C99877"
+                d="M251.2,240.3l-46.504,46.501c-2.868,2.869-7.521,2.869-10.391,0
+                L147.803,240.3C115.768,254.945,94,282.958,94,315.111V326h211v-10.889C305,282.958,283.232,254.945,251.2,240.3z" />
+              <path opacity="0.2" d="M251.2,240.3l-46.504,46.501c-2.868,2.869-7.521,2.869-10.391,0
+                L147.803,240.3C115.768,254.945,94,282.958,94,315.111V326l0,0c0-31.997,21.801-60.071,53.8-74.7l46.503,46.498
+                c2.869,2.872,7.522,2.872,10.392,0.001l46.505-46.499C283.197,265.93,305,294.003,305,326l0,0v-10.889
+                C305,282.958,283.232,254.945,251.2,240.3z" />
+            </g>
+            <g id="stud_head">
+              <!-- Left ear -->
+              <path fill="#DDA37C" d="M135.934,194.953c-5.481,0-9.926-5.162-9.926-11.53s4.444-11.529,9.926-11.529" />
+              <!-- Face shadow -->
+              <path opacity="0.1" d="M261,190.046c0,36.915-27.145,66.838-61.5,66.838l0,0c-34.356,0-61.5-29.923-61.5-66.838v-23.247
+                c0-36.916,27.144-66.838,61.5-66.838l0,0c34.355,0,61.5,29.922,61.5,66.838V190.046z" />
+              <!-- Main face skin -->
+              <path fill="#FBD099" d="M266,185.046c0,36.915-29.589,66.838-66.5,66.838l0,0c-36.912,0-66.5-29.923-66.5-66.838v-23.247
+                c0-36.916,29.588-66.838,66.5-66.838l0,0c36.911,0,66.5,29.922,66.5,66.838V185.046z" />
+              <!-- Right cheek shading -->
+              <path fill="#F2C38F" d="M200.777,94.961c-1.348,0-2.754,0.052-4.08,0.13C224.17,105.823,243,131.293,243,161.013v24.819
+                c0,29.719-18.879,55.189-46.352,65.921c1.326,0.079,2.77,0.131,4.117,0.131c36.91,0,66.234-29.923,66.234-66.838v-23.247
+                C267,124.883,237.688,94.961,200.777,94.961z" />
+              <!-- Right ear/temple -->
+              <path fill="#DDA37C"
+                d="M275.367,183.423c0-5.789-4.367-10.567-8.367-11.391v-10.233c0-36.916-29.312-66.838-66.223-66.838
+                c-1.467,0-3.011,0.063-4.451,0.157C231.151,97.365,258,126.349,258,161.799v23.247c0,35.449-26.896,64.434-61.723,66.681
+                c1.441,0.093,2.913,0.157,4.38,0.157c33.56,0,60.81-24.737,65.473-56.975C271.26,194.463,275.367,189.498,275.367,183.423z" />
+              <!-- Mouth/smile -->
+              <path fill="#99492C"
+                d="M219.818,211.524c0,11.122-9.018,20.14-20.143,20.14c-11.124,0-20.143-9.018-20.143-20.14" />
+              <!-- Teeth -->
+              <path fill="#FFFFFF"
+                d="M219.818,211.285c0,1.709-0.213,3.715-0.613,4.715h-39.158c-0.289-1-0.514-3.003-0.514-4.832" />
+              <!-- Right eye -->
+              <g class="eye">
+                <circle fill="#FFFFFF" cx="230.19" cy="178.929" r="9.551" />
+                <path
+                  d="M230.19,173.222c-0.481,0-0.949,0.06-1.398,0.171c0.258,0.405,0.406,0.885,0.406,1.4
+                  c0,1.447-1.172,2.619-2.619,2.619c-0.654,0-1.253-0.241-1.714-0.638c-0.283,0.681-0.44,1.429-0.44,2.214
+                  c0,3.184,2.581,5.764,5.766,5.764s5.766-2.58,5.766-5.764C235.956,175.803,233.375,173.222,230.19,173.222z" />
+              </g>
+              <!-- Left eye -->
+              <g class="eye">
+                <circle fill="#FFFFFF" cx="170.802" cy="178.929" r="9.552" />
+                <path
+                  d="M170.802,173.222c-0.482,0-0.949,0.06-1.398,0.171c0.257,0.405,0.407,0.885,0.407,1.4
+                  c0,1.447-1.174,2.619-2.62,2.619c-0.655,0-1.254-0.241-1.714-0.638c-0.283,0.681-0.44,1.429-0.44,2.214
+                  c0,3.184,2.581,5.764,5.766,5.764s5.766-2.58,5.766-5.764C176.567,175.803,173.986,173.222,170.802,173.222z" />
+              </g>
+              <!-- Hair (brown) -->
+              <g>
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="#6B3815"
+                  d="M258,136v30.774c7-0.883,12-5.43,12-10.922V126H258z" />
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="#6B3815"
+                  d="M147.109,164.33c-7.143,5.105-18.449,1.699-19.795-9.419c-10.266-58.371,21.152-60.824,21.152-60.824
+                  s-2.678-1.742-4.252-2.767c6.418-3.438,13.241-2.234,19.043,1.522C187.104,107.034,166.324,151.184,147.109,164.33z" />
+                <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F260B" d="M166.006,96.921l-4.389,10.162c9.484,31.142-10.533,54.303-10.533,54.303
+                  C162.5,151.977,184.316,119.742,166.006,96.921z" />
+                <g id="hair">
+                  <path fill-rule="evenodd" clip-rule="evenodd" fill="#6B3815" d="M201.883,146.219c1.371,2.254,2.523,4.146,4.095,6.729c-59.673-18.631-46.111-60.226-41.876-66.788
+                    c4.234-6.563,11.658-12.6,20.608-16.324c-0.481,1.902-0.858,3.393-1.235,4.888c22.131-7.764,49.002-0.148,63.532,10.733
+                    c4.941,3.701,9.703,7.613,14.57,11.401c8.224,6.396,17.896,9.472,28.993,10.778c-5.158,7.781-17.902,14.202-17.902,14.202
+                    s7.69,3.34,12.366,5.37C285.034,127.208,254.983,157.615,201.883,146.219z" />
+                  <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F260B" d="M256.379,104.706c0,0,16.915,9.361,33.83,3.449c0,0-4.816,6.628-17.347,14.047
+                    C272.862,122.201,260.942,116.496,256.379,104.706z" />
+                  <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F260B" d="M193.809,123.123c0,0,23.333,28.178,56.271,22.617c0,0-27.564,7.207-48.49,0.195
+                    C201.59,145.936,193.254,133.809,193.809,123.123z" />
+                </g>
+              </g>
+              <!-- Glasses -->
+              <g id="glasses">
+                <path opacity="0.25" fill="#4F260B" d="M247.237,159h-27.354c-7.833,0-13.884,5.873-13.884,13.706v1.214
+                  c-3.499-1.489-7.455-1.561-11-0.22v-0.994c0-7.833-5.929-13.706-13.763-13.706h-27.354c-7.833,0-13.884,5.873-13.884,13.706
+                  v15.78c0,7.833,6.051,14.514,13.884,14.514h27.354c7.834,0,13.763-6.681,13.763-14.514v-8.007
+                  c3.274-2.459,7.891-2.309,11,0.452v7.555c0,7.833,6.051,14.514,13.884,14.514h27.354c7.834,0,13.763-6.681,13.763-14.514
+                  v-15.78C261,164.873,255.071,159,247.237,159z" />
+                <path fill="none" stroke="#000000" stroke-width="6" stroke-miterlimit="10"
+                  d="M208.506,176.158c-4.578-4.577-11.986-4.577-16.563,0" />
+                <path d="M247.237,162c4.532,0,7.763,3.174,7.763,7.706v15.78c0,4.532-3.23,8.514-7.763,8.514h-27.354
+                  c-4.531,0-7.884-3.981-7.884-8.514v-15.78c0-4.532,3.353-7.706,7.884-7.706H247 M247.237,156h-27.354
+                  c-7.833,0-13.884,5.873-13.884,13.706v15.78c0,7.833,6.051,14.514,13.884,14.514h27.354
+                  c7.834,0,13.763-6.681,13.763-14.514v-15.78C261,161.873,255.071,156,247.237,156L247.237,156z" />
+                <path opacity="0.3" fill="#FFFFFF" d="M257,168.327c0-4.599-3.729-8.327-8.329-8.327h-30.342c-4.6,0-8.329,3.728-8.329,8.327
+                  v19.346c0,4.599,3.729,8.327,8.329,8.327h30.342c4.6,0,8.329-3.728,8.329-8.327V168.327z" />
+                <path class="reflection" opacity=".3" fill="#FFFFFF"
+                  d="M226.629,160l-13.033,34.105c1.407,1.09,3.168,1.895,5.086,1.895h11.383l13.703-36H226.629z" />
+                <path d="M181.237,162c4.532,0,7.763,3.174,7.763,7.706v15.78c0,4.532-3.23,8.514-7.763,8.514h-27.354
+                  c-4.531,0-7.884-3.981-7.884-8.514v-15.78c0-4.532,3.353-7.706,7.884-7.706H181 M181.237,156h-27.354
+                  c-7.833,0-13.884,5.873-13.884,13.706v15.78c0,7.833,6.051,14.514,13.884,14.514h27.354
+                  c7.834,0,13.763-6.681,13.763-14.514v-15.78C195,161.873,189.071,156,181.237,156L181.237,156z" />
+                <path opacity="0.35" fill="#FFFFFF" d="M191,168.327c0-4.599-3.729-8.327-8.329-8.327h-30.342c-4.6,0-8.329,3.728-8.329,8.327
+                  v19.346c0,4.599,3.729,8.327,8.329,8.327h30.342c4.6,0,8.329-3.728,8.329-8.327V168.327z" />
+                <path class="reflection" opacity="0.3" fill="#FFFFFF"
+                  d="M160.629,160l-13.033,34.105c1.407,1.09,3.168,1.895,5.086,1.895h11.383l13.703-36H160.629z" />
+              </g>
+            </g>
+          </g>
+
+          <!-- Bottom clip rect — matches cream background to mask book emergence -->
+          <rect id="clip" x="11" y="344" fill="#F9F4EC" width="372" height="54" />
+
+          <!-- Book group (Snap.svg morphing) -->
+          <g id="book">
+            <path id="bk_bdy" fill="#31A7DB" d="" />
+            <path id="bk_edg" fill="none" stroke="#037391" stroke-width="5" stroke-linecap="round"
+              stroke-miterlimit="10" d="" />
+            <polygon id="btm_pgs" fill="#D3D3D3" />
+            <polygon id="btm_r" fill="#F2F2F2" points="" />
+            <polygon id="btm_l" fill="#f0f0f0" points="" />
+            <polygon id="line" opacity="0" fill="#D3D3D3" points="201,326 198,326 199,299 200,299" />
+            <path opacity="0" id="pgFld" fill="#f2f2f2"
+              d="M199.235,299c0,0,55.694-1,102-1L354,325c-85.08,0-153.765,1-153.765,1L199.235,299z">
+              <animate xlink:href="#pgFld" attributeName="d" begin="4s" dur="5s" repeatCount="indefinite"
+                keyTimes="0;.03;.06;.1;.15;1" values="M199,299c0,0-55.695-1-102-1l-52.765,27c85.08,0,153.765,1,153.765,1L199,299z;
+                        M199,299c0,0-15.446-45.394-71.818-42.365L99,271c68.5-11.504,99,54.5,99,54.5L199,299z;
+                        M199,299c0,0-1-30-2.352-74.5l-0.371,4.5c5.578,43.393,1.723,97,1.723,97L199,299z;
+                        M199,299c0,0,51.08,6,58.769-47.116l15.36,12.779C273.129,323,198,326,198,326L199,299z;
+                        M199.235,299c0,0,55.694-1,102-1L354,325c-85.08,0-153.765,1-153.765,1L199.235,299z;
+                        M199.235,299c0,0,55.694-1,102-1L354,325c-85.08,0-153.765,1-153.765,1L199.235,299z" />
+            </path>
+          </g>
+
+          <!-- Stars (EDF amber colour) -->
+          <g opacity="0.6">
+            <path style="display:none;" class="stars" fill="#E8A020" d="M280.252,56.796c0.255-0.466,0.673-0.466,0.928,0l1.214,2.22c0.255,0.466,0.846,1.056,1.312,1.312
+              l2.219,1.213c0.466,0.255,0.466,0.672,0,0.927l-2.219,1.214c-0.466,0.255-1.057,0.845-1.312,1.311l-1.214,2.22
+              c-0.255,0.466-0.673,0.466-0.928,0l-1.213-2.22c-0.255-0.466-0.846-1.056-1.312-1.311l-2.22-1.214
+              c-0.466-0.255-0.466-0.672,0-0.927l2.22-1.214c0.466-0.255,1.057-0.845,1.312-1.311L280.252,56.796z" />
+            <path style="display:none;" class="stars" fill="#295742" d="M196.203,37.407c0.219-0.401,0.579-0.401,0.798,0l1.046,1.911c0.219,0.401,0.727,0.909,1.128,1.128
+              l1.909,1.045c0.401,0.219,0.401,0.579,0,0.798l-1.909,1.044c-0.401,0.219-0.909,0.727-1.128,1.128L197,46.374
+              c-0.219,0.401-0.579,0.401-0.798,0l-1.045-1.911c-0.219-0.401-0.727-0.909-1.128-1.128l-1.91-1.044
+              c-0.401-0.219-0.401-0.579,0-0.798l1.91-1.045c0.401-0.219,0.909-0.727,1.128-1.128L196.203,37.407z" />
+            <path style="display:none;" class="stars" fill="#E8A020" d="M44.003,195.166c0.329-0.602,0.868-0.602,1.197,0l1.568,2.867c0.329,0.602,1.091,1.364,1.693,1.693
+              l2.864,1.567c0.602,0.329,0.602,0.868,0,1.197l-2.864,1.566c-0.602,0.329-1.364,1.091-1.693,1.693l-1.568,2.865
+              c-0.329,0.603-0.868,0.603-1.197,0l-1.566-2.865c-0.329-0.603-1.091-1.364-1.693-1.693l-2.865-1.566
+              c-0.602-0.329-0.602-0.868,0-1.197l2.866-1.567c0.602-0.329,1.363-1.091,1.692-1.693L44.003,195.166z" />
+            <path style="display:none;" class="stars" fill="#295742" d="M91.01,119.478c0.151-0.277,0.399-0.277,0.551,0l0.722,1.32c0.152,0.277,0.502,0.628,0.78,0.78
+              l1.318,0.721c0.277,0.152,0.277,0.4,0,0.552l-1.318,0.721c-0.277,0.152-0.628,0.502-0.78,0.78l-0.722,1.32
+              c-0.152,0.277-0.4,0.277-0.551,0l-0.722-1.32c-0.151-0.277-0.502-0.628-0.779-0.779l-1.319-0.722
+              c-0.277-0.151-0.277-0.399,0-0.551l1.319-0.722c0.277-0.152,0.628-0.502,0.779-0.78L91.01,119.478z" />
+            <path style="display:none;" class="stars" fill="#E8A020" d="M344.458,162.397c0.18-0.329,0.475-0.33,0.654,0l0.857,1.567c0.18,0.33,0.597,0.746,0.926,0.926
+              l1.565,0.856c0.329,0.18,0.329,0.475,0,0.655l-1.565,0.857c-0.329,0.18-0.746,0.596-0.926,0.926l-0.857,1.567
+              c-0.18,0.33-0.475,0.329-0.654,0l-0.856-1.567c-0.18-0.329-0.597-0.746-0.926-0.926l-1.566-0.857
+              c-0.329-0.18-0.329-0.475,0-0.654l1.566-0.857c0.329-0.18,0.746-0.597,0.926-0.926L344.458,162.397z" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- ── Floating educational / faith cards ── -->
+      <div class="hero-float-card" id="hfc-1" style="top:12%;left:2%;">
+        <div class="fc-icon">📚</div>
+        <div>
+          <div class="fc-label">Education First</div>
+          <div class="fc-sub">100+ students enrolled</div>
         </div>
-    </section>
+      </div>
+
+      <div class="hero-float-card" id="hfc-2" style="bottom:20%;right:3%;">
+        <div class="fc-icon">☽</div>
+        <div>
+          <div class="fc-label">Ramadan Aid</div>
+          <div class="fc-sub">Distribution active</div>
+        </div>
+      </div>
+
+      <div class="hero-float-card" id="hfc-3" style="top:48%;left:2%;">
+        <div class="fc-icon">🎓</div>
+        <div>
+          <div class="fc-label">Scholarships</div>
+          <div class="fc-sub">Open for 2025</div>
+        </div>
+      </div>
+
+      <!-- ── Floating keyword tags ── -->
+      <div class="hero-kw-tag" id="hkw-1" style="top:8%;right:12%;">Knowledge · علم</div>
+      <div class="hero-kw-tag" id="hkw-2" style="bottom:30%;left:28%;">Empowerment</div>
+      <div class="hero-kw-tag" id="hkw-3" style="top:36%;right:4%;">تعليم · Growth</div>
+      <div class="hero-kw-tag" id="hkw-4" style="bottom:10%;left:5%;">Est. 2016 · Galgamuwa</div>
+
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-pill" id="hero-pill">
+        <span class="hero-pill-dot"></span>
+        Galgamuwa, Sri Lanka — Est. 2016
+      </div>
+
+      <h1 class="hero-title">
+        <span class="ht-italic" id="ht1">Building</span>
+        <span class="ht-bold" id="ht2">Brighter</span>
+        <span class="ht-accent" id="ht3">Futures.</span>
+      </h1>
+
+      <p class="hero-sub" id="hero-sub">
+        The Education &amp; Development Foundation supports vulnerable families in Galgamuwa through education,
+        women's empowerment, and Livelihood & Youth Development — transforming lives one family at a time.
+      </p>
+
+      <div class="hero-ctas" id="hero-ctas">
+        <a href="#join" class="btn-crim" id="cta-donate">
+          Join Our Community
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+        <a href="#mission" class="btn-ghost">
+          Our Story
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="hero-stats" id="hero-stats">
+        <div>
+          <div class="hstat-num">240+</div>
+          <div class="hstat-lbl">Families helped</div>
+        </div>
+        <div class="hstat-div"></div>
+        <div>
+          <div class="hstat-num">100+</div>
+          <div class="hstat-lbl">Students enrolled</div>
+        </div>
+        <div class="hstat-div"></div>
+        <div>
+          <div class="hstat-num">10 yrs</div>
+          <div class="hstat-lbl">Of service</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-ind">
+      <div class="hscroll-line"></div>
+      Scroll to explore
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       TICKER
+  ═══════════════════════════════════════════ -->
+  <div id="ticker">
+    <div class="ticker-inner" id="ticker-inner">
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span> Education Development Foundation</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       IMPACT
+  ═══════════════════════════════════════════ -->
+  <section id="impact">
+    <div class="impact-grid">
+      <div class="impact-cell js-reveal">
+        <div class="impact-num" data-count="240" data-suffix="+">0</div>
+        <div class="impact-label">Families Supported</div>
+        <div class="impact-desc">Direct beneficiaries across Galgamuwa district</div>
+      </div>
+      <div class="impact-cell js-reveal">
+        <div class="impact-num" data-count="100" data-suffix="+">0</div>
+        <div class="impact-label">Students Enrolled</div>
+        <div class="impact-desc">Active education &amp; scholarship recipients</div>
+      </div>
+      <div class="impact-cell js-reveal">
+        <div class="impact-num" data-count="50" data-suffix="">0</div>
+        <div class="impact-label">Active Programs</div>
+        <div class="impact-desc">Spanning health, education &amp; livelihood</div>
+      </div>
+      <div class="impact-cell js-reveal">
+        <div class="impact-num" data-count="10" data-suffix=" yrs">0</div>
+        <div class="impact-label">Years of Service</div>
+        <div class="impact-desc">Building lasting community resilience since 2016</div>
+      </div>
+    </div>
+    <div class="impact-bg-glow"></div>
+    <div class="impact-deco">EDF GALGAMUWA</div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       MISSION
+  ═══════════════════════════════════════════ -->
+  <section id="mission">
+    <div class="mission-sticky js-revealL">
+      <div class="section-tag">Our Mission</div>
+      <h2 class="mission-heading">
+        <em>Empowering</em><br>communities,<br>one family<br>at a time.
+      </h2>
+      <p class="mission-body">
+        EDF Galgamuwa was founded on a single conviction: every child deserves an education and every family deserves a
+        life of dignity. We address root causes of poverty through sustainable, community-led programs.
+      </p>
+      <a href="#programs-wrap" class="btn-crim">Explore Programs</a>
+    </div>
+
+    <div class="mission-right">
+      <div class="pillar js-reveal">
+        <div class="pillar-icon" style="background:rgba(194,24,51,0.1);">🎓</div>
+        <h3>Education First</h3>
+        <p>Scholarships, tutoring centres, and school supplies for children from low-income families. We ensure no child
+          is left without learning.</p>
+      </div>
+      <div class="pillar js-reveal">
+        <div class="pillar-icon" style="background:rgba(10,107,74,0.1);">🏥</div>
+        <h3>Healthcare Access</h3>
+        <p>Free mobile clinics, mental health support, and medicine subsidies for families who cannot afford basic
+          medical care.</p>
+      </div>
+      <div class="pillar js-reveal">
+        <div class="pillar-icon" style="background:rgba(232,160,32,0.12);">💼</div>
+        <h3>Livelihood &amp; Jobs</h3>
+        <p>Vocational training, micro-financing, and job linkages to break cycles of poverty and build lasting financial
+          independence.</p>
+      </div>
+      <div class="pillar js-reveal">
+        <div class="pillar-icon" style="background:rgba(94,53,177,0.1);">🌙</div>
+        <h3>Ramadan &amp; Zakat Aid</h3>
+        <p>Annual Ramadan food packs, Eid grants, and Zakat distributions — ensuring no family goes without during
+          sacred seasons.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       PROGRAMS — Pinned Horizontal Scroll
+  ═══════════════════════════════════════════ -->
+  <div id="programs-wrap">
+    <div id="programs">
+      <!-- Panel 0: Intro -->
+      <div class="prog-panel prog-panel-0">
+        <div class="prog-panel-intro js-revealL">
+          <div class="prog-intro-label">WHAT WE DO</div>
+          <h2 class="prog-intro-heading">Three pillars.<br><em>One mission.</em></h2>
+          <p class="prog-intro-sub">Scroll sideways to explore how EDF Galgamuwa changes lives through targeted programs
+            across education, healthcare, and livelihood.</p>
+        </div>
+        <div class="prog-card-main amber js-revealR">
+          <div class="prog-tag">Program 01</div>
+          <div class="prog-bg-num">01</div>
+          <div class="prog-emoji">🎓</div>
+          <h3 class="prog-name">QURAN &amp; CLASSES</h3>
+          <p class="prog-desc">Supporting 100+ students with Quran and other classes
+            <br>We provide Quran and other classes to students in need. Our classes are conducted by qualified teachers
+            and we provide all the necessary materials to our students.
+          </p>
+          <a href="#get-involved" class="prog-cta">Learn More →</a>
+        </div>
+        <div class="prog-counter">01 / 03</div>
+      </div>
+
+      <!-- Panel 1: LADIES PROGRAM -->
+      <div class="prog-panel prog-panel-1">
+        <div class="prog-panel-intro">
+          <div class="prog-intro-label">LADIES &amp; PROGRAMS</div>
+          <h2 class="prog-intro-heading">
+            Empowering women through<br><em>learning &amp; skills.</em>
+          </h2>
+          <p class="prog-intro-sub">
+            We organize Bayans, cooking classes, tailoring classes, and one-day workshops, creating opportunities for
+            women to gain knowledge, develop practical skills, and build a stronger community.
+          </p>
+        </div>
+
+        <div class="prog-card-main emerald">
+          <div class="prog-tag">Program 02</div>
+          <div class="prog-bg-num">02</div>
+          <div class="prog-emoji">🧵</div>
+          <h3 class="prog-name">Women Skill Development</h3>
+          <p class="prog-desc">
+            Engaging Bayans, hands-on cooking sessions, tailoring training, and interactive one-day workshops designed
+            to
+            inspire learning, creativity, and self-reliance among women.
+          </p>
+          <a href="#get-involved" class="prog-cta">Learn More →</a>
+        </div>
+
+        <div class="prog-counter">02 / 03</div>
+      </div>
+
+      <!-- Panel 2: Livelihood -->
+      <div class="prog-panel prog-panel-2">
+        <div class="prog-panel-intro">
+          <div class="prog-intro-label">LIVELIHOOD</div>
+          <h2 class="prog-intro-heading">Skills that<br><em>last forever.</em></h2>
+          <p class="prog-intro-sub">
+            We empower youth and families with practical skills, knowledge, and financial support to build
+            sustainable and independent livelihoods.
+          </p>
+        </div>
+
+        <div class="prog-card-main violet">
+          <div class="prog-tag">Program 03</div>
+          <div class="prog-bg-num">03</div>
+          <div class="prog-emoji">💼</div>
+          <h3 class="prog-name">Livelihood &amp; Youth Development</h3>
+          <p class="prog-desc">
+            We offer free vocational training programs such as mobile phone repair, CCTV installation,
+            and entrepreneurship development. Our initiatives also include business and tax guidance,
+            educational bayans, and one-day skill workshops. In addition, we provide financial assistance
+            to selected university students in Galgamuwa to support their living expenses and continue
+            their education without hardship.
+          </p>
+          <a href="#get-involved" class="prog-cta">Learn More →</a>
+        </div>
+
+        <div class="prog-counter">03 / 03</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       STORIES — 3D CAROUSEL
+  ═══════════════════════════════════════════ -->
+  <section id="stories">
+    <div class="stories-hdr js-reveal">
+      <div class="section-tag"
+        style="justify-content:center;color:rgba(255,255,255,.4);border-color:rgba(255,255,255,.08)">Real Voices</div>
+      <h2 class="section-heading" style="color:white;text-align:center">Stories of <em
+          style="color:var(--amber)">Impact</em></h2>
+    </div>
+
+    <div class="carousel-wrapper">
+      <div class="carousel-stage" id="carousel-stage">
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"In 2016, we saw gaps in our local education system. We didn't want to just talk about
+            it—we wanted to act. Seeing students thrive today makes every challenge we faced completely worth it."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--crimson)">A</div>
+            <div>
+              <div class="story-name">Arshad Ahamed</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"Building EDF from the ground up taught me that true strength lies in community support.
+            Providing consistent healthcare and resources isn't just charity; it's our fundamental duty."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--emerald)">A</div>
+            <div>
+              <div class="story-name">Anshak Ahamed</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"Every time we deploy a new livelihood program, I see a family break the cycle of
+            poverty. We're not just offering funds; we're giving people the skills to forge their own paths."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--amber)">M</div>
+            <div>
+              <div class="story-name">Musthaq Ahamed</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"From coordinating relief during Ramadan to setting up youth workshops, our mission has
+            always been clear: no one gets left behind. Galgamuwa's youth are our brightest future."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--navy-mid)">R</div>
+            <div>
+              <div class="story-name">Rikas</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"Running our operations means hearing countless heartbreaking stories, but more
+            importantly, it means being part of their solutions. We stand shoulder-to-shoulder with our people."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--violet)">H</div>
+            <div>
+              <div class="story-name">Hamas</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"It's incredible to see how a handful of volunteers transformed into a massive support
+            network. Organizing events and training programs reminds me why I joined EDF in the first place."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:#B45309">A</div>
+            <div>
+              <div class="story-name">Arshad Anver</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"Our skills development programs have turned dreams into reality for many young men and
+            women. The dedication of our community to learn and grow pushes us to expand our efforts daily."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--crimson)">A</div>
+            <div>
+              <div class="story-name">Amhar</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"Logistics and groundwork often go unnoticed, but the smiles of the families receiving
+            our aid are the only rewards we need. We're building a foundation that will outlast us all."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--emerald)">F</div>
+            <div>
+              <div class="story-name">Fasmer</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card-3d">
+          <div class="story-oquote">"</div>
+          <p class="story-text">"The true measure of our success is not the numbers, but the individual lives we've
+            touched. Ensuring children have their school supplies feels like watching seeds grow into forests."</p>
+          <div class="story-foot">
+            <div class="story-avatar" style="background:var(--amber)">F</div>
+            <div>
+              <div class="story-name">Faham</div>
+              <div class="story-role">Executive Member</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="car-nav">
+      <button class="car-btn car-prev" aria-label="Previous story">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <div class="car-dots" id="car-dots">
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+        <span class="car-dot"></span>
+      </div>
+      <button class="car-btn car-next" aria-label="Next story">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       GALLERY
+  ═══════════════════════════════════════════ -->
+  <section id="gallery">
+    <div class="gallery-hdr js-reveal">
+      <h2 class="section-heading">Life-changing <em>moments</em></h2>
+      <a href="/gallery" class="gallery-link">View full gallery →</a>
+    </div>
+    <div class="gallery-grid" id="home-gallery-grid">
+      <!-- populated dynamically by fetchHomeGallery() -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       GET INVOLVED
+  ═══════════════════════════════════════════ -->
+  <section id="get-involved">
+    <div class="gi-hdr">
+      <div class="section-tag" style="justify-content:center;">Take Action</div>
+      <h2 class="section-heading" style="font-size:clamp(36px,4vw,56px);">Three ways to make a <em>difference</em></h2>
+    </div>
+    <div class="gi-grid">
+      <div class="gi-card gi-card-crim js-revealS">
+        <div class="gi-icon gi-icon-crim">🏛️</div>
+        <h3 class="gi-title">Become a Member</h3>
+        <p class="gi-desc">Join EDF as a contributing community member. Your membership forms the backbone of every
+          programme we run — sustaining the foundation from within.</p>
+        <a href="#join" class="gi-cta gi-cta-crim">Join Now →</a>
+      </div>
+      <div class="gi-card gi-card-emerald js-revealS">
+        <div class="gi-icon gi-icon-emerald">🤝</div>
+        <h3 class="gi-title">Volunteer</h3>
+        <p class="gi-desc">Join our weekend teaching sessions, health camps, and community drives. Skills of any kind
+          are welcome — what matters is the heart behind them.</p>
+        <a href="/login" class="gi-cta gi-cta-emerald">Join Us →</a>
+      </div>
+      <div class="gi-card gi-card-amber js-revealS">
+        <div class="gi-icon gi-icon-amber">🌟</div>
+        <h3 class="gi-title">Partner</h3>
+        <p class="gi-desc">Businesses and organisations can partner with EDF through CSR programs, event sponsorships,
+          and in-kind donations to multiply community impact.</p>
+        <a href="#" class="gi-cta gi-cta-amber">Become a Partner →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SPLINE 3D BANNER
+  ═══════════════════════════════════════════ -->
+  <section id="spline-banner">
+    <div class="spline-content js-revealL">
+      <div class="spline-tag">EDF IN NUMBERS</div>
+      <h2 class="spline-heading">Behind every number<br>lies a <em>human story.</em></h2>
+      <a href="#impact" class="btn-crim" style="margin-top:8px;">
+        See Our Impact
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+    <div id="spline-canvas-wrap">
+      <canvas id="spline-3d"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       JOIN / MEMBERSHIP
+  ═══════════════════════════════════════════ -->
+  <section id="join">
+    <div class="donate-blob-1"></div>
+    <div class="donate-blob-2"></div>
+
+    <div class="donate-inner">
+      <div class="donate-eyebrow">OUR COMMUNITY</div>
+      <h2 class="donate-heading">
+        Join the EDF <em>family.</em>
+      </h2>
+      <p class="donate-sub">
+        EDF runs entirely on the dedication of our community members. Becoming a member means standing alongside the
+        families we serve — and being part of every milestone we reach together.
+      </p>
+
+      <div class="mem-tiers">
+        <div class="mem-tier">
+          <div class="mem-tier-label">Community</div>
+          <div class="mem-tier-name">Regular Member</div>
+          <p class="mem-tier-desc">Active participation in programmes, community events, and annual general meetings.
+            Your voice shapes the direction of EDF.</p>
+        </div>
+        <div class="mem-tier">
+          <div class="mem-tier-label">Commitment</div>
+          <div class="mem-tier-name">Life Member</div>
+          <p class="mem-tier-desc">A lifetime dedication to the EDF mission. Life members are the permanent stewards of
+            our foundation and its values.</p>
+        </div>
+        <div class="mem-tier">
+          <div class="mem-tier-label">Legacy</div>
+          <div class="mem-tier-name">Founding Patron</div>
+          <p class="mem-tier-desc">Recognised as pillars of the organisation. Founding Patrons have sustained EDF
+            through its most formative years.</p>
+        </div>
+      </div>
+
+      <div class="join-ctas">
+        <a href="https://wa.me/94771234567?text=Hello%2C%20I%20would%20like%20to%20learn%20more%20about%20becoming%20an%20EDF%20member."
+          class="donate-submit">
+          Enquire via WhatsApp
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+        <a href="/login" class="join-ghost">
+          Already a Member? Login →
+        </a>
+      </div>
+
+      <div class="mem-stat">
+        <span><strong>40</strong> Active Members</span>
+        <span class="mem-dot"></span>
+        <span>Est. <strong>2016</strong></span>
+        <span class="mem-dot"></span>
+        <span><strong>10</strong> Years of Community Service</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       PARTNERS
+  ═══════════════════════════════════════════ -->
+  <section id="partners">
+    <div class="partners-lbl">Trusted By &amp; In Partnership With</div>
+    <div class="marquee-outer">
+      <div class="marquee-row" id="partners-marquee-row">
+        <span class="partner-name">Loading…</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer>
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">EDF <span>Galgamuwa</span></div>
+        <p class="foot-tagline">
+          Education &amp; Development Foundation, Galgamuwa — building lasting resilience through education, livelihood,
+          and healthcare in Sri Lanka since 2018.
+        </p>
+        <div class="foot-newsletter-label">Stay Updated</div>
+        <div class="foot-newsletter">
+          <input type="email" class="foot-email" placeholder="Your email address">
+          <button class="foot-sub-btn">Subscribe</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="foot-col-title">Programs</div>
+        <ul class="foot-links">
+          <li><a href="#">Education &amp; Scholarships</a></li>
+          <li><a href="#">Community Healthcare</a></li>
+          <li><a href="#">Livelihood Training</a></li>
+          <li><a href="#">Ramadan Aid</a></li>
+          <li><a href="#">Zakat Distribution</a></li>
+          <li><a href="#">Volunteer Program</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="foot-col-title">Organisation</div>
+        <ul class="foot-links">
+          <li><a href="/about">About EDF</a></li>
+          <li><a href="/about#team">Our Team</a></li>
+          <li><a href="#">Annual Reports</a></li>
+          <li><a href="#">News &amp; Updates</a></li>
+          <li><a href="/gallery">Gallery</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="foot-col-title">Contact</div>
+        <div class="foot-contact">
+          <p><strong>Address</strong><br>EDF Office, Galgamuwa,<br>North Western Province, Sri Lanka</p>
+          <p style="margin-top:20px"><strong>Email</strong><br><a href="mailto:info@edfgalgamuwa.org"
+              style="color:rgba(255,255,255,.45);transition:color .2s" onmouseover="this.style.color='white'"
+              onmouseout="this.style.color='rgba(255,255,255,.45)'">info@edfgalgamuwa.org</a></p>
+          <p style="margin-top:12px"><strong>Phone</strong><br>+94 37 000 0000</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot-divider"></div>
+    <div class="foot-bottom">
+      <div class="foot-copy">
+        © 2026 Education &amp; Development Foundation, Galgamuwa. All rights reserved.
+        <span style="display: inline-block; margin: 0 6px; opacity: 0.4;">|</span>
+        Crafted with <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--crimson)" stroke="var(--crimson)"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          style="vertical-align: -2px; display: inline-block;">
+          <path
+            d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0l-1.1 1-1.1-1a5.5 5.5 0 0 0-7.8 7.8l1 1 7.9 7.9 7.9-7.9 1-1a5.5 5.5 0 0 0 0-7.8z">
+          </path>
+        </svg> by <a href="https://arshadahamed.com/" target="_blank"
+          style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; font-weight: 600;"
+          onmouseover="this.style.color='var(--amber)'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">Arshad
+          Ahamed</a>
+      </div>
+      <div class="foot-socials">
+        <a href="https://www.facebook.com/edf28jan2016/" class="social-btn" title="Facebook">f</a>
+        <a href="https://www.Instagram.com/" class="social-btn" title="Instagram">in</a>
+        <a href="https://www.youtube.com/" class="social-btn" title="YouTube">▶</a>
+        <a href="https://wa.me/94715358380" class="social-btn" title="WhatsApp">w</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       SCROLL TO TOP
+  ══════════════════════════════════════════ -->
+  <button id="backToTop" class="back-to-top" aria-label="Back to Top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </button>
+
+  <script>
+    /* ═══════════════════════════════════════════
+       INIT
+    ═══════════════════════════════════════════ */
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    /* ── Cursor ── */
+    const curDot = document.getElementById('cur-dot');
+    const curRing = document.getElementById('cur-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    gsap.ticker.add(() => {
+      rx += (mx - rx) * 0.1;
+      ry += (my - ry) * 0.1;
+      curDot.style.left = mx + 'px'; curDot.style.top = my + 'px';
+      curRing.style.left = rx + 'px'; curRing.style.top = ry + 'px';
+    });
+
+    /* ── Scroll Progress ── */
+    gsap.to('#progress', {
+      width: '100%', ease: 'none',
+      scrollTrigger: { scrub: 0.3, start: 'top top', end: 'bottom bottom' }
+    });
+
+    /* ── Nav scroll class ── */
+    ScrollTrigger.create({
+      start: 'top -60',
+      onUpdate: s => document.getElementById('nav').classList.toggle('scrolled', s.scroll() > 60)
+    });
+
+    /* ── Dynamic Logo ── */
+    fetch('/api/frontdesk/logo')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.url) {
+          const navBadge = document.querySelector('.nav-badge');
+          if (navBadge) {
+            navBadge.innerHTML = `<img src="${data.url}" style="width:100%; height:100%; object-fit:contain; border-radius:inherit;" alt="Logo">`;
+            navBadge.style.background = 'transparent'; // Remove crimson background
+          }
+          const plEmblem = document.querySelector('.pl-emblem');
+          if (plEmblem) {
+            plEmblem.innerHTML = `<img src="${data.url}" style="width:100%; height:100%; object-fit:contain;" alt="Logo">`;
+          }
+        }
+      })
+      .catch(e => console.error(e));
+
+    /* ── Dynamic Partners Marquee ── */
+    fetch('/api/frontdesk/partners')
+      .then(r => r.json())
+      .then(partners => {
+        const row = document.getElementById('partners-marquee-row');
+        if (!row || !partners.length) return;
+        const item = p => `<span class="partner-name">${p.name}</span><span class="partner-sep"></span>`;
+        // Duplicate the list for seamless infinite scroll
+        row.innerHTML = partners.map(item).join('') + partners.map(item).join('');
+      })
+      .catch(() => {});
+
+    /* ══════════════════════════════════════════
+       PRELOADER
+    ══════════════════════════════════════════ */
+    (() => {
+      const bar = document.getElementById('pl-bar');
+      const pct = document.getElementById('pl-pct');
+      const pl = document.getElementById('preloader');
+
+      // Emblem + word fade in
+      gsap.to('#pl-emblem', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
+      gsap.from('#pl-emblem', { y: 24, duration: 1, ease: 'power3.out', delay: 0.2 });
+      gsap.to('#pl-word', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.5 });
+      gsap.from('#pl-word', { y: 16, duration: 0.8, ease: 'power2.out', delay: 0.5 });
+
+      let p = 0;
+      const iv = setInterval(() => {
+        p += Math.random() * 14;
+        if (p >= 100) { p = 100; clearInterval(iv); }
+        bar.style.width = p + '%';
+        pct.textContent = Math.floor(p) + '%';
+        if (p === 100) {
+          setTimeout(() => {
+            gsap.to(pl, {
+              yPercent: -100, duration: 1.1, ease: 'power3.inOut',
+              onComplete: () => { pl.style.display = 'none'; heroEntrance(); }
+            });
+          }, 350);
+        }
+      }, 55);
+    })();
+
+    /* ══════════════════════════════════════════
+       SPLIT TEXT UTILITIES  (SplitText-like)
+    ══════════════════════════════════════════ */
+    function splitChars(el) {
+      const raw = el.textContent.trim();
+      el.innerHTML = '';
+      return [...raw].map(ch => {
+        const s = document.createElement('span');
+        s.className = 'st-char';
+        s.textContent = ch === ' ' ? '\u00A0' : ch;
+        el.appendChild(s);
+        return s;
+      });
+    }
+
+    function splitWords(el) {
+      const words = el.textContent.trim().split(/\s+/);
+      el.innerHTML = '';
+      const inners = [];
+      words.forEach((w, i) => {
+        const wrap = document.createElement('span');
+        wrap.className = 'st-word';
+        const inner = document.createElement('span');
+        inner.className = 'st-word-inner';
+        inner.textContent = w;
+        wrap.appendChild(inner);
+        el.appendChild(wrap);
+        if (i < words.length - 1) el.appendChild(document.createTextNode('\u00A0'));
+        inners.push(inner);
+      });
+      return inners;
+    }
+
+    /* ══════════════════════════════════════════
+       HERO ENTRANCE
+    ══════════════════════════════════════════ */
+    function heroEntrance() {
+      const ht1El = document.getElementById('ht1');
+      const ht2El = document.getElementById('ht2');
+      const ht3El = document.getElementById('ht3');
+      const subEl = document.getElementById('hero-sub');
+
+      /* Split headline words & subtitle words */
+      const ht2Chars = splitChars(ht2El);
+      const ht3Chars = splitChars(ht3El);
+      const subWords = splitWords(subEl);
+
+      /* Initial hidden states */
+      gsap.set(['#hero-pill', ht1El, '#hero-ctas', '#hero-stats', '.hero-scroll-ind', '#hero-visual'], { opacity: 0 });
+      gsap.set(ht2Chars, { opacity: 0, y: 90, rotateX: -60 });
+      gsap.set(ht3Chars, { opacity: 0, y: 60, skewX: 14 });
+      gsap.set(subWords, { opacity: 0, y: 28 });
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      /* Pill slides in from left */
+      tl.fromTo('#hero-pill',
+        { opacity: 0, x: -32 },
+        { opacity: 1, x: 0, duration: 0.75 })
+
+        /* "Building" script text drops */
+        .fromTo(ht1El,
+          { opacity: 0, y: 44 },
+          { opacity: 1, y: 0, duration: 1.0 }, '-=0.35')
+
+        /* "Brighter" — each char falls with rotateX stagger */
+        .to(ht2Chars,
+          { opacity: 1, y: 0, rotateX: 0, duration: 0.85, stagger: 0.045, ease: 'back.out(1.6)' }, '-=0.55')
+
+        /* "Futures." — chars skid in horizontally */
+        .to(ht3Chars,
+          { opacity: 1, y: 0, skewX: 0, duration: 0.7, stagger: 0.06, ease: 'power4.out' }, '-=0.55')
+
+        /* Subtitle word-by-word reveal */
+        .to(subWords,
+          { opacity: 1, y: 0, duration: 0.65, stagger: 0.03, ease: 'power2.out' }, '-=0.4')
+
+        /* CTAs + stats */
+        .fromTo('#hero-ctas',
+          { opacity: 0, y: 22 },
+          { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .fromTo('#hero-stats',
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.55 }, '-=0.3')
+        .fromTo('.hero-scroll-ind',
+          { opacity: 0 },
+          { opacity: 1, duration: 0.45 }, '-=0.2')
+
+        /* Hero visual fades in while text is animating */
+        .fromTo('#hero-visual',
+          { opacity: 0, scale: 0.92, x: 30 },
+          { opacity: 1, scale: 1, x: 0, duration: 1.4, ease: 'power2.out' }, 0.25);
+
+      /* Float cards + keyword tags stagger in after visual */
+      tl.fromTo(['.hero-float-card', '.hero-kw-tag'],
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.65, stagger: 0.14, ease: 'power2.out' }, '-=0.5');
+
+      /* Kick off the visual animations */
+      tl.call(startHeroVisual);
+    }
+
+    /* ══════════════════════════════════════════
+       HERO VISUAL — Student character (GSAP v3)
+       Adapted from CodePen wBNNRx by Domany
+    ══════════════════════════════════════════ */
+    function startHeroVisual() {
+      if (window.innerWidth < 768) return;
+
+      /* ── Snap.svg: book morphing setup ── */
+      var snap = Snap('#student');
+      var bottomPages = snap.select('#btm_pgs');
+      var bottomEdge = snap.select('#bk_edg');
+      var bottomBody = snap.select('#bk_bdy');
+      var bottomRight = snap.select('#btm_r');
+      var bottomLeft = snap.select('#btm_l');
+      var snapLine = snap.select('#line');
+
+      /* Initial collapsed state of the book */
+      bottomPages.attr({ points: '199.827,333.441 200.188,334 198.801,334 198.14,333.344 190.077,333.696 190,333 209,333 208.487,333.463' });
+      bottomEdge.attr({ d: 'M184.5,332l0.5,9.5c0,0,5.635,7,14.661,7s14.839-7,14.839-7V332' });
+      bottomBody.attr({ d: 'M205.94,333H200h-7.524l-8.602,0.26l0.639,4.74c0,0,0.044,0.473,0.138,0.637c0.779,1.371,4.964,7.938,15.35,7.938c10.182,0,14.449-6.029,15.356-7.561c0.13-0.219,0.191-0.299,0.191-0.299l0.664-5.716H205.94z' });
+      bottomRight.attr({ points: '199,326 199.016,326 199.7,326 199,326' });
+      bottomLeft.attr({ points: '199,326 199.016,326 198.359,325.984 199,326' });
+
+      /* Book open animation via Snap.svg morph */
+      function bookIn() {
+        bottomPages.animate({ points: '199,174 200,305 200,304 199,174 190,174 190,333 209,333 209,174' }, 350, mina.easeInOut, function () {
+          setTimeout(function () {
+            bottomPages.animate({ points: '313.061,304.975 200.188,305 198.801,305 85.44,304.975 30.5,333 190,333 209,333 370,333' }, 1000, mina.bounce);
+          }, 350);
+        });
+        bottomEdge.animate({ d: 'M184.5,169l0.5,172.5c0,0,5.635,7,14.661,7s14.839-7,14.839-7V169' }, 350, mina.easeInOut, function () {
+          setTimeout(function () {
+            bottomEdge.animate({ d: 'M13,341.5h172.224c0,0,5.973,7,15,7s14.776-7,14.776-7h172' }, 1000, mina.bounce);
+          }, 350);
+        });
+        bottomBody.animate({ d: 'M205.94,174L200,307l-7.524-133l-8.602,0.26L184.512,338c0,0,0.044,0.473,0.138,0.637c0.779,1.371,4.964,7.938,15.35,7.938c10.182,0,14.449-6.029,15.356-7.561c0.13-0.219,0.191-0.299,0.191-0.299L216.212,174H205.94z' }, 350, mina.easeInOut, function () {
+          setTimeout(function () {
+            bottomBody.animate({ d: 'M328.178,308.28L200,307.238L72.591,308.28l-60.046,30.913l171.995-0.196c0,0,0.016,0.49,0.11,0.654c0.779,1.371,4.964,6.932,15.35,6.932c10.182,0,14.449-6.033,15.356-7.564c0.13-0.219,0.191-0.063,0.191-0.063L387.241,339L328.178,308.28z' }, 1000, mina.bounce);
+          }, 350);
+        });
+        bottomRight.animate({ points: '199,299 199.016,174 199.7,174 199,326' }, 350, mina.easeInOut, function () {
+          setTimeout(function () {
+            bottomRight.animate({ points: '199,299 300.647,299 355.376,326 199,326' }, 1000, mina.bounce);
+          }, 350);
+        });
+        bottomLeft.animate({ points: '199,299 199.016,174 198.359,173.984 199,326' }, 350, mina.easeInOut, function () {
+          setTimeout(function () {
+            snapLine.attr({ opacity: 1 });
+            bottomLeft.animate({ points: '199,299 96,299 44,326 199,326' }, 1000, mina.bounce);
+          }, 350);
+        });
+      }
+
+      /* ── Circles scale in (GSAP v3) ── */
+      function circleScale() {
+        var tl = gsap.timeline();
+        tl.from('.circle', { duration: 0.7, transformOrigin: '50% 100%', scale: 0, ease: 'back.out(1.7)', stagger: 0.2 }, 'circleIn')
+          .from('.stars', { duration: 1, transformOrigin: '50% 50%', scale: 0, opacity: 0, ease: 'elastic.out(1,0.3)', stagger: 0.1 }, 'circleIn+=0.5');
+        return tl;
+      }
+
+      /* ── Body rotate in (GSAP v3) ── */
+      function bodyRotateIn() {
+        var tl = gsap.timeline();
+        tl.from('#stud_whole', { duration: 0.5, rotation: 90, svgOrigin: '106 260', scale: 0, ease: 'power2.out' }, 'bodyRotation')
+          .from('#stud_head', { duration: 0.5, rotation: 45, svgOrigin: '85 180', ease: 'back.out(1.7)' }, 'bodyRotation+=0.35')
+          .from('#hair', { duration: 2, rotation: 15, svgOrigin: '10 185', ease: 'elastic.out(1,0.3)' }, 'bodyRotation+=0.37');
+        tl.set('#pgFld', { opacity: 1 });
+        tl.timeScale(1.5);
+        return tl;
+      }
+
+      /* ── Repeat animations: blinking + reflection + dashed spin (GSAP v3) ── */
+      function repeatAnim() {
+        var tl = gsap.timeline({ repeat: -1 });
+        tl.to('.eye', { duration: 0.1, rotationX: 90, transformOrigin: '50% 50%' })
+          .to('.eye', { duration: 0.1, rotationX: 0 })
+          .to('.eye', { duration: 3, rotationX: 0 })
+          .to('.eye', { duration: 0.1, rotationX: 90, transformOrigin: '50% 50%' })
+          .to('.eye', { duration: 0.1, rotationX: 0 })
+          .to('.eye', { duration: 0.1, rotationX: 90, transformOrigin: '50% 50%' })
+          .to('.eye', { duration: 0.1, rotationX: 0 })
+          .to('.eye', { duration: 4, rotationX: 0 })
+          .to('.eye', { duration: 0.1, rotationX: 90, transformOrigin: '50% 50%' })
+          .to('.eye', { duration: 0.1, rotationX: 0 })
+          .to('.eye', { duration: 3, rotationX: 0 });
+        /* reflection shimmer — start at t=1s from timeline start */
+        tl.to('.reflection', { duration: 1.5, x: 12, opacity: 0.15 }, 1)
+          .to('.reflection', { duration: 4, x: 12, opacity: 0.35 }, 2.5)
+          .to('.reflection', { duration: 1, x: 0, opacity: 0.1 }, 6.5)
+          .to('.reflection', { duration: 4, x: 0, opacity: 0.15 });
+        /* dashed circle slow spin */
+        tl.to('#dashed', { duration: 15, rotation: 180, transformOrigin: '50% 50%', ease: 'none' }, 0);
+        return tl;
+      }
+
+      /* ── Master timeline (GSAP v3) ── */
+      var master = gsap.timeline({ delay: 0.3 });
+      master
+        .set(['#stud_whole', '.stars', '.circle'], { display: 'block' })
+        .add(circleScale())
+        .addLabel('circleEnd')
+        .add(bodyRotateIn(), 'circleEnd-=1.25')
+        .add(repeatAnim(), 'circleEnd-=1');
+
+      setTimeout(() => bookIn(), 2000);
+
+      /* ── Floating cards idle bob ── */
+      gsap.to('#hfc-1', { y: -10, duration: 2.8, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('#hfc-2', { y: 9, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.6 });
+      gsap.to('#hfc-3', { y: -7, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.1 });
+
+      /* ── Keyword tags gentle float ── */
+      gsap.to('.hero-kw-tag', {
+        y: -6, duration: 3, repeat: -1, yoyo: true,
+        ease: 'sine.inOut', stagger: { each: 0.5, from: 'random' }
+      });
+
+      /* ── Mouse parallax: student drifts slightly with cursor ── */
+      var _mx = 0, _my = 0;
+      document.addEventListener('mousemove', function (e) {
+        _mx = (e.clientX / window.innerWidth - 0.5);
+        _my = (e.clientY / window.innerHeight - 0.5);
+      });
+      gsap.ticker.add(function () {
+        gsap.set('.student-wrap', { x: _mx * 14, y: _my * 9 });
+      });
+
+      /* ── ScrollTrigger: title chars multi-rate parallax ── */
+      gsap.to('.ht-bold .st-char', {
+        yPercent: -35, ease: 'none',
+        stagger: { each: 0.015, from: 'center' },
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
+      });
+      gsap.to('.ht-accent .st-char', {
+        yPercent: -20, skewX: -6, ease: 'none', stagger: 0.02,
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
+      });
+
+      /* ── ScrollTrigger: student drifts up slower than page ── */
+      gsap.to('.student-wrap', {
+        yPercent: 18, ease: 'none',
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.8 }
+      });
+
+      /* ── ScrollTrigger: float cards disappear at different rates ── */
+      gsap.to('#hfc-1', { yPercent: -22, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
+      gsap.to('#hfc-2', { yPercent: -16, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.3 } });
+      gsap.to('#hfc-3', { yPercent: -28, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 0.9 } });
+
+      /* ── ScrollTrigger: keyword tags fade out by 40% scroll ── */
+      gsap.to('.hero-kw-tag', {
+        opacity: 0, yPercent: -12, ease: 'none',
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: '40% top', scrub: 1 }
+      });
+
+      /* ── ScrollTrigger: hero text column gentle upward drift ── */
+      gsap.to('.hero-content', {
+        yPercent: -12, ease: 'none',
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
+      });
+    }
+
+    /* ══════════════════════════════════════════
+       THREE.JS — SPLINE BANNER FALLBACK 3D
+    ══════════════════════════════════════════ */
+    (() => {
+      const canvas = document.getElementById('spline-3d');
+      if (!canvas) return;
+
+      /* Use parent dimensions — canvas may be 0x0 at init if section is below fold */
+      const wrap = canvas.parentElement;
+      const getW = () => wrap.offsetWidth || 600;
+      const getH = () => wrap.offsetHeight || 500;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(getW(), getH());
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, getW() / getH(), 0.1, 100);
+      camera.position.set(0, 0, 8);
+
+      /* Icosahedron */
+      const icoGeo = new THREE.IcosahedronGeometry(2, 1);
+      const icoEdge = new THREE.EdgesGeometry(icoGeo);
+      const icoMesh = new THREE.LineSegments(icoEdge, new THREE.LineBasicMaterial({ color: 0xE8A020, transparent: true, opacity: 0.5 }));
+      scene.add(icoMesh);
+
+      /* Orbiting amber dots */
+      const dotCount = 60;
+      const dotPositions = new Float32Array(dotCount * 3);
+      for (let i = 0; i < dotCount; i++) {
+        const theta = (i / dotCount) * Math.PI * 2;
+        const r = 2.8 + Math.sin(i * 0.7) * 0.5;
+        dotPositions[i * 3] = r * Math.cos(theta);
+        dotPositions[i * 3 + 1] = (Math.random() - 0.5) * 3;
+        dotPositions[i * 3 + 2] = r * Math.sin(theta);
+      }
+      const dotGeo = new THREE.BufferGeometry();
+      dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPositions, 3));
+      const dots = new THREE.Points(dotGeo, new THREE.PointsMaterial({ color: 0xF5B840, size: 0.08, transparent: true, opacity: 0.8 }));
+      scene.add(dots);
+
+      /* Grid plane */
+      const gridHelper = new THREE.GridHelper(10, 20, 0xE8A020, 0x162A50);
+      gridHelper.position.y = -2.5;
+      scene.add(gridHelper);
+
+      const clock = new THREE.Clock();
+      ScrollTrigger.create({
+        trigger: '#spline-banner',
+        start: 'top bottom',
+        onEnter: () => {
+          (function anim() {
+            requestAnimationFrame(anim);
+            const t = clock.getElapsedTime();
+            icoMesh.rotation.y = t * 0.3;
+            icoMesh.rotation.x = t * 0.15;
+            dots.rotation.y = t * 0.2;
+            gridHelper.position.z = (t * 0.5) % 1;
+            renderer.render(scene, camera);
+          })();
+        },
+        once: true
+      });
+
+      /* Resize: both on window resize and when section first becomes visible */
+      function resizeSpline() {
+        const w = getW(), h = getH();
+        if (w > 0 && h > 0) {
+          renderer.setSize(w, h);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        }
+      }
+      window.addEventListener('resize', resizeSpline);
+      /* Re-size once when section enters viewport the first time */
+      ScrollTrigger.create({
+        trigger: '#spline-banner', start: 'top 90%', once: true,
+        onEnter: resizeSpline
+      });
+    })();
+
+    /* ══════════════════════════════════════════
+       GSAP SCROLL REVEALS
+    ══════════════════════════════════════════ */
+    /* fromTo() is required — from() uses the element's current CSS state as the "to" target,
+       which would be opacity:1 (now that we removed the CSS pre-state). But using fromTo()
+       makes the intent explicit and bullet-proof regardless of CSS cascade. */
+    gsap.utils.toArray('.js-reveal').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 52 },
+        {
+          opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+          delay: (i % 4) * 0.1,          /* reset stagger per group of 4 */
+          clearProps: 'transform',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        }
+      );
+    });
+    gsap.utils.toArray('.js-revealL').forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, x: -64 },
+        {
+          opacity: 1, x: 0, duration: 1.2, ease: 'power3.out',
+          clearProps: 'transform',
+          scrollTrigger: { trigger: el, start: 'top 82%', once: true }
+        }
+      );
+    });
+    gsap.utils.toArray('.js-revealR').forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, x: 64 },
+        {
+          opacity: 1, x: 0, duration: 1.2, ease: 'power3.out',
+          clearProps: 'transform',
+          scrollTrigger: { trigger: el, start: 'top 82%', once: true }
+        }
+      );
+    });
+    gsap.utils.toArray('.js-revealS').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, scale: 0.88 },
+        {
+          opacity: 1, scale: 1, duration: 1, ease: 'power3.out',
+          delay: (i % 3) * 0.12,         /* reset stagger per group of 3 */
+          clearProps: 'transform',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        }
+      );
+    });
+
+    /* ══════════════════════════════════════════
+       ANIMATED COUNTERS
+    ══════════════════════════════════════════ */
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const target = +el.dataset.count;
+      const suffix = el.dataset.suffix || '';
+      ScrollTrigger.create({
+        trigger: el, start: 'top 80%', once: true,
+        onEnter: () => {
+          gsap.to({ v: 0 }, {
+            v: target, duration: 2.5, ease: 'power2.out',
+            onUpdate() {
+              el.textContent = Math.floor(this.targets()[0].v).toLocaleString() + suffix;
+            }
+          });
+        }
+      });
+    });
+
+    /* ══════════════════════════════════════════
+       PROGRAMS — HORIZONTAL PINNED SCROLL
+    ══════════════════════════════════════════ */
+    (() => {
+      const panels = gsap.utils.toArray('.prog-panel');
+      if (!panels.length) return;
+
+      gsap.to('#programs', {
+        xPercent: -100 * (panels.length - 1),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#programs-wrap',
+          pin: true,
+          scrub: 1,
+          snap: { snapTo: 1 / (panels.length - 1), duration: { min: 0.3, max: 0.7 }, ease: 'power1.inOut' },
+          end: () => '+=' + (document.querySelector('#programs').scrollWidth - window.innerWidth)
+        }
+      });
+    })();
+
+    /* ══════════════════════════════════════════
+       STORIES 3D CAROUSEL
+    ══════════════════════════════════════════ */
+    (() => {
+      const stage = document.getElementById('carousel-stage');
+      const cards = Array.from(document.querySelectorAll('.story-card-3d'));
+      const dots = Array.from(document.querySelectorAll('.car-dot'));
+      const total = cards.length;
+      const step = 360 / total;
+      const radius = 520;
+      let current = 0, autoTimer;
+
+      // Place cards in a 3-D ring
+      cards.forEach((card, i) => {
+        card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px)`;
+      });
+
+      function goTo(idx) {
+        current = ((idx % total) + total) % total;
+        stage.style.transform = `rotateY(${-current * step}deg)`;
+        cards.forEach((card, i) => {
+          const diff = ((i - current + total) % total);
+          const adj = Math.min(diff, total - diff);
+          card.style.opacity = adj === 0 ? '1' : adj === 1 ? '0.38' : '0.08';
+          card.style.pointerEvents = adj === 0 ? 'all' : 'none';
+          card.style.boxShadow = adj === 0
+            ? '0 32px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(232,160,32,0.18)'
+            : 'none';
+        });
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      function resetTimer() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(() => goTo(current + 1), 5000);
+      }
+
+      document.querySelector('.car-prev').addEventListener('click', () => { goTo(current - 1); resetTimer(); });
+      document.querySelector('.car-next').addEventListener('click', () => { goTo(current + 1); resetTimer(); });
+      dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); resetTimer(); }));
+
+      goTo(0);
+      resetTimer();
+    })();
+
+    /* ══════════════════════════════════════════
+       HOME GALLERY — dynamic fetch + GSAP stagger
+    ══════════════════════════════════════════ */
+    (async () => {
+      const grid = document.getElementById('home-gallery-grid');
+      if (!grid) return;
+
+      const FALLBACKS = [
+        { cls: 'g1', cap: 'Students at EDF Learning Centre' },
+        { cls: 'g2', cap: 'Free Health Camp, 2024' },
+        { cls: 'g3', cap: 'Scholarship Award Ceremony' },
+        { cls: 'g4', cap: 'Vocational Training Workshop' },
+        { cls: 'g5', cap: 'Ramadan Food Distribution' },
+      ];
+      const CLS = ['g1','g2','g3','g4','g5'];
+
+      function renderFallback() {
+        grid.innerHTML = FALLBACKS.map(p =>
+          `<div class="gal-item ${p.cls} js-revealS">
+            <div class="gal-inner">
+              <div class="gal-overlay"></div>
+              <div class="gal-cap">${p.cap}</div>
+            </div>
+          </div>`
+        ).join('');
+      }
+
+      function animateItems() {
+        gsap.from('#home-gallery-grid .gal-item', {
+          opacity: 0, scale: 0.86, y: 36, duration: 0.9,
+          stagger: { each: 0.1, from: 'start' },
+          ease: 'power3.out',
+          scrollTrigger: { trigger: '#gallery', start: 'top 75%', once: true }
+        });
+      }
+
+      try {
+        const res = await fetch('/api/frontdesk/gallery');
+        const images = await res.json();
+
+        if (!Array.isArray(images) || images.length === 0) {
+          renderFallback();
+        } else {
+          const shown = images.slice(0, 5);
+          grid.innerHTML = shown.map((img, i) =>
+            `<div class="gal-item ${CLS[i] || ''} js-revealS">
+              <img class="gal-photo"
+                   src="/uploads/gallery/${img.filename}"
+                   alt="${img.caption ? img.caption.replace(/"/g,'&quot;') : 'EDF Gallery'}"
+                   loading="lazy"
+                   onerror="this.style.display='none'">
+              <div class="gal-inner" style="background:none">
+                <div class="gal-overlay"></div>
+                <div class="gal-cap">${img.caption || ''}</div>
+              </div>
+            </div>`
+          ).join('');
+        }
+      } catch (e) {
+        console.error('Home gallery fetch failed:', e);
+        renderFallback();
+      }
+
+      animateItems();
+    })();
+
+    /* ══════════════════════════════════════════
+       MAGNETIC BUTTONS
+    ══════════════════════════════════════════ */
+    document.querySelectorAll('.btn-crim, .nav-donate').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const dx = e.clientX - r.left - r.width / 2;
+        const dy = e.clientY - r.top - r.height / 2;
+        gsap.to(btn, { x: dx * 0.28, y: dy * 0.28, duration: 0.5, ease: 'power2.out' });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
+      });
+    });
+
+    /* ══════════════════════════════════════════
+       PILLAR HOVER GSAP
+    ══════════════════════════════════════════ */
+    document.querySelectorAll('.pillar').forEach(p => {
+      p.addEventListener('mouseenter', () => gsap.to(p, { x: 10, duration: 0.4, ease: 'power2.out' }));
+      p.addEventListener('mouseleave', () => gsap.to(p, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' }));
+    });
+
+    /* ══════════════════════════════════════════
+       SMOOTH NAV SCROLL
+    ══════════════════════════════════════════ */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href');
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        gsap.to(window, { scrollTo: { y: target, offsetY: 80 }, duration: 1.2, ease: 'power3.inOut' });
+      });
+    });
+
+    /* ══════════════════════════════════════════
+       TICKER PAUSE ON HOVER
+    ══════════════════════════════════════════ */
+    document.getElementById('ticker')?.addEventListener('mouseenter', () => {
+      document.getElementById('ticker-inner').style.animationPlayState = 'paused';
+    });
+    document.getElementById('ticker')?.addEventListener('mouseleave', () => {
+      document.getElementById('ticker-inner').style.animationPlayState = 'running';
+    });
+
+    /* ══════════════════════════════════════════
+       FOOTER EMAIL SUBSCRIBE
+    ══════════════════════════════════════════ */
+    document.querySelector('.foot-sub-btn')?.addEventListener('click', () => {
+      const inp = document.querySelector('.foot-email');
+      if (!inp.value || !inp.value.includes('@')) {
+        gsap.to(inp, { x: [-6, 6, -4, 4, -2, 2, 0], duration: 0.4, ease: 'none' });
+        return;
+      }
+      gsap.to(inp, { opacity: 0.5, duration: 0.3 });
+      setTimeout(() => { inp.value = ''; inp.placeholder = 'Thank you! ✓'; inp.style.opacity = 1; }, 500);
+    });
+
+    /* ══════════════════════════════════════════
+       AMBIENT BLOB PARALLAX IN HERO
+    ══════════════════════════════════════════ */
+    gsap.to('.hero-blob-1', {
+      y: -80, x: 30, ease: 'none',
+      scrollTrigger: { trigger: '#hero', scrub: 2, start: 'top top', end: 'bottom top' }
+    });
+    gsap.to('.hero-blob-2', {
+      y: 60, x: -20, ease: 'none',
+      scrollTrigger: { trigger: '#hero', scrub: 2.5, start: 'top top', end: 'bottom top' }
+    });
+
+    /* ══════════════════════════════════════════
+       BACK TO TOP LOGIC
+    ══════════════════════════════════════════ */
+    const backToTopBtn = document.getElementById('backToTop');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 600) {
+          backToTopBtn.classList.add('visible');
+        } else {
+          backToTopBtn.classList.remove('visible');
+        }
+      });
+      backToTopBtn.addEventListener('click', () => {
+        gsap.to(window, { duration: 1.2, scrollTo: 0, ease: 'power3.inOut' });
+      });
+    }
+
+  </script>
 </body>
 
 </html>

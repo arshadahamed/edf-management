@@ -334,6 +334,19 @@
     }
     .um-btn.warn.um-signout-live:hover { background: rgba(239,68,68,0.15); }
     @keyframes um-signout-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.3)} 50%{box-shadow:0 0 0 4px rgba(239,68,68,0)} }
+
+    /* ── Homepage Shortcut Button ── */
+    #homepageShortcutBtn:hover {
+        background: var(--primary, #2563eb) !important;
+        border-color: var(--primary, #2563eb) !important;
+        color: #fff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+    }
+    #homepageShortcutBtn:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
     </style>
 
     <style id="ramadan-tok-css">
@@ -545,12 +558,12 @@
 
                 <!-- Brand -->
                 <div class="brand-section">
-                    <div class="logo-container">
+                    <div class="logo-container" id="sidebarLogoContainer">
                         <i data-lucide="shield-check"></i>
                     </div>
                     <div class="brand-info">
-                        <h1 class="brand-text">EDF Portal</h1>
-                        <span class="brand-subtitle">Galgamuwa</span>
+                        <h1 class="brand-text" id="sidebarBrandText">EDF Portal</h1>
+                        <span class="brand-subtitle" id="sidebarBrandSubtitle">Galgamuwa</span>
                     </div>
                 </div>
 
@@ -560,25 +573,25 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link active" data-tab="overview">
                                 <i data-lucide="layout-dashboard"></i>
-                                <span class="nav-text">Overview</span>
+                                <span class="nav-text" data-i18n="sidebar.dashboard">Overview</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="members">
                                 <i data-lucide="users"></i>
-                                <span class="nav-text">Members</span>
+                                <span class="nav-text" data-i18n="sidebar.members">Members</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="families">
                                 <i data-lucide="home"></i>
-                                <span class="nav-text">Family Registry</span>
+                                <span class="nav-text" data-i18n="sidebar.families">Family Registry</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="beneficiaries" id="beneficiariesMenu">
                                 <i data-lucide="heart-handshake"></i>
-                                <span class="nav-text">Beneficiaries</span>
+                                <span class="nav-text" data-i18n="sidebar.beneficiaries">Beneficiaries</span>
                                 <i data-lucide="chevron-down" class="menu-arrow"></i>
                             </a>
                             <ul class="nav-submenu" id="beneficiariesSubmenu">
@@ -602,7 +615,7 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="courses" id="programsMenu">
                                 <i data-lucide="graduation-cap"></i>
-                                <span class="nav-text">Programs</span>
+                                <span class="nav-text" data-i18n="sidebar.programs">Programs</span>
                                 <i data-lucide="chevron-down" class="menu-arrow"></i>
                             </a>
                             <ul class="nav-submenu" id="programsSubmenu">
@@ -621,31 +634,37 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="subscriptions">
                                 <i data-lucide="credit-card"></i>
-                                <span class="nav-text">Subscriptions</span>
+                                <span class="nav-text" data-i18n="sidebar.subscriptions">Subscriptions</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="donations">
                                 <i data-lucide="heart"></i>
-                                <span class="nav-text">Donations</span>
+                                <span class="nav-text" data-i18n="sidebar.donations">Donations</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="inventory">
                                 <i data-lucide="package"></i>
-                                <span class="nav-text">Inventory & Assets</span>
+                                <span class="nav-text" data-i18n="sidebar.inventory">Inventory & Assets</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-tab="documents">
+                                <i data-lucide="folder-open"></i>
+                                <span class="nav-text">Documents & Files</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="ramadan">
                                 <i data-lucide="moon"></i>
-                                <span class="nav-text">Ramadan Tokens</span>
+                                <span class="nav-text" data-i18n="sidebar.ramadan">Ramadan Tokens</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="volunteers">
                                 <i data-lucide="user-plus"></i>
-                                <span class="nav-text">Volunteers</span>
+                                <span class="nav-text" data-i18n="sidebar.volunteers">Volunteers</span>
                             </a>
                         </li>
                     </ul>
@@ -657,25 +676,31 @@
                         <li class="nav-item" id="usersNavItem" style="display:none;">
                             <a href="#" class="nav-link" data-tab="users">
                                 <i data-lucide="users-round"></i>
-                                <span class="nav-text">User Accounts</span>
+                                <span class="nav-text" data-i18n="sidebar.users">User Accounts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="frontdeskNavItem" style="display:none;">
+                            <a href="#" class="nav-link" data-tab="frontdesk">
+                                <i data-lucide="layout-panel-left"></i>
+                                <span class="nav-text">Front Desk</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="logs">
                                 <i data-lucide="activity"></i>
-                                <span class="nav-text">System Logs</span>
+                                <span class="nav-text" data-i18n="sidebar.syslogs">System Logs</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="profile">
                                 <i data-lucide="circle-user-round"></i>
-                                <span class="nav-text">My Profile</span>
+                                <span class="nav-text" data-i18n="sidebar.profile">My Profile</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link" data-tab="settings">
                                 <i data-lucide="settings-2"></i>
-                                <span class="nav-text">Settings</span>
+                                <span class="nav-text" data-i18n="sidebar.settings">Settings</span>
                             </a>
                         </li>
                     </ul>
@@ -711,14 +736,44 @@
                 </div>
 
                 <div class="top-bar-right">
+                    <!-- Local DateTime -->
+                    <div id="localDateTime" style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; border-right: 1px solid var(--border-color); padding-right: 0.75rem; margin-right: 0.25rem; white-space: nowrap; height: 34px;">
+                        <i data-lucide="clock" style="width: 14px; height: 14px; opacity: 0.7;"></i>
+                        <span id="datetimeStr">Loading...</span>
+                    </div>
+
+                    <!-- Language Toggle -->
+                    <div style="position: relative;" class="lang-selector-wrap">
+                        <button class="top-bar-toggle" id="langToggleBtn" title="Change Language" style="font-size: 0.8rem; font-weight: 700; width: auto; padding: 0 0.5rem; gap: 0.25rem;">
+                            <i data-lucide="globe" style="width: 15px; height: 15px;"></i>
+                            <span id="currentLangLbl">EN</span>
+                        </button>
+                        <div class="user-dropdown" id="langDropdown" style="width: 145px;">
+                            <a href="#" class="dropdown-item" onclick="setLanguage('en')">English (EN)</a>
+                            <a href="#" class="dropdown-item" onclick="setLanguage('ta')">தமிழ் (TA)</a>
+                            <a href="#" class="dropdown-item" onclick="setLanguage('si')">සිංහල (SI)</a>
+                        </div>
+                    </div>
+
                     <!-- Theme Toggle -->
                     <button class="top-bar-toggle" id="themeToggleBtn" title="Toggle Theme">
                         <i data-lucide="moon" id="themeIcon"></i>
                     </button>
-                    
+
+                    <!-- Homepage Shortcut -->
+                    <a href="/" target="_blank" id="homepageShortcutBtn"
+                       title="View Homepage"
+                       style="display:inline-flex;align-items:center;justify-content:center;
+                              width:34px;height:34px;border-radius:8px;border:1px solid var(--border-color);
+                              background:var(--card-bg);color:var(--text-muted);text-decoration:none;
+                              transition:background .18s,color .18s,border-color .18s,transform .18s;
+                              flex-shrink:0;position:relative;">
+                        <i data-lucide="house" style="width:15px;height:15px;"></i>
+                    </a>
+
                     <div class="search-wrapper" id="topSearchWrapper">
                         <i data-lucide="search" class="search-icon"></i>
-                        <input type="text" placeholder="Search members, programs..." class="search-input" id="topSearchInput" autocomplete="off">
+                        <input type="text" placeholder="Search members, programs..." class="search-input" id="topSearchInput" autocomplete="off" data-i18n-placeholder="topbar.search">
                         <!-- Search Dropdown -->
                         <div class="search-dropdown" id="searchDropdown">
                             <div style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem; text-align: center;">Type to search across EDF...</div>
@@ -1604,130 +1659,405 @@
                 <!-- TAB: RAMADAN TOKENS -->
                 <!-- TAB: INVENTORY -->
                 <div id="inventoryTab" class="tab-content">
-                    <!-- Inline CSS for inventory module -->
                     <style>
-                        .inv-action-btn { padding:.3rem .45rem; border-radius:7px; font-size:.75rem; display:inline-flex; align-items:center; gap:.25rem; transition:all .15s; }
-                        .inv-maint-btn  { background:rgba(16,185,129,.08)!important; color:#10b981!important; }
-                        .inv-del-btn    { background:#fee2e2!important; color:#ef4444!important; }
-                        .inv-action-btn:hover { transform:translateY(-1px); box-shadow:0 2px 8px rgba(0,0,0,.12); }
-                        .inv-row:hover td { background:var(--glow-bg); }
-                        .inv-row td { transition:background .15s; }
-                        .inv-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:14px; padding:1.1rem 1.1rem .9rem; transition:all .2s; position:relative; overflow:hidden; }
-                        .inv-card:hover { box-shadow:0 6px 24px rgba(0,0,0,.09); border-color:var(--primary); transform:translateY(-2px); }
-                        .inv-card-low { border-color:#fca5a5 !important; }
-                        .inv-card-low::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,#ef4444,#f97316); }
-                        .inv-view-btn { padding:.35rem .6rem; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-muted); cursor:pointer; transition:all .15s; }
-                        .inv-view-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
-                        .inv-view-btn:hover:not(.active) { background:var(--glow-bg); color:var(--text-main); }
-                        @keyframes inv-pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
-                        .inv-alert-pulse .stat-value { animation:inv-pulse 1.8s ease-in-out infinite; }
+                        /* ── Inventory Premium Styles ─────────────────────── */
+                        .inv-hero {
+                            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 60%, #0d9488 100%);
+                            border-radius: 18px;
+                            padding: 1.75rem 2rem;
+                            margin-bottom: 1.5rem;
+                            position: relative;
+                            overflow: hidden;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            gap: 1.2rem;
+                        }
+                        .inv-hero::before {
+                            content: '';
+                            position: absolute;
+                            top: -40px; right: -40px;
+                            width: 200px; height: 200px;
+                            border-radius: 50%;
+                            background: rgba(255,255,255,.06);
+                            pointer-events: none;
+                        }
+                        .inv-hero::after {
+                            content: '';
+                            position: absolute;
+                            bottom: -60px; left: 20%;
+                            width: 260px; height: 260px;
+                            border-radius: 50%;
+                            background: rgba(255,255,255,.04);
+                            pointer-events: none;
+                        }
+                        .inv-hero-title { font-size: 1.55rem; font-weight: 800; color: #fff; letter-spacing: -.02em; line-height: 1.2; }
+                        .inv-hero-sub   { font-size: .82rem; color: rgba(255,255,255,.72); margin-top: .2rem; }
+                        .inv-hero-search {
+                            display: flex; align-items: center; gap: .5rem;
+                            background: rgba(255,255,255,.15);
+                            backdrop-filter: blur(8px);
+                            border: 1px solid rgba(255,255,255,.25);
+                            border-radius: 12px;
+                            padding: .45rem .9rem;
+                            flex: 1; max-width: 280px;
+                        }
+                        .inv-hero-search input {
+                            background: transparent; border: none; outline: none;
+                            color: #fff; font-size: .85rem; width: 100%;
+                        }
+                        .inv-hero-search input::placeholder { color: rgba(255,255,255,.55); }
+                        .inv-hero-btn {
+                            display: inline-flex; align-items: center; gap: .4rem;
+                            padding: .5rem 1rem; border-radius: 10px; font-size: .82rem;
+                            font-weight: 600; cursor: pointer; border: none; transition: all .18s;
+                        }
+                        .inv-hero-btn-ghost {
+                            background: rgba(255,255,255,.15);
+                            color: #fff;
+                            border: 1px solid rgba(255,255,255,.25);
+                        }
+                        .inv-hero-btn-ghost:hover { background: rgba(255,255,255,.28); transform: translateY(-1px); }
+                        .inv-hero-btn-solid {
+                            background: #fff;
+                            color: var(--primary);
+                        }
+                        .inv-hero-btn-solid:hover { background: #f0f4ff; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+
+                        /* KPI Cards */
+                        .inv-kpi-grid {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+                            gap: 1rem;
+                            margin-bottom: 1.5rem;
+                        }
+                        .inv-kpi-card {
+                            background: var(--bg-card);
+                            border: 1px solid var(--border-color);
+                            border-radius: 16px;
+                            padding: 1.2rem 1.25rem 1rem;
+                            position: relative;
+                            overflow: hidden;
+                            transition: all .2s;
+                        }
+                        .inv-kpi-card::before {
+                            content: '';
+                            position: absolute;
+                            top: 0; left: 0; right: 0;
+                            height: 3px;
+                            background: var(--inv-accent, var(--primary));
+                            border-radius: 3px 3px 0 0;
+                        }
+                        .inv-kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.1); border-color: var(--inv-accent, var(--primary)); }
+                        .inv-kpi-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); margin-bottom: .55rem; }
+                        .inv-kpi-value { font-size: 1.9rem; font-weight: 800; line-height: 1; color: var(--text-main); }
+                        .inv-kpi-sub   { font-size: .73rem; color: var(--text-muted); margin-top: .3rem; }
+                        .inv-kpi-icon  {
+                            position: absolute; top: 1rem; right: 1rem;
+                            width: 36px; height: 36px; border-radius: 10px;
+                            display: flex; align-items: center; justify-content: center;
+                            background: var(--inv-bg, var(--glow-bg));
+                            color: var(--inv-accent, var(--primary));
+                        }
+
+                        /* Main table card */
+                        .inv-table-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; }
+                        .inv-toolbar {
+                            padding: 1rem 1.25rem;
+                            border-bottom: 1px solid var(--border-color);
+                            display: flex; justify-content: space-between; align-items: center;
+                            flex-wrap: wrap; gap: .75rem;
+                            background: var(--bg-card);
+                        }
+                        .inv-cat-chip {
+                            display: inline-flex; align-items: center; gap: .3rem;
+                            padding: .35rem .8rem; border-radius: 20px; font-size: .77rem;
+                            font-weight: 600; cursor: pointer; border: 1.5px solid var(--border-color);
+                            background: transparent; color: var(--text-muted);
+                            transition: all .15s; white-space: nowrap;
+                        }
+                        .inv-cat-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--glow-bg); }
+                        .inv-cat-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+                        .inv-view-btn {
+                            width: 34px; height: 34px; border-radius: 9px;
+                            border: 1.5px solid var(--border-color);
+                            background: var(--bg-card); color: var(--text-muted);
+                            display: flex; align-items: center; justify-content: center;
+                            cursor: pointer; transition: all .15s;
+                        }
+                        .inv-view-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+                        .inv-view-btn:hover:not(.active) { background: var(--glow-bg); color: var(--text-main); }
+                        .inv-count-bar {
+                            padding: .5rem 1.25rem;
+                            font-size: .77rem; color: var(--text-muted);
+                            border-bottom: 1px solid var(--border-color);
+                            background: var(--bg-sidebar);
+                            display: flex; align-items: center; gap: .5rem;
+                        }
+                        .inv-count-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); display: inline-block; }
+
+                        /* Table rows */
+                        .inv-action-btn {
+                            padding: .28rem .42rem; border-radius: 7px; font-size: .73rem;
+                            display: inline-flex; align-items: center; gap: .22rem;
+                            transition: all .15s; border: 1px solid var(--border-color);
+                            background: var(--bg-card); color: var(--text-muted); cursor: pointer;
+                        }
+                        .inv-action-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,.12); }
+                        .inv-maint-btn { background: rgba(16,185,129,.08)!important; color: #10b981!important; border-color: rgba(16,185,129,.2)!important; }
+                        .inv-del-btn   { background: rgba(239,68,68,.06)!important; color: #ef4444!important; border-color: rgba(239,68,68,.15)!important; }
+                        .inv-row:hover td { background: var(--glow-bg); }
+                        .inv-row td { transition: background .15s; border-bottom: 1px solid var(--border-color); }
+                        .inv-row:last-child td { border-bottom: none; }
+
+                        /* Grid cards */
+                        .inv-card {
+                            background: var(--bg-card); border: 1.5px solid var(--border-color);
+                            border-radius: 16px; padding: 1.15rem; transition: all .22s;
+                            position: relative; overflow: hidden; cursor: default;
+                        }
+                        .inv-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.1); border-color: var(--primary); transform: translateY(-3px); }
+                        .inv-card-low { border-color: #fca5a5!important; }
+                        .inv-card-low::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #ef4444, #f97316); }
+
+                        /* Animations */
+                        @keyframes inv-pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+                        .inv-alert-pulse { animation: inv-pulse 2s ease-in-out infinite; }
+                        @keyframes inv-fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+                        #invViewContainer > * { animation: inv-fadein .25s ease; }
                     </style>
 
-                    <div class="tab-header-premium">
-                        <div class="header-left">
-                            <h2 style="font-size:1.5rem; color:var(--text-main);">Inventory &amp; Asset Management</h2>
-                            <p style="color:var(--text-muted); font-size:0.875rem;">IT equipment · Furniture · Library · Electronics · Consumables</p>
+                    <!-- ── Hero Banner ─────────────────────────────────── -->
+                    <div class="inv-hero">
+                        <div style="position:relative;z-index:1;">
+                            <div class="inv-hero-title">
+                                <i data-lucide="package" style="width:22px;vertical-align:middle;margin-right:6px;opacity:.85;"></i>
+                                Inventory &amp; Assets
+                            </div>
+                            <div class="inv-hero-sub">IT Equipment &nbsp;·&nbsp; Furniture &nbsp;·&nbsp; Library &nbsp;·&nbsp; Electronics &nbsp;·&nbsp; Consumables</div>
                         </div>
-                        <div class="header-actions" style="flex-wrap:wrap;gap:.6rem;">
-                            <div class="search-mini">
-                                <i data-lucide="search" style="width:16px; color:var(--text-muted);"></i>
+                        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;position:relative;z-index:1;">
+                            <div class="inv-hero-search">
+                                <i data-lucide="search" style="width:15px;color:rgba(255,255,255,.65);flex-shrink:0;"></i>
                                 <input type="text" placeholder="Search name, S/N, author…" id="invSearchInput" oninput="filterInventory()">
                             </div>
-                            <button class="btn btn-outline" style="font-size:.82rem;" onclick="openInvLoansViewModal()">
-                                <i data-lucide="log-out"></i> Loans
+                            <button class="inv-hero-btn inv-hero-btn-ghost" onclick="openInvLoansViewModal()">
+                                <i data-lucide="log-out" style="width:14px;"></i> Loans
                             </button>
-                            <button class="btn btn-outline" style="font-size:.82rem;" onclick="openInvMaintViewModal()">
-                                <i data-lucide="wrench"></i> Maintenance
+                            <button class="inv-hero-btn inv-hero-btn-ghost" onclick="openInvMaintViewModal()">
+                                <i data-lucide="wrench" style="width:14px;"></i> Maintenance
                             </button>
-                            <button class="btn btn-outline" style="font-size:.82rem;" onclick="openInvUsageModal()">
-                                <i data-lucide="minus-circle"></i> Log Usage
+                            <button class="inv-hero-btn inv-hero-btn-ghost" onclick="openInvUsageModal()">
+                                <i data-lucide="minus-circle" style="width:14px;"></i> Log Usage
                             </button>
-                            <button class="btn btn-primary" style="font-size:.82rem;" onclick="openInvItemModal('add')">
-                                <i data-lucide="plus"></i> Add Item
+                            <button class="inv-hero-btn inv-hero-btn-solid" onclick="openInvItemModal('add')">
+                                <i data-lucide="plus" style="width:14px;"></i> Add Item
                             </button>
                         </div>
                     </div>
 
-                    <!-- 5 KPI Cards -->
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem;margin-bottom:1.5rem;">
-                        <div class="card stat-card">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                                <div><div style="font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Total Assets</div>
-                                <div class="stat-value" id="invStatTotal">—</div></div>
-                                <div class="stat-icon-wrapper" style="background:var(--glow-bg);color:var(--primary);"><i data-lucide="package" style="width:20px;"></i></div>
-                            </div>
+                    <!-- ── KPI Cards ──────────────────────────────────── -->
+                    <div class="inv-kpi-grid">
+                        <div class="inv-kpi-card" style="--inv-accent:#6366f1; --inv-bg:rgba(99,102,241,.1);">
+                            <div class="inv-kpi-icon"><i data-lucide="package" style="width:18px;"></i></div>
+                            <div class="inv-kpi-label">Total Assets</div>
+                            <div class="inv-kpi-value" id="invStatTotal">—</div>
+                            <div class="inv-kpi-sub">Registered items</div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                                <div><div style="font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Items Out</div>
-                                <div class="stat-value" id="invStatOut">—</div></div>
-                                <div class="stat-icon-wrapper" style="background:rgba(99,102,241,.1);color:#6366f1;"><i data-lucide="arrow-up-right" style="width:20px;"></i></div>
-                            </div>
+                        <div class="inv-kpi-card" style="--inv-accent:#3b82f6; --inv-bg:rgba(59,130,246,.1);">
+                            <div class="inv-kpi-icon"><i data-lucide="arrow-up-right" style="width:18px;"></i></div>
+                            <div class="inv-kpi-label">Items Out</div>
+                            <div class="inv-kpi-value" id="invStatOut">—</div>
+                            <div class="inv-kpi-sub">Currently checked out</div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                                <div><div style="font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Overdue Returns</div>
-                                <div class="stat-value" id="invStatOverdue" style="color:#ef4444;">—</div></div>
-                                <div class="stat-icon-wrapper" style="background:rgba(239,68,68,.08);color:#ef4444;"><i data-lucide="clock" style="width:20px;"></i></div>
-                            </div>
+                        <div class="inv-kpi-card" style="--inv-accent:#ef4444; --inv-bg:rgba(239,68,68,.08);">
+                            <div class="inv-kpi-icon"><i data-lucide="clock" style="width:18px;"></i></div>
+                            <div class="inv-kpi-label">Overdue</div>
+                            <div class="inv-kpi-value inv-alert-pulse" id="invStatOverdue" style="color:#ef4444;">—</div>
+                            <div class="inv-kpi-sub">Past return date</div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                                <div><div style="font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Low Stock</div>
-                                <div class="stat-value" id="invStatLowStock" style="color:#f59e0b;">—</div></div>
-                                <div class="stat-icon-wrapper" style="background:rgba(245,158,11,.1);color:#f59e0b;"><i data-lucide="alert-triangle" style="width:20px;"></i></div>
-                            </div>
+                        <div class="inv-kpi-card" style="--inv-accent:#f59e0b; --inv-bg:rgba(245,158,11,.1);">
+                            <div class="inv-kpi-icon"><i data-lucide="alert-triangle" style="width:18px;"></i></div>
+                            <div class="inv-kpi-label">Low Stock</div>
+                            <div class="inv-kpi-value" id="invStatLowStock" style="color:#f59e0b;">—</div>
+                            <div class="inv-kpi-sub">Below minimum level</div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                                <div><div style="font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Total Value</div>
-                                <div class="stat-value" id="invStatValue">—</div></div>
-                                <div class="stat-icon-wrapper" style="background:rgba(16,185,129,.1);color:#10b981;"><i data-lucide="trending-up" style="width:20px;"></i></div>
-                            </div>
+                        <div class="inv-kpi-card" style="--inv-accent:#10b981; --inv-bg:rgba(16,185,129,.1);">
+                            <div class="inv-kpi-icon"><i data-lucide="trending-up" style="width:18px;"></i></div>
+                            <div class="inv-kpi-label">Total Value</div>
+                            <div class="inv-kpi-value" id="invStatValue" style="font-size:1.4rem;">—</div>
+                            <div class="inv-kpi-sub">Current asset value</div>
                         </div>
                     </div>
 
-                    <!-- Main Card -->
-                    <div class="card" style="overflow:hidden;">
-                        <!-- Toolbar -->
-                        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;">
-                            <!-- Category pills -->
-                            <div class="filter-group" style="flex-wrap:wrap;gap:.35rem;">
-                                <button class="filter-pill active" id="invCat-all"         onclick="setInvCategoryFilter('all')">All</button>
-                                <button class="filter-pill"        id="invCat-it"          onclick="setInvCategoryFilter('it')"><i data-lucide="monitor" style="width:11px;vertical-align:middle;margin-right:1px;"></i>IT</button>
-                                <button class="filter-pill"        id="invCat-furniture"   onclick="setInvCategoryFilter('furniture')"><i data-lucide="armchair" style="width:11px;vertical-align:middle;margin-right:1px;"></i>Furniture</button>
-                                <button class="filter-pill"        id="invCat-library"     onclick="setInvCategoryFilter('library')"><i data-lucide="book-open" style="width:11px;vertical-align:middle;margin-right:1px;"></i>Library</button>
-                                <button class="filter-pill"        id="invCat-electronics" onclick="setInvCategoryFilter('electronics')"><i data-lucide="zap" style="width:11px;vertical-align:middle;margin-right:1px;"></i>Electronics</button>
-                                <button class="filter-pill"        id="invCat-stationery"  onclick="setInvCategoryFilter('stationery')"><i data-lucide="pen-tool" style="width:11px;vertical-align:middle;margin-right:1px;"></i>Stationery</button>
+                    <!-- ── Main Table Card ────────────────────────────── -->
+                    <div class="inv-table-card">
+                        <div class="inv-toolbar">
+                            <!-- Category chips -->
+                            <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;">
+                                <button class="inv-cat-chip active" id="invCat-all"         onclick="setInvCategoryFilter('all')">All</button>
+                                <button class="inv-cat-chip"        id="invCat-it"          onclick="setInvCategoryFilter('it')"><i data-lucide="monitor" style="width:11px;"></i>IT &amp; Media</button>
+                                <button class="inv-cat-chip"        id="invCat-furniture"   onclick="setInvCategoryFilter('furniture')"><i data-lucide="armchair" style="width:11px;"></i>Furniture</button>
+                                <button class="inv-cat-chip"        id="invCat-library"     onclick="setInvCategoryFilter('library')"><i data-lucide="book-open" style="width:11px;"></i>Library</button>
+                                <button class="inv-cat-chip"        id="invCat-electronics" onclick="setInvCategoryFilter('electronics')"><i data-lucide="zap" style="width:11px;"></i>Electronics</button>
+                                <button class="inv-cat-chip"        id="invCat-stationery"  onclick="setInvCategoryFilter('stationery')"><i data-lucide="pen-tool" style="width:11px;"></i>Stationery</button>
                             </div>
                             <!-- Right controls -->
-                            <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
-                                <select class="form-select" style="padding:.3rem .65rem;font-size:.8rem;height:auto;" onchange="setInvStatusFilter(this.value)" id="invStatSelect">
+                            <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:nowrap;">
+                                <select class="form-select" style="padding-top:.35rem;padding-bottom:.35rem;font-size:.8rem;height:auto;border-radius:9px;width:auto;display:inline-block;flex-shrink:0;" onchange="setInvStatusFilter(this.value)" id="invStatSelect">
                                     <option value="all">All Status</option>
                                     <option value="available">Available</option>
                                     <option value="in_use">In Use</option>
                                     <option value="maintenance">Maintenance</option>
                                     <option value="retired">Retired</option>
                                 </select>
-                                <select class="form-select" style="padding:.3rem .65rem;font-size:.8rem;height:auto;" onchange="setInvPageSize(this.value)">
-                                    <option value="12">12/page</option>
-                                    <option value="24">24/page</option>
-                                    <option value="48">48/page</option>
+                                <select class="form-select" style="padding-top:.35rem;padding-bottom:.35rem;font-size:.8rem;height:auto;border-radius:9px;width:auto;display:inline-block;flex-shrink:0;" onchange="setInvPageSize(this.value)">
+                                    <option value="12">12 / page</option>
+                                    <option value="24">24 / page</option>
+                                    <option value="48">48 / page</option>
                                 </select>
-                                <div style="display:flex;gap:.3rem;">
+                                <div style="display:flex;gap:.3rem;flex-shrink:0;">
                                     <button class="inv-view-btn active" id="invViewTable" onclick="setInvView('table')" title="Table view"><i data-lucide="list" style="width:15px;"></i></button>
                                     <button class="inv-view-btn"        id="invViewGrid"  onclick="setInvView('grid')"  title="Grid view"><i data-lucide="layout-grid" style="width:15px;"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <!-- Count label -->
-                        <div style="padding:.45rem 1.25rem;font-size:.78rem;color:var(--text-muted);border-bottom:1px solid var(--border-color);" id="invCount">Loading…</div>
-                        <!-- Dynamic render target -->
+                        <!-- Count bar -->
+                        <div class="inv-count-bar">
+                            <span class="inv-count-dot"></span>
+                            <span id="invCount">Loading…</span>
+                        </div>
+                        <!-- Dynamic content -->
                         <div id="invViewContainer"></div>
                         <!-- Pagination -->
-                        <div style="padding:.75rem 1.25rem;border-top:1px solid var(--border-color);" id="invPagination"></div>
+                        <div style="padding:.8rem 1.25rem;border-top:1px solid var(--border-color);background:var(--bg-sidebar);" id="invPagination"></div>
                     </div>
                 </div>
+
+                <!-- TAB: DOCUMENTS & FILES -->
+                <div id="documentsTab" class="tab-content">
+                  <style>
+                    .doc-stats-bar { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+                    .doc-stat-card { flex:1; min-width:120px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:14px 18px; }
+                    .doc-stat-val  { font-size:1.5rem; font-weight:700; color:var(--text-main); line-height:1; }
+                    .doc-stat-lbl  { font-size:11px; color:var(--text-muted); margin-top:4px; }
+                    .doc-filters   { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+                    .doc-search    { flex:1; min-width:180px; position:relative; }
+                    .doc-search input { width:100%; padding:8px 12px 8px 34px; border:1px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg-card); color:var(--text-main); }
+                    .doc-search i  { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-muted); pointer-events:none; }
+                    .doc-cat-filter select { padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg-card); color:var(--text-main); }
+                    .doc-table     { width:100%; border-collapse:collapse; }
+                    .doc-table th  { padding:10px 14px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+                    .doc-table td  { padding:12px 14px; font-size:13px; color:var(--text-main); border-bottom:1px solid var(--border); vertical-align:middle; }
+                    .doc-table tr:last-child td { border-bottom:none; }
+                    .doc-table tr:hover td { background:var(--hover-bg,rgba(0,0,0,.03)); }
+                    .doc-icon      { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+                    .doc-name-cell { display:flex; align-items:center; gap:10px; }
+                    .doc-name      { font-weight:600; color:var(--text-main); max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+                    .doc-desc      { font-size:11px; color:var(--text-muted); margin-top:2px; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+                    .doc-cat-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+                    .doc-actions   { display:flex; gap:6px; }
+                    .doc-actions button { padding:5px 10px; border-radius:6px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:var(--bg-card); color:var(--text-main); transition:.15s; }
+                    .doc-actions button:hover { border-color:var(--primary); color:var(--primary); }
+                    .doc-actions .btn-dl:hover  { border-color:#2563eb; color:#2563eb; }
+                    .doc-actions .btn-del:hover { border-color:#ef4444; color:#ef4444; }
+                    .doc-empty     { padding:48px; text-align:center; color:var(--text-muted); }
+                    .doc-upload-zone { border:2px dashed var(--border); border-radius:12px; padding:32px; text-align:center; cursor:pointer; transition:.2s; }
+                    .doc-upload-zone:hover, .doc-upload-zone.drag-over { border-color:var(--primary); background:rgba(var(--primary-rgb,10,92,62),.04); }
+                    .doc-upload-zone p { font-size:13px; color:var(--text-muted); margin:8px 0 0; }
+                    #doc-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9000; display:none; align-items:center; justify-content:center; }
+                    #doc-modal-overlay.open { display:flex; }
+                    .doc-modal { background:var(--bg-card); border-radius:16px; width:520px; max-width:94vw; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+                    .doc-modal-hdr { display:flex; align-items:center; justify-content:space-between; padding:20px 24px 0; }
+                    .doc-modal-hdr h3 { font-size:1rem; font-weight:700; margin:0; }
+                    .doc-modal-close { background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-muted); padding:0 4px; }
+                    .doc-modal-body { padding:20px 24px; }
+                    .doc-modal-foot { padding:0 24px 20px; display:flex; gap:8px; justify-content:flex-end; }
+                    .doc-form-group { margin-bottom:14px; }
+                    .doc-form-group label { display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:5px; }
+                    .doc-form-group input, .doc-form-group select, .doc-form-group textarea { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg-card); color:var(--text-main); box-sizing:border-box; }
+                    .doc-form-group textarea { resize:vertical; min-height:70px; }
+                    .doc-progress { height:4px; background:var(--border); border-radius:2px; margin-top:10px; overflow:hidden; display:none; }
+                    .doc-progress-bar { height:100%; background:var(--primary,#0A5C3E); width:0; transition:width .2s; }
+                  </style>
+
+                  <div class="tab-header-premium">
+                    <div class="header-left">
+                      <h2 style="font-size:1.5rem;color:var(--text-main);">Documents &amp; Files</h2>
+                      <p style="color:var(--text-muted);font-size:0.875rem;">Store, organise, and access important files — PDFs, spreadsheets, audio, video, and more.</p>
+                    </div>
+                    <div class="header-actions">
+                      <button class="btn btn-primary" onclick="docOpenUploadModal()">
+                        <i data-lucide="upload" style="width:15px;height:15px;"></i> Upload File
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Stats bar -->
+                  <div class="doc-stats-bar" id="doc-stats-bar">
+                    <div class="doc-stat-card"><div class="doc-stat-val" id="ds-total">—</div><div class="doc-stat-lbl">Total Files</div></div>
+                    <div class="doc-stat-card"><div class="doc-stat-val" id="ds-size">—</div><div class="doc-stat-lbl">Total Size</div></div>
+                    <div class="doc-stat-card"><div class="doc-stat-val" id="ds-pdf">0</div><div class="doc-stat-lbl">PDFs</div></div>
+                    <div class="doc-stat-card"><div class="doc-stat-val" id="ds-docs">0</div><div class="doc-stat-lbl">Documents</div></div>
+                    <div class="doc-stat-card"><div class="doc-stat-val" id="ds-sheets">0</div><div class="doc-stat-lbl">Spreadsheets</div></div>
+                    <div class="doc-stat-card"><div class="doc-stat-val" id="ds-media">0</div><div class="doc-stat-lbl">Media</div></div>
+                  </div>
+
+                  <!-- Filters -->
+                  <div class="doc-filters">
+                    <div class="doc-search">
+                      <i data-lucide="search"></i>
+                      <input type="text" id="doc-search-input" placeholder="Search files…" oninput="docFilterChange()">
+                    </div>
+                    <div class="doc-cat-filter">
+                      <select id="doc-cat-select" onchange="docFilterChange()">
+                        <option value="all">All Categories</option>
+                        <option value="pdf">PDF</option>
+                        <option value="word">Word</option>
+                        <option value="excel">Excel / Spreadsheet</option>
+                        <option value="presentation">Presentation</option>
+                        <option value="audio">Audio</option>
+                        <option value="video">Video</option>
+                        <option value="image">Image</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Table -->
+                  <div class="card" style="border-radius:14px;overflow:hidden;">
+                    <div class="table-container" style="overflow-x:auto;">
+                      <table class="doc-table">
+                        <thead>
+                          <tr>
+                            <th style="width:40%;">File</th>
+                            <th>Category</th>
+                            <th>Size</th>
+                            <th>Uploaded</th>
+                            <th>By</th>
+                            <th style="text-align:right;">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody id="doc-table-body">
+                          <tr><td colspan="6" class="doc-empty">Loading…</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Upload / Edit Modal -->
+                  <div id="doc-modal-overlay">
+                    <div class="doc-modal">
+                      <div class="doc-modal-hdr">
+                        <h3 id="doc-modal-title">Upload File</h3>
+                        <button class="doc-modal-close" onclick="docCloseModal()">×</button>
+                      </div>
+                      <div class="doc-modal-body" id="doc-modal-body"></div>
+                      <div class="doc-modal-foot" id="doc-modal-foot"></div>
+                    </div>
+                  </div>
+                </div><!-- /documentsTab -->
 
                 <div id="ramadanTab" class="tab-content">
                     <div class="tab-header-premium">
@@ -1958,6 +2288,7 @@
                         <div class="fb-canvas-wrap">
                             <div class="fb-canvas" id="fbCanvas"
                                 ondragover="FB.onCanvasDragOver(event)"
+                                ondragenter="FB.onCanvasDragOver(event)"
                                 ondragleave="FB.onCanvasDragLeave(event)"
                                 ondrop="FB.onCanvasDrop(event)">
 
@@ -2075,7 +2406,7 @@
                     </div>
 
                     <!-- ── Save Template Dialog ──────────────────────── -->
-                    <div class="fb-save-overlay" id="fbSaveOverlay" style="display:none;" onclick="if(event.target===this)FB.closeSaveDialog()">
+                    <div class="fb-save-overlay" id="fbSaveOverlay" style="display:none;">
                         <div class="fb-save-dialog">
                             <div class="fb-save-dialog-header">
                                 <div style="display:flex;align-items:center;gap:0.625rem;">
@@ -2431,6 +2762,7 @@
                                     </div>
                                 </div>
                                 <div class="settings-card-body">
+                                    <form onsubmit="changePassword(); return false;" autocomplete="on">
                                     <div class="sform-group">
                                         <label class="sform-label">Current Password</label>
                                         <input type="password" class="sform-input" id="profileCurrentPw" placeholder="Enter current password" autocomplete="current-password">
@@ -2448,10 +2780,11 @@
                                         </div>
                                     </div>
                                     <div class="section-save-bar">
-                                        <button class="btn btn-primary" style="font-size:0.85rem;" onclick="changePassword()" id="changePwBtn">
+                                        <button type="submit" class="btn btn-primary" style="font-size:0.85rem;" id="changePwBtn">
                                             <i data-lucide="lock"></i> Update Password
                                         </button>
                                     </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -2989,6 +3322,53 @@
                             <div class="settings-panel" id="settings-organization">
                                 <div class="settings-card">
                                     <div class="settings-card-header">
+                                        <div class="settings-card-icon"><i data-lucide="image"></i></div>
+                                        <div>
+                                            <div class="settings-card-title">Branding</div>
+                                            <div class="settings-card-subtitle">Manage logo, favicon and organization title</div>
+                                        </div>
+                                    </div>
+                                    <div class="settings-card-body">
+                                        <div class="form-row-2">
+                                            <div class="sform-group">
+                                                <label class="sform-label">Brand Title</label>
+                                                <input type="text" class="sform-input" id="settingBrandText" placeholder="e.g. EDF Portal" onchange="saveBrandSetting('brand_text', this.value)">
+                                            </div>
+                                            <div class="sform-group">
+                                                <label class="sform-label">Brand Subtitle</label>
+                                                <input type="text" class="sform-input" id="settingBrandSubtitle" placeholder="e.g. Galgamuwa" onchange="saveBrandSetting('brand_subtitle', this.value)">
+                                            </div>
+                                        </div>
+                                        <div class="form-row-2">
+                                            <div class="sform-group">
+                                                <label class="sform-label">Main Logo</label>
+                                                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                                                    <div id="logoPreviewContainer" style="width:50px; height:50px; border-radius:10px; background:var(--glow-bg); display:flex; align-items:center; justify-content:center; border:1px solid var(--border-color); overflow:hidden;">
+                                                        <i data-lucide="image" style="width:20px; color:var(--text-muted);"></i>
+                                                    </div>
+                                                    <input type="file" id="logoUpload" accept="image/*" style="display:none;" onchange="handleBrandAssetUpload(this, 'logo')">
+                                                    <button class="btn btn-outline" style="font-size:0.75rem; padding:0.4rem 0.8rem;" onclick="document.getElementById('logoUpload').click()">
+                                                        <i data-lucide="upload" style="width:14px;"></i> Upload Logo
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="sform-group">
+                                                <label class="sform-label">Favicon</label>
+                                                <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                                                    <div id="faviconPreviewContainer" style="width:32px; height:32px; border-radius:6px; background:var(--glow-bg); display:flex; align-items:center; justify-content:center; border:1px solid var(--border-color); overflow:hidden;">
+                                                        <i data-lucide="image" style="width:14px; color:var(--text-muted);"></i>
+                                                    </div>
+                                                    <input type="file" id="faviconUpload" accept="image/*" style="display:none;" onchange="handleBrandAssetUpload(this, 'favicon')">
+                                                    <button class="btn btn-outline" style="font-size:0.75rem; padding:0.4rem 0.8rem;" onclick="document.getElementById('faviconUpload').click()">
+                                                        <i data-lucide="upload" style="width:14px;"></i> Upload Favicon
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="settings-card">
+                                    <div class="settings-card-header">
                                         <div class="settings-card-icon"><i data-lucide="building-2"></i></div>
                                         <div>
                                             <div class="settings-card-title">Organization Information</div>
@@ -3192,16 +3572,321 @@
                 </div><!-- /.notificationsTab -->
 
 
+                <!-- ═══════════════ TAB: FRONT DESK ═══════════════ -->
+                <div id="frontdeskTab" class="tab-content">
+                  <style>
+                    /* ── Front Desk Tab Styles ── */
+                    .fd-subnav { display:flex; gap:4px; margin-bottom:1.5rem; background:var(--card-bg,#fff); border:1px solid var(--border-color,#e4e8f0); border-radius:12px; padding:6px; }
+                    .fd-subnav-btn { flex:1; padding:8px 12px; border:none; background:transparent; border-radius:8px; font-size:13px; font-weight:500; color:var(--text-muted,#6b7a99); cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:7px; }
+                    .fd-subnav-btn:hover { background:var(--hover-bg,rgba(12,26,52,.05)); color:var(--text-main,#1a2340); }
+                    .fd-subnav-btn.active { background:var(--primary,#2563eb); color:#fff; }
+                    .fd-page { display:none; }
+                    .fd-page.active { display:block; }
+                    .fd-stats-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:1.5rem; }
+                    .fd-stat-box { background:var(--card-bg,#fff); border:1px solid var(--border-color,#e4e8f0); border-radius:12px; padding:18px 20px; text-align:center; }
+                    .fd-stat-val { font-size:1.8rem; font-weight:700; color:var(--text-main,#1a2340); line-height:1; }
+                    .fd-stat-lbl { font-size:11px; color:var(--text-muted,#6b7a99); margin-top:4px; text-transform:uppercase; letter-spacing:.06em; }
+                    .fd-upload-zone { border:2px dashed var(--border-color,#e4e8f0); border-radius:12px; padding:40px 24px; text-align:center; cursor:pointer; transition:border-color .25s,background .25s; position:relative; overflow:hidden; }
+                    .fd-upload-zone:hover,.fd-upload-zone.drag-over { border-color:var(--primary,#2563eb); background:rgba(37,99,235,.03); }
+                    .fd-upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+                    .fd-upload-zone h4 { font-size:14px; font-weight:600; color:var(--text-main,#1a2340); margin-bottom:6px; }
+                    .fd-upload-zone p { font-size:12px; color:var(--text-muted,#6b7a99); }
+                    .fd-upload-icon { width:48px; height:48px; border-radius:14px; background:rgba(37,99,235,.08); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:20px; }
+                    .fd-progress { height:3px; background:var(--border-color,#e4e8f0); border-radius:2px; margin-top:14px; overflow:hidden; display:none; }
+                    .fd-progress-fill { height:100%; background:var(--primary,#2563eb); border-radius:2px; transition:width .3s; }
+                    .fd-img-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; }
+                    .fd-img-card { background:var(--card-bg,#fff); border:1px solid var(--border-color,#e4e8f0); border-radius:10px; overflow:hidden; }
+                    .fd-img-thumb { position:relative; aspect-ratio:4/3; overflow:hidden; background:#f4f6fa; }
+                    .fd-img-thumb img { width:100%; height:100%; object-fit:cover; }
+                    .fd-img-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--text-muted,#6b7a99); }
+                    .fd-img-status { position:absolute; top:6px; right:6px; font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; }
+                    .fd-img-status.active { background:rgba(16,185,129,.15); color:#059669; }
+                    .fd-img-status.hidden { background:rgba(107,114,153,.12); color:#6b7a99; }
+                    .fd-img-info { padding:10px 12px; }
+                    .fd-img-caption { font-size:12px; font-weight:600; color:var(--text-main,#1a2340); margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+                    .fd-img-cat { display:inline-block; font-size:10px; background:rgba(37,99,235,.08); color:var(--primary,#2563eb); border-radius:4px; padding:1px 6px; margin-right:4px; margin-bottom:4px; }
+                    .fd-img-actions { display:flex; gap:6px; margin-top:8px; }
+                    .fd-list-row { display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px solid var(--border-color,#e4e8f0); }
+                    .fd-list-row:last-child { border-bottom:none; }
+                    .fd-list-content { flex:1; min-width:0; }
+                    .fd-list-title { font-size:13px; font-weight:600; color:var(--text-main,#1a2340); margin-bottom:2px; }
+                    .fd-list-sub { font-size:12px; color:var(--text-muted,#6b7a99); }
+                    .fd-list-actions { display:flex; gap:6px; flex-shrink:0; align-items:center; }
+                    .fd-badge { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px; background:rgba(37,99,235,.1); color:var(--primary,#2563eb); margin-right:4px; }
+                    .fd-toggle-chip { border:none; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:600; cursor:pointer; }
+                    .fd-toggle-chip.on { background:rgba(16,185,129,.12); color:#059669; }
+                    .fd-toggle-chip.off { background:rgba(107,114,153,.1); color:#6b7a99; }
+                    .fd-form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+                    .fd-form-group { margin-bottom:14px; }
+                    .fd-form-group label { display:block; font-size:12px; font-weight:600; color:var(--text-muted,#6b7a99); margin-bottom:6px; text-transform:uppercase; letter-spacing:.06em; }
+                    .fd-form-group input,.fd-form-group textarea,.fd-form-group select { width:100%; padding:8px 12px; border:1px solid var(--border-color,#e4e8f0); border-radius:8px; font-size:13px; background:var(--input-bg,#f9fafb); color:var(--text-main,#1a2340); font-family:inherit; }
+                    .fd-form-group textarea { resize:vertical; }
+                    .fd-color-row { display:flex; gap:10px; align-items:center; }
+                    .fd-color-preview { width:36px; height:36px; border-radius:8px; border:1px solid var(--border-color,#e4e8f0); }
+                    /* Overlay modals */
+                    .fd-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s; }
+                    .fd-overlay.open { opacity:1; pointer-events:all; }
+                    .fd-dialog { background:var(--card-bg,#fff); border-radius:16px; width:min(520px,94vw); max-height:90vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,.18); }
+                    .fd-dialog-hdr { display:flex; justify-content:space-between; align-items:center; padding:20px 24px 16px; border-bottom:1px solid var(--border-color,#e4e8f0); }
+                    .fd-dialog-hdr h3 { font-size:15px; font-weight:700; color:var(--text-main,#1a2340); margin:0; }
+                    .fd-dialog-close { background:none; border:none; font-size:20px; color:var(--text-muted,#6b7a99); cursor:pointer; padding:0 4px; line-height:1; }
+                    .fd-dialog-body { padding:20px 24px; }
+                    .fd-dialog-foot { padding:16px 24px; border-top:1px solid var(--border-color,#e4e8f0); display:flex; justify-content:flex-end; gap:8px; }
+                    @media(max-width:640px){ .fd-stats-strip{grid-template-columns:1fr 1fr;} .fd-form-row{grid-template-columns:1fr;} .fd-img-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));} }
+                  </style>
+
+                  <div class="tab-header-premium">
+                    <div class="header-left">
+                      <h2 style="font-size:1.5rem;color:var(--text-main);">Front Desk</h2>
+                      <p style="color:var(--text-muted);font-size:0.875rem;">Manage public-facing content — gallery, homepage, about page &amp; partners.</p>
+                    </div>
+                  </div>
+
+                  <!-- Sub-nav -->
+                  <div class="fd-subnav" style="margin-top:1.5rem;">
+                    <button class="fd-subnav-btn active" onclick="fdSwitchSection('gallery',this)">
+                      <i data-lucide="images" style="width:15px;height:15px;"></i> Gallery
+                    </button>
+                    <button class="fd-subnav-btn" onclick="fdSwitchSection('homepage',this)">
+                      <i data-lucide="home" style="width:15px;height:15px;"></i> Homepage
+                    </button>
+                    <button class="fd-subnav-btn" onclick="fdSwitchSection('about',this)">
+                      <i data-lucide="book-open" style="width:15px;height:15px;"></i> About Page
+                    </button>
+                    <button class="fd-subnav-btn" onclick="fdSwitchSection('partners',this)">
+                      <i data-lucide="handshake" style="width:15px;height:15px;"></i> Partners
+                    </button>
+                  </div>
+
+                  <!-- ── GALLERY PAGE ── -->
+                  <div class="fd-page active" id="fd-page-gallery">
+                    <div class="fd-stats-strip" id="fd-stats-strip">
+                      <div class="fd-stat-box"><div class="fd-stat-val" id="fd-gs-total">—</div><div class="fd-stat-lbl">Total Images</div></div>
+                      <div class="fd-stat-box"><div class="fd-stat-val" id="fd-gs-active">—</div><div class="fd-stat-lbl">Visible</div></div>
+                      <div class="fd-stat-box"><div class="fd-stat-val" id="fd-gs-cats">—</div><div class="fd-stat-lbl">Categories</div></div>
+                      <div class="fd-stat-box"><div class="fd-stat-val" id="fd-gs-files">—</div><div class="fd-stat-lbl">Uploaded</div></div>
+                    </div>
+
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;">
+                        <div><h3 style="font-size:1rem;font-weight:700;margin:0;">Upload Images</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">JPG, PNG, WebP — max 10 MB each</p></div>
+                      </div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-upload-zone" id="fd-upload-zone">
+                          <input type="file" id="fd-file-input" accept="image/*" multiple>
+                          <div class="fd-upload-icon">📷</div>
+                          <h4>Drop images here or click to browse</h4>
+                          <p>Multiple files supported — edit metadata after upload</p>
+                          <div class="fd-progress" id="fd-progress"><div class="fd-progress-fill" id="fd-progress-fill"></div></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card" style="border-radius:16px;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                        <div><h3 style="font-size:1rem;font-weight:700;margin:0;">Image Library</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Click Edit to update caption, category or visibility</p></div>
+                        <select id="fd-cat-filter" style="padding:6px 10px;font-size:12px;border:1px solid var(--border-color,#e4e8f0);border-radius:8px;background:var(--input-bg,#f9fafb);" onchange="fdFilterGallery()">
+                          <option value="">All Categories</option>
+                          <option>education</option><option>health</option><option>livelihood</option><option>community</option><option>ramadan</option>
+                        </select>
+                      </div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-img-grid" id="fd-img-grid">
+                          <div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1">Loading…</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div><!-- /gallery page -->
+
+                  <!-- ── HOMEPAGE PAGE ── -->
+                  <div class="fd-page" id="fd-page-homepage">
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;"><h3 style="font-size:1rem;font-weight:700;margin:0;">Homepage Logo</h3></div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-form-group">
+                           <label>Logo Image</label>
+                           <div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;">
+                               <div id="hpLogoPreview" style="background:var(--input-bg); border-radius:8px; padding:4px; border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; overflow:hidden; min-width:40px; min-height:40px;">
+                                   <i data-lucide="image" style="width:20px; color:var(--text-muted);"></i>
+                               </div>
+                               <input type="file" id="hpLogoUpload" accept="image/*" style="display:none;" onchange="fdSaveHomepageLogo(this)">
+                               <button class="btn btn-outline" style="font-size:0.75rem; padding:0.4rem 0.8rem;" onclick="document.getElementById('hpLogoUpload').click()">
+                                   <i data-lucide="upload" style="width:14px;"></i> Upload Logo
+                               </button>
+                               <button class="btn btn-outline" style="font-size:0.75rem; padding:0.4rem 0.8rem; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="fdRemoveHomepageLogo()">
+                                   <i data-lucide="trash-2" style="width:14px;"></i> Remove
+                               </button>
+                           </div>
+                           <small style="color:var(--text-muted); font-size:11px; margin-top:6px; display:block;">If no logo is selected, the default text/svg will be shown.</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;"><h3 style="font-size:1rem;font-weight:700;margin:0;">Hero Section</h3></div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-form-group"><label>Hero Headline</label><input type="text" id="hp-hero-title" placeholder="Transforming Lives, One Family at a Time"></div>
+                        <div class="fd-form-group"><label>Hero Subtitle</label><textarea id="hp-hero-sub" rows="2" placeholder="The Education & Development Foundation..."></textarea></div>
+                        <div class="fd-form-row">
+                          <div class="fd-form-group"><label>Founding Label</label><input type="text" id="hp-founding" placeholder="Galgamuwa, Sri Lanka — Est. 2018"></div>
+                          <div class="fd-form-group"><label>CTA Button Text</label><input type="text" id="hp-cta-text" placeholder="Join Our Community"></div>
+                        </div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveHomepageSection('hero')">Save Hero Content</button>
+                      </div>
+                    </div>
+
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;"><h3 style="font-size:1rem;font-weight:700;margin:0;">Impact Statistics</h3></div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-form-row"><div class="fd-form-group"><label>Stat 1 Value</label><input type="text" id="hp-stat1-val" placeholder="240+"></div><div class="fd-form-group"><label>Stat 1 Label</label><input type="text" id="hp-stat1-lbl" placeholder="Families helped"></div></div>
+                        <div class="fd-form-row"><div class="fd-form-group"><label>Stat 2 Value</label><input type="text" id="hp-stat2-val" placeholder="100+"></div><div class="fd-form-group"><label>Stat 2 Label</label><input type="text" id="hp-stat2-lbl" placeholder="Students enrolled"></div></div>
+                        <div class="fd-form-row"><div class="fd-form-group"><label>Stat 3 Value</label><input type="text" id="hp-stat3-val" placeholder="6 yrs"></div><div class="fd-form-group"><label>Stat 3 Label</label><input type="text" id="hp-stat3-lbl" placeholder="Of service"></div></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveHomepageSection('stats')">Save Stats</button>
+                      </div>
+                    </div>
+
+                    <div class="card" style="border-radius:16px;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;"><h3 style="font-size:1rem;font-weight:700;margin:0;">Membership Section</h3></div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-form-group"><label>Section Heading</label><input type="text" id="hp-join-heading" placeholder="Join the EDF family."></div>
+                        <div class="fd-form-group"><label>Section Subtitle</label><textarea id="hp-join-sub" rows="2"></textarea></div>
+                        <div class="fd-form-group"><label>Active Member Count</label><input type="text" id="hp-member-count" placeholder="214"></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveHomepageSection('join')">Save Membership Content</button>
+                      </div>
+                    </div>
+                  </div><!-- /homepage page -->
+
+                  <!-- ── ABOUT PAGE ── -->
+                  <div class="fd-page" id="fd-page-about">
+
+                    <!-- Hero fields -->
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;"><h3 style="font-size:1rem;font-weight:700;margin:0;">Hero Content</h3></div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-form-group"><label>Hero Statement</label><input type="text" id="ab-hero-stmt" placeholder="Rooted in faith. Driven by compassion."></div>
+                        <div class="fd-form-group"><label>Hero Subtitle</label><textarea id="ab-hero-sub" rows="2"></textarea></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveAboutContent()">Save Hero Content</button>
+                      </div>
+                    </div>
+
+                    <!-- Origin section fixed fields -->
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;"><h3 style="font-size:1rem;font-weight:700;margin:0;">Origin Section — Labels</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Left-column labels of the Origin Story section</p></div>
+                      <div class="card-body" style="padding:1.25rem 1.5rem;">
+                        <div class="fd-form-row">
+                          <div class="fd-form-group"><label>Chapter Tag</label><input type="text" id="ab-origin-tag" placeholder="Chapter One"></div>
+                          <div class="fd-form-group"><label>Year Badge</label><input type="text" id="ab-origin-year" placeholder="2016" style="max-width:120px;"></div>
+                        </div>
+                        <div class="fd-form-group"><label>Section Heading</label><input type="text" id="ab-origin-heading" placeholder="How it began"></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveOriginLabels()">Save Labels</button>
+                      </div>
+                    </div>
+
+                    <!-- Origin paragraphs CRUD -->
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;display:flex;justify-content:space-between;align-items:center;">
+                        <div><h3 style="font-size:1rem;font-weight:700;margin:0;">Origin Story — Paragraphs &amp; Quotes</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Displayed in the right column of the Origin section on the About page</p></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdOpenModal('origin-para')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add</button>
+                      </div>
+                      <div class="card-body" style="padding:0 1.5rem 8px;" id="fd-origin-list">
+                        <div style="padding:32px;text-align:center;color:var(--text-muted);">Loading…</div>
+                      </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="card" style="border-radius:16px;margin-bottom:1.25rem;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;display:flex;justify-content:space-between;align-items:center;">
+                        <div><h3 style="font-size:1rem;font-weight:700;margin:0;">Timeline Milestones</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Displayed on the About page journey section</p></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdOpenModal('timeline')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add</button>
+                      </div>
+                      <div class="card-body" style="padding:0 1.5rem 8px;" id="fd-timeline-list">
+                        <div style="padding:32px;text-align:center;color:var(--text-muted);">Loading…</div>
+                      </div>
+                    </div>
+
+                    <!-- Team -->
+                    <div class="card" style="border-radius:16px;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;display:flex;justify-content:space-between;align-items:center;">
+                        <div><h3 style="font-size:1rem;font-weight:700;margin:0;">Leadership &amp; Team</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Displayed on the About page team section</p></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdOpenModal('team')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add</button>
+                      </div>
+                      <div class="card-body" style="padding:0 1.5rem 8px;" id="fd-team-list">
+                        <div style="padding:32px;text-align:center;color:var(--text-muted);">Loading…</div>
+                      </div>
+                    </div>
+
+                  </div><!-- /about page -->
+
+                  <!-- ── PARTNERS PAGE ── -->
+                  <div class="fd-page" id="fd-page-partners">
+                    <div class="card" style="border-radius:16px;">
+                      <div class="card-header" style="padding:1.25rem 1.5rem 0;display:flex;justify-content:space-between;align-items:center;">
+                        <div><h3 style="font-size:1rem;font-weight:700;margin:0;">Partners &amp; Affiliates</h3><p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Displayed in the homepage partners marquee</p></div>
+                        <button class="btn btn-primary" style="font-size:13px;" onclick="fdOpenModal('partner')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add</button>
+                      </div>
+                      <div class="card-body" style="padding:0 1.5rem 8px;" id="fd-partners-list">
+                        <div style="padding:32px;text-align:center;color:var(--text-muted);">Loading…</div>
+                      </div>
+                    </div>
+                  </div><!-- /partners page -->
+
+                </div><!-- /#frontdeskTab -->
+
+                <!-- ─── FD: Image Edit Modal ─── -->
+                <div class="fd-overlay" id="fd-img-overlay">
+                  <div class="fd-dialog">
+                    <div class="fd-dialog-hdr">
+                      <h3>Edit Image</h3>
+                      <button class="fd-dialog-close" onclick="document.getElementById('fd-img-overlay').classList.remove('open')">×</button>
+                    </div>
+                    <div class="fd-dialog-body">
+                      <div id="fd-img-preview-wrap" style="margin-bottom:14px;">
+                        <img id="fd-img-preview" style="width:100%;border-radius:8px;max-height:180px;object-fit:cover;">
+                      </div>
+                      <input type="hidden" id="fd-edit-id">
+                      <div class="fd-form-group"><label>Caption</label><input type="text" id="fd-edit-caption" placeholder="Students at EDF Learning Centre"></div>
+                      <div class="fd-form-group"><label>Detail (lightbox subtitle)</label><input type="text" id="fd-edit-detail" placeholder="Annual programme, Galgamuwa — 2024"></div>
+                      <div class="fd-form-row">
+                        <div class="fd-form-group"><label>Category</label>
+                          <select id="fd-edit-category"><option value="education">Education</option><option value="health">Health</option><option value="livelihood">Livelihood</option><option value="community">Community</option><option value="ramadan">Ramadan</option></select>
+                        </div>
+                        <div class="fd-form-group"><label>Year</label><input type="text" id="fd-edit-year" placeholder="2024"></div>
+                      </div>
+                      <div class="fd-form-group"><label>Visibility</label>
+                        <select id="fd-edit-active"><option value="1">Visible (shown on gallery page)</option><option value="0">Hidden</option></select>
+                      </div>
+                    </div>
+                    <div class="fd-dialog-foot">
+                      <button type="button" class="btn btn-outline" style="color:#ef4444;border-color:#ef4444;font-size:13px;" onclick="fdDeleteImage()">Delete</button>
+                      <button type="button" class="btn btn-outline" style="font-size:13px;" onclick="document.getElementById('fd-img-overlay').classList.remove('open')">Cancel</button>
+                      <button type="button" class="btn btn-primary" style="font-size:13px;" onclick="fdSaveImageMeta()">Save Changes</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ─── FD: Generic Modal ─── -->
+                <div class="fd-overlay" id="fd-modal-overlay">
+                  <div class="fd-dialog">
+                    <div class="fd-dialog-hdr">
+                      <h3 id="fd-modal-title">Edit</h3>
+                      <button class="fd-dialog-close" onclick="document.getElementById('fd-modal-overlay').classList.remove('open')">×</button>
+                    </div>
+                    <div class="fd-dialog-body" id="fd-modal-body"></div>
+                    <div class="fd-dialog-foot" id="fd-modal-foot"></div>
+                  </div>
+                </div>
+
         </main>
     </div>
 
     <!-- ══════════════════ USER ACCOUNT MODAL ══════════════════ -->
-    <div class="modal" id="userModal" onclick="if(event.target===this)closeModal('userModal')">
+    <div class="modal" id="userModal">
         <div class="modal-content" style="max-width:600px;">
             <div class="modal-header">
                 <h3 class="modal-title" id="userModalTitle">Add User</h3>
                 <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
             </div>
+            <form onsubmit="saveUser(); return false;" autocomplete="on">
             <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
                 <input type="hidden" id="umEditId">
 
@@ -3259,21 +3944,23 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline" onclick="closeModal('userModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveUser()">
+                <button type="button" class="btn btn-outline" onclick="closeModal('userModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">
                     <i data-lucide="save"></i> <span id="umSaveBtnText">Create User</span>
                 </button>
             </div>
+            </form>
         </div>
     </div><!-- /#userModal -->
 
     <!-- Change Password Modal -->
-    <div class="modal" id="changePasswordModal" onclick="if(event.target===this)closeModal('changePasswordModal')">
+    <div class="modal" id="changePasswordModal">
         <div class="modal-content" style="max-width:420px;">
             <div class="modal-header">
                 <h3 class="modal-title">Change Password</h3>
                 <button class="modal-close" onclick="closeModal('changePasswordModal')">&times;</button>
             </div>
+            <form onsubmit="saveChangePassword(); return false;" autocomplete="on">
             <div class="modal-body">
                 <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">
                     Setting a new password for <strong id="cpUserName"></strong>. The user will be signed out and must log in with the new password.
@@ -3289,11 +3976,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline" onclick="closeModal('changePasswordModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveChangePassword()">
+                <button type="button" class="btn btn-outline" onclick="closeModal('changePasswordModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">
                     <i data-lucide="key"></i> Set Password
                 </button>
             </div>
+            </form>
         </div>
     </div><!-- /#changePasswordModal -->
 
@@ -3403,7 +4091,7 @@
     </div><!-- /#clearDataModal -->
 
     <!-- ══════════════════ MEMBER PAYMENT HISTORY MODAL ══════════════════ -->
-    <div class="modal" id="memberHistoryModal" onclick="if(event.target===this)closeModal('memberHistoryModal')">
+    <div class="modal" id="memberHistoryModal">
         <div class="modal-content pmh-modal">
 
             <!-- Header -->
@@ -5480,6 +6168,7 @@
             const tile = document.querySelector(`[data-theme-pick="${next}"]`);
             if (tile) tile.classList.add('selected');
         });
+
     </script>
 
 <script>
@@ -6430,7 +7119,7 @@ document.head.appendChild(spinStyle);
 <div id="invMaintModal" class="modal">
   <div class="modal-content" style="max-width:480px;">
     <div class="modal-header">
-      <h3><i data-lucide="tool" style="color:var(--primary);"></i> Log Maintenance</h3>
+      <h3><i data-lucide="wrench" style="color:var(--primary);"></i> Log Maintenance</h3>
       <button class="btn-close" onclick="closeModal('invMaintModal')"><i data-lucide="x" style="width:20px;"></i></button>
     </div>
     <div class="modal-body">
@@ -6516,6 +7205,893 @@ document.head.appendChild(spinStyle);
 </div>
 
 <script src="/js/inventory.js"></script>
-</body>
 
+<!-- ═══════════════ FRONT DESK JS ═══════════════ -->
+<script>
+(function() {
+  /* ── State ── */
+  let fd_images    = [];
+  let fd_timeline  = [];
+  let fd_team      = [];
+  let fd_partners  = [];
+  let fd_origin    = [];
+  let fd_editId    = null;
+  let fd_modalType = null;
+  let fd_loaded    = false;
+
+  /* ── Sub-section switching ── */
+  window.fdSwitchSection = function(sec, btn) {
+    document.querySelectorAll('#frontdeskTab .fd-page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#frontdeskTab .fd-subnav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('fd-page-' + sec).classList.add('active');
+    btn.classList.add('active');
+    lucide.createIcons();
+  };
+
+  /* ── Load all data (called once on first tab open) ── */
+  window.fdLoadAll = function() {
+    if (fd_loaded) return;
+    fd_loaded = true;
+    fdLoadGallery();
+    fdLoadTimeline();
+    fdLoadTeam();
+    fdLoadPartners();
+    fdLoadOriginParagraphs();
+    fdLoadHomepageContent();
+    fdLoadAboutContent();
+    fdBindUpload();
+  };
+
+  /* ── Gallery ── */
+  async function fdLoadGallery() {
+    try {
+      const r = await fetch('/api/frontdesk/gallery/all', { credentials: 'include' });
+      fd_images = await r.json();
+      fdRenderGallery();
+      fdUpdateGalleryStats();
+    } catch { showToast('Failed to load gallery', 'error'); }
+  }
+
+  function fdUpdateGalleryStats() {
+    const active = fd_images.filter(i => i.is_active).length;
+    const cats   = new Set(fd_images.map(i => i.category)).size;
+    document.getElementById('fd-gs-total').textContent  = fd_images.length;
+    document.getElementById('fd-gs-active').textContent = active;
+    document.getElementById('fd-gs-cats').textContent   = cats;
+    document.getElementById('fd-gs-files').textContent  = fd_images.length + ' files';
+  }
+
+  window.fdFilterGallery = function() {
+    const cat = document.getElementById('fd-cat-filter').value;
+    fdRenderGallery(cat ? fd_images.filter(i => i.category === cat) : fd_images);
+  };
+
+  function fdRenderGallery(images = fd_images) {
+    const grid = document.getElementById('fd-img-grid');
+    if (!images.length) {
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1">No images yet. Upload your first image above.</div>';
+      return;
+    }
+    grid.innerHTML = images.map(img => `
+      <div class="fd-img-card">
+        <div class="fd-img-thumb">
+          ${img.filename
+            ? `<img src="/uploads/gallery/${img.filename}" alt="${img.caption || ''}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=fd-img-placeholder>🖼️</div>'">`
+            : '<div class="fd-img-placeholder">🖼️</div>'}
+          <span class="fd-img-status ${img.is_active ? 'active' : 'hidden'}">${img.is_active ? 'Visible' : 'Hidden'}</span>
+        </div>
+        <div class="fd-img-info">
+          <div class="fd-img-caption">${img.caption || '(No caption)'}</div>
+          <span class="fd-img-cat">${img.category || 'community'}</span>
+          ${img.display_year ? `<span class="fd-img-cat">${img.display_year}</span>` : ''}
+          <div class="fd-img-actions">
+            <button class="btn btn-outline" style="flex:1;font-size:12px;padding:5px 10px;" onclick='fdOpenImgEdit(${JSON.stringify(img)})'>Edit</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  /* ── Upload binding ── */
+  function fdBindUpload() {
+    const zone  = document.getElementById('fd-upload-zone');
+    const input = document.getElementById('fd-file-input');
+    const prog  = document.getElementById('fd-progress');
+    const fill  = document.getElementById('fd-progress-fill');
+    if (!zone || zone._bound) return;
+    zone._bound = true;
+
+    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); fdUploadFiles(e.dataTransfer.files, prog, fill); });
+    input.addEventListener('change', () => fdUploadFiles(input.files, prog, fill));
+  }
+
+  async function fdUploadFiles(files, prog, fill) {
+    if (!files.length) return;
+    prog.style.display = 'block';
+    let done = 0;
+    for (const file of files) {
+      const fd = new FormData();
+      fd.append('image', file);
+      fd.append('caption', file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '));
+      fd.append('category', 'community');
+      fd.append('display_year', new Date().getFullYear().toString());
+      try {
+        const r = await fetch('/api/frontdesk/gallery', { method: 'POST', credentials: 'include', body: fd });
+        if (!r.ok) throw new Error();
+        const data = await r.json();
+        fd_images.unshift(data.image);
+      } catch { showToast('Failed to upload: ' + file.name, 'error'); }
+      done++;
+      fill.style.width = (done / files.length * 100) + '%';
+    }
+    setTimeout(() => { prog.style.display = 'none'; fill.style.width = '0%'; }, 800);
+    document.getElementById('fd-file-input').value = '';
+    fdRenderGallery();
+    fdUpdateGalleryStats();
+    showToast(files.length + ' image' + (files.length > 1 ? 's' : '') + ' uploaded', 'success');
+  }
+
+  /* ── Image edit/delete ── */
+  window.fdOpenImgEdit = function(img) {
+    fd_editId = img.id;
+    document.getElementById('fd-edit-id').value       = img.id;
+    document.getElementById('fd-edit-caption').value  = img.caption || '';
+    document.getElementById('fd-edit-detail').value   = img.detail  || '';
+    document.getElementById('fd-edit-year').value     = img.display_year || '';
+    document.getElementById('fd-edit-active').value   = img.is_active ? '1' : '0';
+    document.getElementById('fd-edit-category').value = img.category || 'community';
+    const prev = document.getElementById('fd-img-preview');
+    const wrap = document.getElementById('fd-img-preview-wrap');
+    if (img.filename) { prev.src = '/uploads/gallery/' + img.filename; wrap.style.display = 'block'; }
+    else { wrap.style.display = 'none'; }
+    document.getElementById('fd-img-overlay').classList.add('open');
+  };
+
+  window.fdSaveImageMeta = async function() {
+    const id   = document.getElementById('fd-edit-id').value;
+    const body = {
+      caption:      document.getElementById('fd-edit-caption').value,
+      detail:       document.getElementById('fd-edit-detail').value,
+      category:     document.getElementById('fd-edit-category').value,
+      display_year: document.getElementById('fd-edit-year').value,
+      is_active:    parseInt(document.getElementById('fd-edit-active').value),
+    };
+    try {
+      const r = await fetch('/api/frontdesk/gallery/' + id, { method: 'PUT', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      const idx = fd_images.findIndex(i => i.id == id);
+      if (idx >= 0) fd_images[idx] = { ...fd_images[idx], ...body };
+      document.getElementById('fd-img-overlay').classList.remove('open');
+      fdRenderGallery();
+      fdUpdateGalleryStats();
+      showToast('Image updated', 'success');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  window.fdDeleteImage = async function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+      const idInput = document.getElementById('fd-edit-id');
+      if (!idInput) { alert('System error: Missing ID input.'); return; }
+      
+      const id = idInput.value;
+      if (!id) { showToast('No image selected', 'error'); return; }
+      
+      if (!confirm('Delete this image? This cannot be undone.')) return;
+      
+      const r = await fetch('/api/frontdesk/gallery/' + id, { method: 'DELETE', credentials: 'include' });
+      if (!r.ok) {
+        let msg = 'Delete failed';
+        try { const d = await r.json(); msg = d.message || msg; } catch (_) {}
+        showToast(msg, 'error');
+        alert('Could not delete from database: ' + msg);
+        return;
+      }
+      
+      fd_images = fd_images.filter(i => String(i.id) !== String(id));
+      document.getElementById('fd-img-overlay').classList.remove('open');
+      document.getElementById('fd-edit-id').value = '';
+      
+      fdRenderGallery();
+      fdUpdateGalleryStats();
+      showToast('Image deleted successfully', 'success');
+    } catch (err) {
+      console.error('fdDeleteImage error:', err);
+      alert('Delete failed unexpectedly: ' + err.message);
+    }
+  };
+
+  /* ── Homepage content ── */
+  async function fdLoadHomepageContent() {
+    try {
+      const r = await fetch('/api/frontdesk/content/homepage');
+      const d = await r.json();
+      const s = (id, key) => { const el = document.getElementById(id); if (el) el.value = d[key] || ''; };
+      s('hp-hero-title','hero.title'); s('hp-hero-sub','hero.sub'); s('hp-founding','hero.founding');
+      s('hp-cta-text','hero.cta'); s('hp-stat1-val','stat1.val'); s('hp-stat1-lbl','stat1.lbl');
+      s('hp-stat2-val','stat2.val'); s('hp-stat2-lbl','stat2.lbl'); s('hp-stat3-val','stat3.val');
+      s('hp-stat3-lbl','stat3.lbl'); s('hp-join-heading','join.heading'); s('hp-join-sub','join.sub'); s('hp-member-count','join.count');
+    } catch {}
+    
+    // Load logo
+    try {
+      const lr = await fetch('/api/frontdesk/logo');
+      const ld = await lr.json();
+      if (ld.url) {
+        document.getElementById('hpLogoPreview').innerHTML = `<img src="${ld.url}" style="height:32px; width:auto; object-fit:contain;">`;
+      } else {
+        document.getElementById('hpLogoPreview').innerHTML = `<i data-lucide="image" style="width:20px; color:var(--text-muted);"></i>`;
+        lucide.createIcons();
+      }
+    } catch {}
+  }
+
+  window.fdSaveHomepageLogo = async function(input) {
+    if (!input.files || !input.files[0]) return;
+    const formData = new FormData();
+    formData.append('logo', input.files[0]);
+    try {
+      const r = await fetch('/api/frontdesk/logo', { method: 'POST', credentials: 'include', body: formData });
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      document.getElementById('hpLogoPreview').innerHTML = `<img src="${d.url}" style="height:32px; width:auto; object-fit:contain;">`;
+      showToast('Logo updated — reload homepage to see changes', 'success');
+    } catch { showToast('Upload failed', 'error'); }
+  };
+
+  window.fdRemoveHomepageLogo = async function() {
+    if (!confirm('Revert to default logo?')) return;
+    try {
+      const r = await fetch('/api/frontdesk/logo', { method: 'DELETE', credentials: 'include' });
+      if (!r.ok) throw new Error();
+      document.getElementById('hpLogoPreview').innerHTML = `<i data-lucide="image" style="width:20px; color:var(--text-muted);"></i>`;
+      lucide.createIcons();
+      showToast('Logo reverted to default', 'success');
+    } catch { showToast('Remove failed', 'error'); }
+  };
+
+  window.fdSaveHomepageSection = async function(section) {
+    const map = {
+      hero:  { 'hero.title':'hp-hero-title','hero.sub':'hp-hero-sub','hero.founding':'hp-founding','hero.cta':'hp-cta-text' },
+      stats: { 'stat1.val':'hp-stat1-val','stat1.lbl':'hp-stat1-lbl','stat2.val':'hp-stat2-val','stat2.lbl':'hp-stat2-lbl','stat3.val':'hp-stat3-val','stat3.lbl':'hp-stat3-lbl' },
+      join:  { 'join.heading':'hp-join-heading','join.sub':'hp-join-sub','join.count':'hp-member-count' }
+    };
+    const body = {};
+    for (const [key, id] of Object.entries(map[section])) { const el = document.getElementById(id); if (el) body[key] = el.value; }
+    try {
+      const r = await fetch('/api/frontdesk/content/homepage', { method: 'PUT', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      showToast('Saved — reload the homepage to see changes', 'info');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  /* ── About content ── */
+  async function fdLoadAboutContent() {
+    try {
+      const r = await fetch('/api/frontdesk/content/about');
+      const d = await r.json();
+      const s = (id, key) => { const el = document.getElementById(id); if (el) el.value = d[key] || ''; };
+      s('ab-hero-stmt','hero.stmt'); s('ab-hero-sub','hero.sub');
+      s('ab-origin-tag','origin.tag'); s('ab-origin-heading','origin.heading'); s('ab-origin-year','origin.year');
+    } catch {}
+  }
+
+  window.fdSaveAboutContent = async function() {
+    const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const body = { 'hero.stmt': g('ab-hero-stmt'), 'hero.sub': g('ab-hero-sub') };
+    try {
+      const r = await fetch('/api/frontdesk/content/about', { method: 'PUT', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      showToast('Saved — reload /about to see changes', 'info');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  /* ── Origin labels save ── */
+  window.fdSaveOriginLabels = async function() {
+    const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const body = { 'origin.tag': g('ab-origin-tag'), 'origin.heading': g('ab-origin-heading'), 'origin.year': g('ab-origin-year') };
+    try {
+      const r = await fetch('/api/frontdesk/content/about', { method: 'PUT', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      showToast('Saved — reload /about to see changes', 'info');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  /* ── Origin paragraphs ── */
+  async function fdLoadOriginParagraphs() {
+    try {
+      const r = await fetch('/api/frontdesk/origin-paragraphs/all', { credentials: 'include' });
+      fd_origin = await r.json();
+      fdRenderOriginParagraphs();
+    } catch { showToast('Failed to load origin content', 'error'); }
+  }
+
+  function fdRenderOriginParagraphs() {
+    const el = document.getElementById('fd-origin-list');
+    if (!el) return;
+    if (!fd_origin.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);">No content yet. Add a paragraph or quote.</div>'; return; }
+    el.innerHTML = fd_origin.map(item => `
+      <div class="fd-list-row" style="${item.is_active ? '' : 'opacity:0.5;'}">
+        <div class="fd-list-content">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:${item.type==='quote'?'#fef3c7':'#f1f5f9'};color:${item.type==='quote'?'#92400e':'#475569'};">${item.type==='quote'?'Quote':'Paragraph'}</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:${item.is_active?'#dcfce7':'#f1f5f9'};color:${item.is_active?'#16a34a':'#64748b'};">${item.is_active?'Visible':'Hidden'}</span>
+          </div>
+          <div class="fd-list-title" style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px;">${item.content.substring(0,100)}${item.content.length>100?'…':''}</div>
+          ${item.attribution ? `<div class="fd-list-sub">${item.attribution}</div>` : ''}
+        </div>
+        <div class="fd-list-actions">
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;" onclick='fdOpenModal("origin-para",${JSON.stringify(item)})'>Edit</button>
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;color:#ef4444;border-color:#ef4444;" onclick="fdDeleteOriginParagraph(${item.id})">Delete</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.fdDeleteOriginParagraph = async function(id) {
+    if (!confirm('Delete this item from the origin section?')) return;
+    await fetch('/api/frontdesk/origin-paragraphs/' + id, { method: 'DELETE', credentials: 'include' });
+    fd_origin = fd_origin.filter(p => p.id !== id);
+    fdRenderOriginParagraphs();
+    showToast('Deleted', 'success');
+  };
+
+  window.fdSaveOriginParagraph = async function() {
+    const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const content = g('fd-op-content').trim();
+    if (!content) return showToast('Content is required', 'error');
+    const body = {
+      type:        g('fd-op-type') || 'text',
+      content,
+      attribution: g('fd-op-attr').trim() || null,
+      sort_order:  parseInt(g('fd-op-order')) || 0,
+      is_active:   parseInt(g('fd-op-active') ?? 1)
+    };
+    try {
+      const url = fd_editId ? '/api/frontdesk/origin-paragraphs/' + fd_editId : '/api/frontdesk/origin-paragraphs';
+      const r = await fetch(url, { method: fd_editId ? 'PUT' : 'POST', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      await fdLoadOriginParagraphs();
+      document.getElementById('fd-modal-overlay').classList.remove('open');
+      showToast(fd_editId ? 'Updated' : 'Added', 'success');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  /* ── Timeline ── */
+  async function fdLoadTimeline() {
+    try {
+      const r = await fetch('/api/frontdesk/timeline/all', { credentials: 'include' });
+      fd_timeline = await r.json();
+      fdRenderTimeline();
+    } catch { showToast('Failed to load timeline', 'error'); }
+  }
+
+  function fdRenderTimeline() {
+    const el = document.getElementById('fd-timeline-list');
+    if (!fd_timeline.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);">No milestones yet. Add your first one.</div>'; return; }
+    el.innerHTML = fd_timeline.map(t => `
+      <div class="fd-list-row">
+        <div class="fd-list-content">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+            <span class="fd-badge">${t.year}</span>
+            ${t.label ? `<span class="fd-badge" style="background:rgba(12,26,52,.08);color:var(--text-main);">${t.label}</span>` : ''}
+            <button class="fd-toggle-chip ${t.is_active ? 'on' : 'off'}" onclick="fdToggleTimeline(${t.id},${t.is_active ? 0 : 1})">${t.is_active ? '● Visible' : '○ Hidden'}</button>
+          </div>
+          <div class="fd-list-title">${t.title}</div>
+          <div class="fd-list-sub">${t.description || ''}</div>
+        </div>
+        <div class="fd-list-actions">
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;" onclick='fdOpenModal("timeline",${JSON.stringify(t)})'>Edit</button>
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;color:#ef4444;border-color:#ef4444;" onclick="fdDeleteTimeline(${t.id})">Del</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.fdToggleTimeline = async function(id, val) {
+    const item = fd_timeline.find(t => t.id === id);
+    if (!item) return;
+    await fetch('/api/frontdesk/timeline/' + id, { method: 'PUT', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify({...item, is_active: val}) });
+    item.is_active = val;
+    fdRenderTimeline();
+  };
+
+  window.fdDeleteTimeline = async function(id) {
+    if (!confirm('Delete this timeline item?')) return;
+    await fetch('/api/frontdesk/timeline/' + id, { method: 'DELETE', credentials: 'include' });
+    fd_timeline = fd_timeline.filter(t => t.id !== id);
+    fdRenderTimeline();
+    showToast('Deleted', 'success');
+  };
+
+  /* ── Team ── */
+  async function fdLoadTeam() {
+    try {
+      const r = await fetch('/api/frontdesk/team/all', { credentials: 'include' });
+      fd_team = await r.json();
+      fdRenderTeam();
+    } catch { showToast('Failed to load team', 'error'); }
+  }
+
+  function fdRenderTeam() {
+    const el = document.getElementById('fd-team-list');
+    if (!fd_team.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);">No team members yet.</div>'; return; }
+    el.innerHTML = fd_team.map(m => `
+      <div class="fd-list-row">
+        <div style="width:42px;height:42px;border-radius:50%;background:${m.avatar_color};display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:16px;flex-shrink:0;">${m.avatar_letter}</div>
+        <div class="fd-list-content">
+          <div class="fd-list-title">${m.name}</div>
+          <div class="fd-list-sub">${m.role || ''}</div>
+          ${m.bio ? `<div class="fd-list-sub" style="margin-top:3px;font-style:italic;">"${m.bio.substring(0,80)}…"</div>` : ''}
+        </div>
+        <div class="fd-list-actions">
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;" onclick='fdOpenModal("team",${JSON.stringify(m)})'>Edit</button>
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;color:#ef4444;border-color:#ef4444;" onclick="fdDeleteTeam(${m.id})">Del</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.fdDeleteTeam = async function(id) {
+    if (!confirm('Remove this team member?')) return;
+    await fetch('/api/frontdesk/team/' + id, { method: 'DELETE', credentials: 'include' });
+    fd_team = fd_team.filter(m => m.id !== id);
+    fdRenderTeam();
+    showToast('Removed', 'success');
+  };
+
+  /* ── Partners ── */
+  async function fdLoadPartners() {
+    try {
+      const r = await fetch('/api/frontdesk/partners/all', { credentials: 'include' });
+      fd_partners = await r.json();
+      fdRenderPartners();
+    } catch { showToast('Failed to load partners', 'error'); }
+  }
+
+  function fdRenderPartners() {
+    const el = document.getElementById('fd-partners-list');
+    if (!fd_partners.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);">No partners yet.</div>'; return; }
+    el.innerHTML = fd_partners.map(p => `
+      <div class="fd-list-row" style="${p.is_active ? '' : 'opacity:0.5;'}">
+        <div class="fd-list-content">
+          <div class="fd-list-title">${p.name}</div>
+          <div class="fd-list-sub" style="margin-top:2px;">
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:${p.is_active ? '#dcfce7' : '#f1f5f9'};color:${p.is_active ? '#16a34a' : '#64748b'};">${p.is_active ? 'Visible' : 'Hidden'}</span>
+          </div>
+        </div>
+        <div class="fd-list-actions">
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;" onclick='fdOpenModal("partner",${JSON.stringify(p)})'>Edit</button>
+          <button class="btn btn-outline" style="font-size:12px;padding:5px 12px;color:#ef4444;border-color:#ef4444;" onclick="fdDeletePartner(${p.id})">Remove</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.fdDeletePartner = async function(id) {
+    if (!confirm('Remove this partner?')) return;
+    await fetch('/api/frontdesk/partners/' + id, { method: 'DELETE', credentials: 'include' });
+    fd_partners = fd_partners.filter(p => p.id !== id);
+    fdRenderPartners();
+    showToast('Removed', 'success');
+  };
+
+  /* ── Generic Modal ── */
+  window.fdOpenModal = function(type, data = null) {
+    fd_modalType = type;
+    fd_editId    = data?.id || null;
+    const body   = document.getElementById('fd-modal-body');
+    const foot   = document.getElementById('fd-modal-foot');
+
+    if (type === 'timeline') {
+      document.getElementById('fd-modal-title').textContent = data ? 'Edit Milestone' : 'Add Milestone';
+      body.innerHTML = `
+        <div class="fd-form-row">
+          <div class="fd-form-group"><label>Year</label><input type="text" id="fd-tl-year" value="${data?.year||''}" placeholder="2024"></div>
+          <div class="fd-form-group"><label>Label</label><input type="text" id="fd-tl-label" value="${data?.label||''}" placeholder="Foundation"></div>
+        </div>
+        <div class="fd-form-group"><label>Title</label><input type="text" id="fd-tl-title" value="${data?.title||''}" placeholder="EDF is Established"></div>
+        <div class="fd-form-group"><label>Description</label><textarea id="fd-tl-desc" rows="3">${data?.description||''}</textarea></div>
+        <div class="fd-form-group"><label>Sort Order</label><input type="number" id="fd-tl-order" value="${data?.sort_order??0}"></div>`;
+      foot.innerHTML = `
+        <button class="btn btn-outline" style="font-size:13px;" onclick="document.getElementById('fd-modal-overlay').classList.remove('open')">Cancel</button>
+        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveTimeline()">Save Milestone</button>`;
+
+    } else if (type === 'team') {
+      document.getElementById('fd-modal-title').textContent = data ? 'Edit Member' : 'Add Team Member';
+      body.innerHTML = `
+        <div class="fd-form-row">
+          <div class="fd-form-group"><label>Full Name</label><input type="text" id="fd-tm-name" value="${data?.name||''}"></div>
+          <div class="fd-form-group"><label>Role / Title</label><input type="text" id="fd-tm-role" value="${data?.role||''}"></div>
+        </div>
+        <div class="fd-form-group"><label>Bio / Quote</label><textarea id="fd-tm-bio" rows="3">${data?.bio||''}</textarea></div>
+        <div class="fd-form-row">
+          <div class="fd-form-group"><label>Avatar Initial</label><input type="text" id="fd-tm-letter" value="${data?.avatar_letter||''}" maxlength="1" placeholder="A" style="font-size:22px;font-weight:700;text-align:center;"></div>
+          <div class="fd-form-group"><label>Avatar Colour</label>
+            <div class="fd-color-row">
+              <input type="color" id="fd-tm-color" value="${data?.avatar_color||'#0A5C3E'}">
+              <div class="fd-color-preview" id="fd-color-prev" style="background:${data?.avatar_color||'#0A5C3E'};"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fd-form-group"><label>Sort Order</label><input type="number" id="fd-tm-order" value="${data?.sort_order??0}"></div>`;
+      foot.innerHTML = `
+        <button class="btn btn-outline" style="font-size:13px;" onclick="document.getElementById('fd-modal-overlay').classList.remove('open')">Cancel</button>
+        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveTeam()">Save Member</button>`;
+      document.getElementById('fd-tm-color').addEventListener('input', e => {
+        document.getElementById('fd-color-prev').style.background = e.target.value;
+      });
+
+    } else if (type === 'origin-para') {
+      document.getElementById('fd-modal-title').textContent = data ? 'Edit Origin Item' : 'Add Origin Item';
+      body.innerHTML = `
+        <div class="fd-form-group"><label>Type</label>
+          <select id="fd-op-type" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg-card);color:var(--text-main);">
+            <option value="text" ${(!data||data.type==='text')?'selected':''}>Paragraph</option>
+            <option value="quote" ${data?.type==='quote'?'selected':''}>Pull Quote</option>
+          </select>
+        </div>
+        <div class="fd-form-group"><label>Content</label><textarea id="fd-op-content" rows="5" placeholder="Enter paragraph text or quote…">${data?.content||''}</textarea></div>
+        <div class="fd-form-group"><label>Attribution <span style="font-weight:400;color:var(--text-muted);">(quotes only)</span></label><input type="text" id="fd-op-attr" placeholder="— Founding Chairman, EDF Galgamuwa" value="${data?.attribution||''}"></div>
+        <div class="fd-form-row">
+          <div class="fd-form-group"><label>Sort Order</label><input type="number" id="fd-op-order" value="${data?.sort_order??0}"></div>
+          <div class="fd-form-group"><label>Visibility</label>
+            <select id="fd-op-active" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg-card);color:var(--text-main);">
+              <option value="1" ${(!data||data.is_active)?'selected':''}>Visible</option>
+              <option value="0" ${data&&!data.is_active?'selected':''}>Hidden</option>
+            </select>
+          </div>
+        </div>`;
+      foot.innerHTML = `
+        <button class="btn btn-outline" style="font-size:13px;" onclick="document.getElementById('fd-modal-overlay').classList.remove('open')">Cancel</button>
+        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSaveOriginParagraph()">${data ? 'Save Changes' : 'Add Item'}</button>`;
+
+    } else if (type === 'partner') {
+      document.getElementById('fd-modal-title').textContent = data ? 'Edit Partner' : 'Add Partner';
+      body.innerHTML = `
+        <div class="fd-form-group"><label>Partner Name</label><input type="text" id="fd-pt-name" placeholder="UNICEF Sri Lanka" value="${data?.name||''}"></div>
+        <div class="fd-form-group"><label>Sort Order</label><input type="number" id="fd-pt-order" value="${data?.sort_order??0}"></div>
+        ${data ? `<div class="fd-form-group"><label>Visibility</label><select id="fd-pt-active" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg-card);color:var(--text-main);"><option value="1" ${data.is_active ? 'selected' : ''}>Visible on homepage</option><option value="0" ${!data.is_active ? 'selected' : ''}>Hidden</option></select></div>` : ''}`;
+      foot.innerHTML = `
+        <button class="btn btn-outline" style="font-size:13px;" onclick="document.getElementById('fd-modal-overlay').classList.remove('open')">Cancel</button>
+        <button class="btn btn-primary" style="font-size:13px;" onclick="fdSavePartner()">${data ? 'Save Changes' : 'Add Partner'}</button>`;
+    }
+
+    document.getElementById('fd-modal-overlay').classList.add('open');
+    lucide.createIcons();
+  };
+
+  window.fdSaveTimeline = async function() {
+    const g = id => document.getElementById(id)?.value || '';
+    const body = { year: g('fd-tl-year'), label: g('fd-tl-label'), title: g('fd-tl-title'), description: g('fd-tl-desc'), sort_order: parseInt(g('fd-tl-order')) || 0, is_active: 1 };
+    try {
+      const url = fd_editId ? '/api/frontdesk/timeline/' + fd_editId : '/api/frontdesk/timeline';
+      const r = await fetch(url, { method: fd_editId ? 'PUT' : 'POST', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      await fdLoadTimeline();
+      document.getElementById('fd-modal-overlay').classList.remove('open');
+      showToast(fd_editId ? 'Milestone updated' : 'Milestone added', 'success');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  window.fdSaveTeam = async function() {
+    const g = id => document.getElementById(id)?.value || '';
+    const name = g('fd-tm-name').trim();
+    if (!name) return showToast('Name is required', 'error');
+    const body = { name, role: g('fd-tm-role'), bio: g('fd-tm-bio'), avatar_letter: (g('fd-tm-letter') || name[0]).toUpperCase(), avatar_color: g('fd-tm-color'), sort_order: parseInt(g('fd-tm-order')) || 0, is_active: 1 };
+    try {
+      const url = fd_editId ? '/api/frontdesk/team/' + fd_editId : '/api/frontdesk/team';
+      const r = await fetch(url, { method: fd_editId ? 'PUT' : 'POST', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      await fdLoadTeam();
+      document.getElementById('fd-modal-overlay').classList.remove('open');
+      showToast(fd_editId ? 'Member updated' : 'Member added', 'success');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+  window.fdSavePartner = async function() {
+    const name = document.getElementById('fd-pt-name')?.value.trim();
+    if (!name) return showToast('Partner name required', 'error');
+    const sort_order = parseInt(document.getElementById('fd-pt-order')?.value) || 0;
+    const is_active  = parseInt(document.getElementById('fd-pt-active')?.value ?? 1);
+    try {
+      const url = fd_editId ? '/api/frontdesk/partners/' + fd_editId : '/api/frontdesk/partners';
+      const r = await fetch(url, { method: fd_editId ? 'PUT' : 'POST', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, sort_order, is_active }) });
+      if (!r.ok) throw new Error();
+      await fdLoadPartners();
+      document.getElementById('fd-modal-overlay').classList.remove('open');
+      showToast(fd_editId ? 'Partner updated' : 'Partner added', 'success');
+    } catch { showToast('Save failed', 'error'); }
+  };
+
+})();
+</script>
+
+<!-- ═══════════════ DOCUMENTS JS ═══════════════ -->
+<script>
+(function () {
+  /* ── helpers ── */
+  function fmtSize(bytes) {
+    if (!bytes) return '0 B';
+    const u = ['B','KB','MB','GB'];
+    let i = 0;
+    while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++; }
+    return bytes.toFixed(i === 0 ? 0 : 1) + ' ' + u[i];
+  }
+  function fmtDate(str) {
+    if (!str) return '—';
+    return new Date(str).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  }
+  const CAT_META = {
+    pdf:          { label:'PDF',          bg:'#fee2e2', color:'#b91c1c', icon:'📄' },
+    word:         { label:'Word',         bg:'#dbeafe', color:'#1d4ed8', icon:'📝' },
+    excel:        { label:'Excel',        bg:'#dcfce7', color:'#15803d', icon:'📊' },
+    presentation: { label:'Presentation', bg:'#fef3c7', color:'#b45309', icon:'📑' },
+    audio:        { label:'Audio',        bg:'#f3e8ff', color:'#7e22ce', icon:'🎵' },
+    video:        { label:'Video',        bg:'#ffedd5', color:'#c2410c', icon:'🎬' },
+    image:        { label:'Image',        bg:'#e0f2fe', color:'#0369a1', icon:'🖼️' },
+    other:        { label:'Other',        bg:'#f1f5f9', color:'#475569', icon:'📁' },
+  };
+  function catMeta(cat) { return CAT_META[cat] || CAT_META.other; }
+
+  /* ── state ── */
+  let doc_list   = [];
+  let doc_editId = null;
+  let doc_loaded = false;
+
+  /* ── load on tab open (hooked via switchTab) ── */
+  const _origSwitch = window.switchTab;
+  window.switchTab = function(tabId, clickedLink) {
+    if (typeof _origSwitch === 'function') _origSwitch(tabId, clickedLink);
+    if (tabId === 'documents' && !doc_loaded) {
+      doc_loaded = true;
+      docLoadStats();
+      docLoad();
+    }
+  };
+
+  /* ── fetch list ── */
+  async function docLoad() {
+    const search = document.getElementById('doc-search-input')?.value || '';
+    const cat    = document.getElementById('doc-cat-select')?.value   || 'all';
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (cat !== 'all') params.set('category', cat);
+    const tbody = document.getElementById('doc-table-body');
+    tbody.innerHTML = '<tr><td colspan="6" class="doc-empty">Loading…</td></tr>';
+    try {
+      const r = await fetch('/api/documents?' + params, { credentials: 'include' });
+      doc_list = await r.json();
+      docRender();
+    } catch { tbody.innerHTML = '<tr><td colspan="6" class="doc-empty" style="color:#ef4444;">Failed to load files.</td></tr>'; }
+  }
+
+  function docRender() {
+    const tbody = document.getElementById('doc-table-body');
+    if (!doc_list.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="doc-empty">No files found. Upload your first document.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = doc_list.map(d => {
+      const m = catMeta(d.category);
+      return `<tr>
+        <td>
+          <div class="doc-name-cell">
+            <div class="doc-icon" style="background:${m.bg};">${m.icon}</div>
+            <div>
+              <div class="doc-name" title="${d.original_name}">${d.original_name}</div>
+              ${d.description ? `<div class="doc-desc">${d.description}</div>` : ''}
+            </div>
+          </div>
+        </td>
+        <td><span class="doc-cat-badge" style="background:${m.bg};color:${m.color};">${m.label}</span></td>
+        <td style="white-space:nowrap;">${fmtSize(d.file_size)}</td>
+        <td style="white-space:nowrap;">${fmtDate(d.created_at)}</td>
+        <td style="color:var(--text-muted);font-size:12px;">${d.uploader_name || '—'}</td>
+        <td>
+          <div class="doc-actions" style="justify-content:flex-end;">
+            <button class="btn-dl" onclick="docDownload(${d.id},${JSON.stringify(d.original_name)})">⬇ Download</button>
+            <button onclick='docOpenEditModal(${JSON.stringify(d)})'>Edit</button>
+            <button class="btn-del" onclick="docDelete(${d.id})">Delete</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  /* ── stats ── */
+  async function docLoadStats() {
+    try {
+      const r = await fetch('/api/documents/stats', { credentials: 'include' });
+      const s = await r.json();
+      const get = cat => (s.byCategory.find(x => x.category === cat)?.count || 0);
+      const media = (s.byCategory.find(x=>x.category==='audio')?.count||0) + (s.byCategory.find(x=>x.category==='video')?.count||0);
+      document.getElementById('ds-total').textContent  = s.total?.count   || 0;
+      document.getElementById('ds-size').textContent   = fmtSize(s.total?.total_size || 0);
+      document.getElementById('ds-pdf').textContent    = get('pdf');
+      document.getElementById('ds-docs').textContent   = get('word') + get('presentation');
+      document.getElementById('ds-sheets').textContent = get('excel');
+      document.getElementById('ds-media').textContent  = media;
+    } catch {}
+  }
+
+  /* ── filter ── */
+  let _filterTimer;
+  window.docFilterChange = function() {
+    clearTimeout(_filterTimer);
+    _filterTimer = setTimeout(docLoad, 300);
+  };
+
+  /* ── download ── */
+  window.docDownload = function(id) {
+    window.location.href = '/api/documents/' + id + '/download';
+  };
+
+  /* ── delete ── */
+  window.docDelete = async function(id) {
+    if (!confirm('Permanently delete this file?')) return;
+    try {
+      const r = await fetch('/api/documents/' + id, { method: 'DELETE', credentials: 'include' });
+      if (!r.ok) throw new Error();
+      doc_list = doc_list.filter(d => d.id !== id);
+      docRender();
+      docLoadStats();
+      if (typeof showToast === 'function') showToast('File deleted', 'success');
+    } catch { if (typeof showToast === 'function') showToast('Delete failed', 'error'); }
+  };
+
+  /* ── modal helpers ── */
+  window.docCloseModal = function() {
+    document.getElementById('doc-modal-overlay').classList.remove('open');
+    doc_editId = null;
+  };
+
+  /* ── upload modal ── */
+  window.docOpenUploadModal = function() {
+    doc_editId = null;
+    document.getElementById('doc-modal-title').textContent = 'Upload File';
+    document.getElementById('doc-modal-body').innerHTML = `
+      <div class="doc-upload-zone" id="doc-drop-zone" onclick="document.getElementById('doc-file-input').click()">
+        <div style="font-size:2rem;">📂</div>
+        <div style="font-weight:600;margin-top:8px;">Click to choose a file</div>
+        <p>PDF, Word, Excel, PowerPoint, Audio, Video, and more · Max 200 MB</p>
+        <input type="file" id="doc-file-input" style="display:none;" onchange="docFileSelected(this)">
+      </div>
+      <div id="doc-selected-info" style="display:none;margin-top:12px;padding:10px 14px;background:var(--hover-bg,#f8fafc);border-radius:8px;font-size:13px;"></div>
+      <div class="doc-progress" id="doc-progress"><div class="doc-progress-bar" id="doc-progress-bar"></div></div>
+      <div class="doc-form-group" style="margin-top:14px;"><label>Display Name</label><input type="text" id="doc-upload-name" placeholder="Auto-filled from filename"></div>
+      <div class="doc-form-group"><label>Category</label>
+        <select id="doc-upload-cat">
+          <option value="auto">Auto-detect</option>
+          <option value="pdf">PDF</option>
+          <option value="word">Word</option>
+          <option value="excel">Excel / Spreadsheet</option>
+          <option value="presentation">Presentation</option>
+          <option value="audio">Audio</option>
+          <option value="video">Video</option>
+          <option value="image">Image</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="doc-form-group"><label>Description <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+        <textarea id="doc-upload-desc" placeholder="Brief note about this file…"></textarea>
+      </div>`;
+    document.getElementById('doc-modal-foot').innerHTML = `
+      <button class="btn btn-outline" style="font-size:13px;" onclick="docCloseModal()">Cancel</button>
+      <button class="btn btn-primary" style="font-size:13px;" onclick="docSubmitUpload()" id="doc-upload-btn">Upload</button>`;
+
+    // drag-drop
+    const zone = document.getElementById('doc-drop-zone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('drag-over');
+      const f = e.dataTransfer.files[0];
+      if (f) { document.getElementById('doc-file-input').files = e.dataTransfer.files; docFileSelected({ files: e.dataTransfer.files }); }
+    });
+
+    document.getElementById('doc-modal-overlay').classList.add('open');
+  };
+
+  window.docFileSelected = function(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    const info = document.getElementById('doc-selected-info');
+    info.style.display = 'block';
+    info.innerHTML = `<strong>${file.name}</strong> — ${fmtSize(file.size)}`;
+    const nameEl = document.getElementById('doc-upload-name');
+    if (!nameEl.value) nameEl.value = file.name;
+  };
+
+  window.docSubmitUpload = async function() {
+    const fileInput = document.getElementById('doc-file-input');
+    if (!fileInput?.files?.length) {
+      if (typeof showToast === 'function') showToast('Please select a file', 'error');
+      return;
+    }
+    const btn = document.getElementById('doc-upload-btn');
+    btn.disabled = true; btn.textContent = 'Uploading…';
+    const prog = document.getElementById('doc-progress');
+    const bar  = document.getElementById('doc-progress-bar');
+    prog.style.display = 'block';
+
+    const fd = new FormData();
+    fd.append('file', fileInput.files[0]);
+    fd.append('display_name', document.getElementById('doc-upload-name')?.value || '');
+    fd.append('category',     document.getElementById('doc-upload-cat')?.value  || 'auto');
+    fd.append('description',  document.getElementById('doc-upload-desc')?.value || '');
+
+    // XHR for progress
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/documents');
+    xhr.withCredentials = true;
+    xhr.upload.onprogress = e => {
+      if (e.lengthComputable) bar.style.width = Math.round(e.loaded / e.total * 100) + '%';
+    };
+    xhr.onload = () => {
+      btn.disabled = false; btn.textContent = 'Upload';
+      if (xhr.status >= 200 && xhr.status < 300) {
+        docCloseModal(); docLoad(); docLoadStats();
+        if (typeof showToast === 'function') showToast('File uploaded', 'success');
+      } else {
+        const msg = (() => { try { return JSON.parse(xhr.responseText).message; } catch { return 'Upload failed'; } })();
+        if (typeof showToast === 'function') showToast(msg, 'error');
+        prog.style.display = 'none'; bar.style.width = '0';
+      }
+    };
+    xhr.onerror = () => {
+      btn.disabled = false; btn.textContent = 'Upload';
+      if (typeof showToast === 'function') showToast('Upload failed', 'error');
+    };
+    xhr.send(fd);
+  };
+
+  /* ── edit modal ── */
+  window.docOpenEditModal = function(doc) {
+    doc_editId = doc.id;
+    document.getElementById('doc-modal-title').textContent = 'Edit File Details';
+    document.getElementById('doc-modal-body').innerHTML = `
+      <div class="doc-form-group"><label>Display Name</label><input type="text" id="doc-edit-name" value="${doc.original_name.replace(/"/g,'&quot;')}"></div>
+      <div class="doc-form-group"><label>Category</label>
+        <select id="doc-edit-cat">
+          <option value="pdf"          ${doc.category==='pdf'?'selected':''}>PDF</option>
+          <option value="word"         ${doc.category==='word'?'selected':''}>Word</option>
+          <option value="excel"        ${doc.category==='excel'?'selected':''}>Excel / Spreadsheet</option>
+          <option value="presentation" ${doc.category==='presentation'?'selected':''}>Presentation</option>
+          <option value="audio"        ${doc.category==='audio'?'selected':''}>Audio</option>
+          <option value="video"        ${doc.category==='video'?'selected':''}>Video</option>
+          <option value="image"        ${doc.category==='image'?'selected':''}>Image</option>
+          <option value="other"        ${doc.category==='other'?'selected':''}>Other</option>
+        </select>
+      </div>
+      <div class="doc-form-group"><label>Description</label>
+        <textarea id="doc-edit-desc">${doc.description||''}</textarea>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+        Uploaded: ${fmtDate(doc.created_at)} · Size: ${fmtSize(doc.file_size)} · Filename: ${doc.filename}
+      </div>`;
+    document.getElementById('doc-modal-foot').innerHTML = `
+      <button class="btn btn-outline" style="font-size:13px;" onclick="docCloseModal()">Cancel</button>
+      <button class="btn btn-primary" style="font-size:13px;" onclick="docSubmitEdit()">Save Changes</button>`;
+    document.getElementById('doc-modal-overlay').classList.add('open');
+  };
+
+  window.docSubmitEdit = async function() {
+    const name = document.getElementById('doc-edit-name')?.value.trim();
+    if (!name) { if (typeof showToast === 'function') showToast('Name is required', 'error'); return; }
+    const body = {
+      original_name: name,
+      category:      document.getElementById('doc-edit-cat')?.value  || 'other',
+      description:   document.getElementById('doc-edit-desc')?.value || '',
+    };
+    try {
+      const r = await fetch('/api/documents/' + doc_editId, { method:'PUT', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error();
+      docCloseModal(); docLoad();
+      if (typeof showToast === 'function') showToast('Updated', 'success');
+    } catch { if (typeof showToast === 'function') showToast('Save failed', 'error'); }
+  };
+
+})();
+</script>
+
+</body>
 </html>

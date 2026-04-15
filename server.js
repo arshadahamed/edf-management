@@ -32,7 +32,10 @@ async function startServer() {
         const formsRoutes = require('./src/routes/forms')(db);
         const logsRoutes = require('./src/routes/logs')(db);
         const ramadanRoutes = require('./src/routes/ramadan')(db);
-        const adminRoutes   = require('./src/routes/admin')(db);
+        const adminRoutes     = require('./src/routes/admin')(db);
+        const settingsRoutes  = require('./src/routes/settings')(db);
+        const frontdeskRoutes = require('./src/routes/frontdesk')(db);
+        const documentsRoutes = require('./src/routes/documents')(db);
         const activityLogger  = require('./src/middleware/activityLogger')(db);
         const userGuard       = require('./src/middleware/userGuard')(db);
         const permissionGuard = require('./src/middleware/permissionGuard')(db);
@@ -49,10 +52,25 @@ async function startServer() {
         app.use('/api/logs', logsRoutes);
         app.use('/api/ramadan', ramadanRoutes);
         app.use('/api/admin',  adminRoutes);
+        app.use('/api/settings', settingsRoutes);
+        app.use('/api/frontdesk', frontdeskRoutes);
+        app.use('/api/documents', documentsRoutes);
 
         // Serve HTML files
+        app.get('/', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'index.html'));
+        });
+
         app.get('/login', (req, res) => {
             res.sendFile(path.join(__dirname, 'public', 'login.html'));
+        });
+
+        app.get('/gallery', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
+        });
+
+        app.get('/about', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'about.html'));
         });
 
         app.get('/dashboard', (req, res) => {

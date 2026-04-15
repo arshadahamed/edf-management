@@ -1,0 +1,21 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - link "EDF GALGAMUWA" [ref=e5] [cursor=pointer]:
+      - /url: /
+    - heading "Welcome Back" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Sign in to your dashboard
+  - generic [ref=e26]: Invalid credentials.
+  - generic [ref=e8]:
+    - generic [ref=e9]:
+      - generic [ref=e10]: Username or Email
+      - generic [ref=e11]:
+        - img [ref=e27]
+        - textbox "Enter your username" [ref=e15]: admin
+    - generic [ref=e16]:
+      - generic [ref=e17]: Password
+      - generic [ref=e18]:
+        - img [ref=e30]
+        - textbox "••••••••" [ref=e22]: admin
+    - button "Sign In" [ref=e23] [cursor=pointer]:
+      - generic [ref=e33]: Sign In
+  - paragraph [ref=e25]: © 2026 EDF. Secure Administrator Access Only.

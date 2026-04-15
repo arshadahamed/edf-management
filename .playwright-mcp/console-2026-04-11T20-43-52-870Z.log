@@ -1,0 +1,2 @@
+[     731ms] [WARNING] WARNING: Multiple instances of Three.js being imported. @ https://unpkg.com/@splinetool/viewer@1.9.46/build/spline-viewer.js:3174
+[  299913ms] [WARNING] WARNING: Multiple instances of Three.js being imported. @ https://unpkg.com/@splinetool/viewer@1.9.46/build/spline-viewer.js:3174

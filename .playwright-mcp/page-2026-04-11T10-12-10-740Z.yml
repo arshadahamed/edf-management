@@ -1,0 +1,168 @@
+- generic [ref=e2]:
+  - button [ref=e3] [cursor=pointer]:
+    - img [ref=e414]
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e415]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e418]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e423]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e428]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e431]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e433]
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e435]
+              - generic [ref=e51]: Programs
+              - img [ref=e438]
+          - listitem [ref=e54]:
+            - link "Subscriptions" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e440]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e442]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e444]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e448]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e450]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e453]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e457]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e459]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e463]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e118]:
+        - link "Dashboard" [ref=e119] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=e120]: /
+        - generic [ref=e121]: Members
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e466]
+          - generic [ref=e127]: Apr 11, 2026, 03:42 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e469]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e472]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138] [cursor=pointer]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e474]
+        - img "User" [ref=e145] [cursor=pointer]
+    - generic [ref=e477]:
+      - generic [ref=e478]:
+        - generic [ref=e479]:
+          - heading "Founders & Members" [level=2] [ref=e480]
+          - paragraph [ref=e481]: Manage organization membership and subscriptions.
+        - generic [ref=e482]:
+          - generic [ref=e483]:
+            - img [ref=e484]
+            - textbox "Search members..." [ref=e487]
+          - button "New Member" [ref=e488] [cursor=pointer]:
+            - img [ref=e489]
+            - text: New Member
+      - generic [ref=e492]:
+        - generic [ref=e494]:
+          - generic [ref=e495]:
+            - generic [ref=e496]: Total Members
+            - generic [ref=e497]: "0"
+          - img [ref=e499]
+        - generic [ref=e505]:
+          - generic [ref=e506]:
+            - generic [ref=e507]: Founders
+            - generic [ref=e508]: "0"
+          - img [ref=e510]
+        - generic [ref=e514]:
+          - generic [ref=e515]:
+            - generic [ref=e516]: Executives
+            - generic [ref=e517]: "0"
+          - img [ref=e519]
+        - generic [ref=e523]:
+          - generic [ref=e524]:
+            - generic [ref=e525]: Active
+            - generic [ref=e526]: "0"
+          - img [ref=e528]
+      - generic [ref=e531]:
+        - generic [ref=e532]:
+          - button "All Types" [ref=e533] [cursor=pointer]
+          - button "Founders" [ref=e534] [cursor=pointer]
+          - button "Executives" [ref=e535] [cursor=pointer]
+        - generic [ref=e536]:
+          - button "All Status" [ref=e537] [cursor=pointer]
+          - button "Active" [ref=e538] [cursor=pointer]
+          - button "Inactive" [ref=e539] [cursor=pointer]
+        - generic [ref=e540]: 0 members
+      - table [ref=e543]:
+        - rowgroup [ref=e544]:
+          - row "Member Type Phone City Joined Monthly Sub. Status Actions" [ref=e545]:
+            - columnheader "Member" [ref=e546]
+            - columnheader "Type" [ref=e547]
+            - columnheader "Phone" [ref=e548]
+            - columnheader "City" [ref=e549]
+            - columnheader "Joined" [ref=e550]
+            - columnheader "Monthly Sub." [ref=e551]
+            - columnheader "Status" [ref=e552]
+            - columnheader "Actions" [ref=e553]
+        - rowgroup [ref=e554]:
+          - row "No members found" [ref=e555]:
+            - cell "No members found" [ref=e556]

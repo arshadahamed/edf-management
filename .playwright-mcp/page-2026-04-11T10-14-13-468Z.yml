@@ -1,0 +1,253 @@
+- generic [ref=e2]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e2263]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2266]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2271]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2276]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2279]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e2281]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e2283]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e2284]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e2287]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2290]
+              - generic [ref=e51]: Programs
+              - img [ref=e2293]
+            - list [ref=e1052]:
+              - listitem [ref=e1053]:
+                - link "All Programs" [ref=e1054] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e2295]
+                  - generic [ref=e1056]: All Programs
+              - listitem [ref=e1057]:
+                - link "App Customizer" [ref=e1058] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e2296]
+                  - generic [ref=e1063]: App Customizer
+          - listitem [ref=e54]:
+            - link "Subscriptions" [active] [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2300]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2302]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2304]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2308]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2310]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2313]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2317]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2319]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2323]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - button [ref=e1458] [cursor=pointer]:
+          - img [ref=e2326]
+        - generic [ref=e118]:
+          - link "Dashboard" [ref=e119] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e120]: /
+          - generic [ref=e121]: User Accounts
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e2327]
+          - generic [ref=e127]: Apr 11, 2026, 03:44 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e2330]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e2333]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e2335]
+        - generic [ref=e144] [cursor=pointer]:
+          - img "User" [ref=e145]
+          - generic [ref=e1460]:
+            - generic [ref=e1461]: System Administrator
+            - generic [ref=e1462]: Admin
+    - generic [ref=e2137]:
+      - generic [ref=e2138]:
+        - generic [ref=e2139]:
+          - heading "User Accounts" [level=2] [ref=e2140]
+          - paragraph [ref=e2141]: Manage system users, roles, permissions, and monitor online activity.
+        - generic [ref=e2142]:
+          - button "Refresh" [ref=e2143] [cursor=pointer]:
+            - img [ref=e2338]
+            - text: Refresh
+          - button "Add User" [ref=e2149] [cursor=pointer]:
+            - img [ref=e2343]
+            - text: Add User
+      - generic [ref=e2153]:
+        - generic [ref=e2154]:
+          - img [ref=e2346]
+          - text: "Online now:"
+        - generic "Click to locate in table" [ref=e2350] [cursor=pointer]:
+          - text: System Administrator
+          - generic [ref=e2352]: admin
+        - generic [ref=e2163]: LIVE
+        - button "Refresh now" [ref=e2165] [cursor=pointer]:
+          - img [ref=e2353]
+        - generic [ref=e2171]: Synced 03:44:12 PM
+      - generic [ref=e2172]:
+        - generic [ref=e2173]:
+          - generic [ref=e2174]: "2"
+          - generic [ref=e2175]: Total Users
+        - generic [ref=e2176]:
+          - generic [ref=e2177]: "1"
+          - generic [ref=e2178]: Online Now
+        - generic [ref=e2179]:
+          - generic [ref=e2180]: "1"
+          - generic [ref=e2181]: Admins
+        - generic [ref=e2182]:
+          - generic [ref=e2183]: "0"
+          - generic [ref=e2184]: Blocked
+      - generic [ref=e2185]:
+        - textbox "Search by name, username or email…" [ref=e2186]
+        - combobox [ref=e2187] [cursor=pointer]:
+          - option "All Roles" [selected]
+          - option "Admin"
+          - option "Super User"
+          - option "Manager"
+          - option "Editor"
+          - option "Viewer"
+          - option "User"
+        - combobox [ref=e2188] [cursor=pointer]:
+          - option "All Status" [selected]
+          - option "Active"
+          - option "Blocked"
+      - table [ref=e2191]:
+        - rowgroup [ref=e2192]:
+          - row "User Role Status Online Last Login Permissions Actions" [ref=e2193]:
+            - columnheader "User" [ref=e2194]
+            - columnheader "Role" [ref=e2195]
+            - columnheader "Status" [ref=e2196]
+            - columnheader "Online" [ref=e2197]
+            - columnheader "Last Login" [ref=e2198]
+            - columnheader "Permissions" [ref=e2199]
+            - columnheader "Actions" [ref=e2200]
+        - rowgroup [ref=e2201]:
+          - row "S System Administrator (you) @admin • admin@gmail.com admin Active Online 3m ago 9 modules Edit Block" [ref=e2358]:
+            - cell "S System Administrator (you) @admin • admin@gmail.com" [ref=e2359]:
+              - generic [ref=e2360]:
+                - generic [ref=e2362]: S
+                - generic [ref=e2364]:
+                  - generic [ref=e2365]: System Administrator (you)
+                  - generic [ref=e2366]: "@admin • admin@gmail.com"
+            - cell "admin" [ref=e2367]:
+              - generic [ref=e2368]: admin
+            - cell "Active" [ref=e2369]
+            - cell "Online" [ref=e2370]:
+              - generic [ref=e2371]: Online
+            - cell "3m ago" [ref=e2373]
+            - cell "9 modules" [ref=e2374]
+            - cell "Edit Block" [ref=e2375]:
+              - generic [ref=e2376]:
+                - button "Edit" [ref=e2377] [cursor=pointer]:
+                  - img [ref=e2378]
+                  - text: Edit
+                - button "Block" [ref=e2380] [cursor=pointer]:
+                  - img [ref=e2381]
+                  - text: Block
+          - row "A Arshad Ahamed @arshad • arshadpayoneer@gmail.com user Active Offline 2d ago 1 module Edit Block Password" [ref=e2384]:
+            - cell "A Arshad Ahamed @arshad • arshadpayoneer@gmail.com" [ref=e2385]:
+              - generic [ref=e2386]:
+                - generic [ref=e2388]: A
+                - generic [ref=e2390]:
+                  - generic [ref=e2391]: Arshad Ahamed
+                  - generic [ref=e2392]: "@arshad • arshadpayoneer@gmail.com"
+            - cell "user" [ref=e2393]:
+              - generic [ref=e2394]: user
+            - cell "Active" [ref=e2395]
+            - cell "Offline" [ref=e2396]:
+              - generic [ref=e2397]: Offline
+            - cell "2d ago" [ref=e2399]
+            - cell "1 module" [ref=e2400]
+            - cell "Edit Block Password" [ref=e2401]:
+              - generic [ref=e2402]:
+                - button "Edit" [ref=e2403] [cursor=pointer]:
+                  - img [ref=e2404]
+                  - text: Edit
+                - button "Block" [ref=e2406] [cursor=pointer]:
+                  - img [ref=e2407]
+                  - text: Block
+                - button "Password" [ref=e2410] [cursor=pointer]:
+                  - img [ref=e2411]
+                  - text: Password
+                - button "Delete user" [ref=e2415] [cursor=pointer]:
+                  - img [ref=e2416]

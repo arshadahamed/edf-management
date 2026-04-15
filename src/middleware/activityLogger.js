@@ -155,7 +155,7 @@ module.exports = (db) => {
                 '/api/edf/subscriptions/monthly-status',
                 '/api/edf/beneficiary-categories',
             ];
-            const isSkipped = SKIP_PATHS.some(p => req.path.startsWith(p));
+            const isSkipped = SKIP_PATHS.some(p => req.originalUrl.startsWith(p));
             if (isSkipped) return;
 
             // ── Resolve user identity ──────────────────────────────────────────

@@ -1,0 +1,236 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - img [ref=e7]
+        - generic [ref=e10]:
+          - heading "EDF Portal" [level=1] [ref=e11]
+          - generic [ref=e12]: Galgamuwa
+      - navigation [ref=e13]:
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - link "Overview" [ref=e16] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e17]
+              - generic [ref=e22]: Overview
+          - listitem [ref=e23]:
+            - link "Members" [ref=e24] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e25]
+              - generic [ref=e30]: Members
+          - listitem [ref=e31]:
+            - link "Family Registry" [ref=e32] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e33]
+              - generic [ref=e36]: Family Registry
+          - listitem [ref=e37]:
+            - link "Beneficiaries" [ref=e38] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e39]
+              - generic [ref=e41]: Beneficiaries
+              - img [ref=e42]
+          - listitem [ref=e44]:
+            - link "Programs" [ref=e45] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e46]
+              - generic [ref=e49]: Programs
+              - img [ref=e50]
+          - listitem [ref=e52]:
+            - link "Subscriptions" [ref=e53] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e54]
+              - generic [ref=e56]: Subscriptions
+          - listitem [ref=e57]:
+            - link "Donation Board" [ref=e58] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e59]
+              - generic [ref=e61]: Donation Board
+          - listitem [ref=e62]:
+            - link "Inventory & Assets" [ref=e63] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e64]
+              - generic [ref=e68]: Inventory & Assets
+          - listitem [ref=e69]:
+            - link "Ramadan Tokens" [ref=e70] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e71]
+              - generic [ref=e73]: Ramadan Tokens
+          - listitem [ref=e74]:
+            - link "Volunteers" [ref=e75] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e76]
+              - generic [ref=e79]: Volunteers
+        - list [ref=e81]:
+          - listitem [ref=e82]:
+            - link "User Accounts" [ref=e83] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e84]
+              - generic [ref=e88]: User Accounts
+          - listitem [ref=e89]:
+            - link "System Logs" [ref=e90] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e91]
+              - generic [ref=e93]: System Logs
+          - listitem [ref=e94]:
+            - link "My Profile" [ref=e95] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e96]
+              - generic [ref=e100]: My Profile
+          - listitem [ref=e101]:
+            - link "Settings" [ref=e102] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e103]
+              - generic [ref=e106]: Settings
+      - generic [ref=e108]:
+        - heading "System Status" [level=4] [ref=e109]:
+          - generic [ref=e111]: System Status
+        - paragraph [ref=e112]: All services operational — synced just now.
+  - main [ref=e113]:
+    - generic [ref=e114]:
+      - generic [ref=e115]:
+        - button [ref=e116] [cursor=pointer]:
+          - img [ref=e117]
+        - generic [ref=e118]:
+          - link "Dashboard" [ref=e119] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e120]: /
+          - generic [ref=e121]: Overview
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e124]
+          - generic [ref=e127]: Apr 11, 2026, 03:59 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e130]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e135]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e141]
+        - generic [ref=e144] [cursor=pointer]:
+          - img "User" [ref=e145]
+          - generic [ref=e146]:
+            - generic [ref=e147]: System Administrator
+            - generic [ref=e148]: Admin
+    - generic [ref=e150]:
+      - generic [ref=e151]:
+        - generic [ref=e152]:
+          - heading "Welcome, System" [level=1] [ref=e153]
+          - paragraph [ref=e154]: Here's what's happening today at EDF Galgamuwa.
+        - button "Zakat Calculator" [ref=e155] [cursor=pointer]:
+          - img [ref=e156]
+          - text: Zakat Calculator
+      - generic [ref=e158]:
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - generic [ref=e161]:
+              - generic [ref=e162]: Total Income
+              - generic [ref=e163]: LKR 0
+            - img [ref=e165]
+          - generic [ref=e168]: Subscriptions + donations received
+        - generic [ref=e169]:
+          - generic [ref=e170]:
+            - generic [ref=e171]:
+              - generic [ref=e172]: Total Expenses
+              - generic [ref=e173]: LKR 0
+            - img [ref=e175]
+          - generic [ref=e178]: Welfare, programs & operational costs
+        - generic [ref=e179]:
+          - generic [ref=e180]:
+            - generic [ref=e181]:
+              - generic [ref=e182]: Net Balance
+              - generic [ref=e183]: LKR 0
+            - img [ref=e185]
+          - generic [ref=e187]: Income minus all expenses
+      - generic [ref=e188]:
+        - generic "Go to Members" [ref=e189] [cursor=pointer]:
+          - img [ref=e191]
+          - generic [ref=e196]: "0"
+          - generic [ref=e197]: Members
+          - generic [ref=e198]: 0 active
+        - generic "Go to Beneficiaries" [ref=e199] [cursor=pointer]:
+          - img [ref=e201]
+          - generic [ref=e203]: "0"
+          - generic [ref=e204]: Beneficiaries
+          - generic [ref=e205]: 0 active · 0 pending
+        - generic "Go to Families" [ref=e206] [cursor=pointer]:
+          - img [ref=e208]
+          - generic [ref=e211]: "0"
+          - generic [ref=e212]: Families
+          - generic [ref=e213]: Registered & assisted
+        - generic "Go to Volunteers" [ref=e214] [cursor=pointer]:
+          - img [ref=e216]
+          - generic [ref=e220]: "0"
+          - generic [ref=e221]: Volunteers
+          - generic [ref=e222]: Active & registered
+      - generic [ref=e223]:
+        - generic [ref=e224]:
+          - generic [ref=e225]:
+            - img [ref=e226]
+            - generic [ref=e230]: Active Users
+            - generic [ref=e231]: LIVE
+          - generic [ref=e233]: 1 online now
+        - generic [ref=e234]:
+          - generic [ref=e235]:
+            - generic [ref=e237]: SA
+            - generic [ref=e239]:
+              - generic [ref=e240]: System Administrator
+              - generic [ref=e241]: admin · Online
+          - generic [ref=e242]:
+            - generic [ref=e244]: AA
+            - generic [ref=e246]:
+              - generic [ref=e247]: Arshad Ahamed
+              - generic [ref=e248]: user · Last seen 2d ago
+      - generic [ref=e249]:
+        - generic [ref=e250] [cursor=pointer]:
+          - generic [ref=e251]:
+            - generic [ref=e252]:
+              - generic [ref=e253]: Training Programs
+              - generic [ref=e254]: "0"
+            - img [ref=e256]
+          - generic [ref=e259]:
+            - generic [ref=e260]: 0 Active
+            - generic [ref=e261]: Quran, Skills & Bayan
+        - generic [ref=e262] [cursor=pointer]:
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - generic [ref=e265]:
+                - img [ref=e266]
+                - text: Ramadan Token Distribution
+              - generic [ref=e268]:
+                - generic [ref=e269]: "0"
+                - generic [ref=e270]: tokens issued
+            - generic [ref=e271]:
+              - generic [ref=e272]: Active Distributions
+              - generic [ref=e273]: "0"
+          - generic [ref=e274]:
+            - generic [ref=e275]:
+              - generic [ref=e276]: "0"
+              - generic [ref=e277]: Collected
+            - generic [ref=e278]:
+              - generic [ref=e279]: "0"
+              - generic [ref=e280]: Pending
+            - generic [ref=e281]:
+              - generic [ref=e282]: 0%
+              - generic [ref=e283]: Completion
+      - generic [ref=e285]:
+        - generic [ref=e286]:
+          - generic [ref=e287]:
+            - heading "Recent Transactions" [level=3] [ref=e288]
+            - paragraph [ref=e289]: Latest income and expense activity
+          - button "View All" [ref=e290] [cursor=pointer]:
+            - img [ref=e291]
+            - text: View All
+        - table [ref=e294]:
+          - rowgroup [ref=e295]:
+            - row "Description Category Type Amount Date" [ref=e296]:
+              - columnheader "Description" [ref=e297]
+              - columnheader "Category" [ref=e298]
+              - columnheader "Type" [ref=e299]
+              - columnheader "Amount" [ref=e300]
+              - columnheader "Date" [ref=e301]
+          - rowgroup [ref=e302]:
+            - row "No transactions found" [ref=e303]:
+              - cell "No transactions found" [ref=e304]

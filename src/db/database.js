@@ -345,6 +345,12 @@ async function initDb() {
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS global_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
         CREATE TABLE IF NOT EXISTS login_events (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id     INTEGER,
@@ -354,6 +360,83 @@ async function initDb() {
             event_type  TEXT NOT NULL,   -- 'login' | 'logout' | 'force_logout'
             ip_address  TEXT,
             created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS gallery_images (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename     TEXT NOT NULL,
+            original_name TEXT,
+            caption      TEXT,
+            detail       TEXT,
+            category     TEXT DEFAULT 'community',
+            display_year TEXT,
+            sort_order   INTEGER DEFAULT 0,
+            is_active    INTEGER DEFAULT 1,
+            uploaded_by  INTEGER REFERENCES users(id),
+            created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS site_content (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            page         TEXT NOT NULL,
+            content_key  TEXT NOT NULL,
+            content_value TEXT,
+            updated_by   INTEGER REFERENCES users(id),
+            updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(page, content_key)
+        );
+
+        CREATE TABLE IF NOT EXISTS timeline_items (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            year         TEXT NOT NULL,
+            label        TEXT,
+            title        TEXT NOT NULL,
+            description  TEXT,
+            sort_order   INTEGER DEFAULT 0,
+            is_active    INTEGER DEFAULT 1,
+            created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS team_members (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            name         TEXT NOT NULL,
+            role         TEXT,
+            bio          TEXT,
+            avatar_color TEXT DEFAULT '#0A5C3E',
+            avatar_letter TEXT DEFAULT 'A',
+            sort_order   INTEGER DEFAULT 0,
+            is_active    INTEGER DEFAULT 1,
+            created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS site_partners (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            name         TEXT NOT NULL,
+            sort_order   INTEGER DEFAULT 0,
+            is_active    INTEGER DEFAULT 1,
+            created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS origin_paragraphs (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            type         TEXT DEFAULT 'text',
+            content      TEXT NOT NULL,
+            attribution  TEXT,
+            sort_order   INTEGER DEFAULT 0,
+            is_active    INTEGER DEFAULT 1,
+            created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS documents (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            original_name TEXT NOT NULL,
+            filename      TEXT NOT NULL,
+            category      TEXT DEFAULT 'other',
+            description   TEXT DEFAULT '',
+            file_size     INTEGER DEFAULT 0,
+            mime_type     TEXT,
+            uploaded_by   INTEGER REFERENCES users(id),
+            created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `);
 
@@ -448,10 +531,64 @@ async function initDb() {
         );
     `);
 
+    // Seed default timeline items if table is empty
+    const tlCount = await db.get('SELECT COUNT(*) as cnt FROM timeline_items');
+    if (tlCount.cnt === 0) {
+        const tlItems = [
+            ['2018','Foundation','EDF is Established','Twelve founding members register the foundation. First scholarship awarded.',0],
+            ['2019','Health','First Mobile Health Camp','Partnership with a medical college brings doctors to Galgamuwa. 340 patients treated.',1],
+            ['2020','Resilience','COVID-19 Emergency Response','Emergency food distribution to 800 families during the pandemic.',2],
+            ['2021','Livelihood','Vocational Training Centre Opened','Skills Centre begins offering tailoring, computing, and business courses.',3],
+            ['2022','Growth','10,000 Lives Milestone','EDF reaches its ten-thousandth beneficiary.',4],
+            ['2023','Systems','Digital Management Platform Launched','EDF launches its own digital platform for records and tracking.',5],
+            ['2024','Now','Expanding the Vision','Three-year strategic plan targeting 25,000 direct beneficiaries.',6],
+        ];
+        for (const t of tlItems) {
+            await db.run('INSERT INTO timeline_items (year,label,title,description,sort_order) VALUES (?,?,?,?,?)', t);
+        }
+    }
+
+    // Seed default team members if table is empty
+    const tmCount = await db.get('SELECT COUNT(*) as cnt FROM team_members');
+    if (tmCount.cnt === 0) {
+        const tmItems = [
+            ['Mohamed Farouq','Founding Chairman','Every programme we started came from a conversation with a family we failed to help in time.','#0A5C3E','M',0],
+            ['Asmath Nizar','Executive Director','Accountability is how we honour the trust of every donor and every family we serve.','#0C1A34','A',1],
+            ['Fathima Haseena','Head of Education','I was one of the first scholarship students. Now I design the scholarship programme.','#C21833','F',2],
+        ];
+        for (const t of tmItems) {
+            await db.run('INSERT INTO team_members (name,role,bio,avatar_color,avatar_letter,sort_order) VALUES (?,?,?,?,?,?)', t);
+        }
+    }
+
+    // Seed default partners if table is empty
+    const ptCount = await db.get('SELECT COUNT(*) as cnt FROM site_partners');
+    if (ptCount.cnt === 0) {
+        const partners = ['UNHCR Sri Lanka','Ministry of Education','Islamic Relief','UNICEF','World Food Programme','Sri Lanka Red Cross','Zakat Foundation','Local Government — Galgamuwa'];
+        for (let i = 0; i < partners.length; i++) {
+            await db.run('INSERT INTO site_partners (name,sort_order) VALUES (?,?)', [partners[i], i]);
+        }
+    }
+
+    // Seed origin paragraphs if table is empty
+    const opCount = await db.get('SELECT COUNT(*) as cnt FROM origin_paragraphs');
+    if (opCount.cnt === 0) {
+        const items = [
+            { type: 'text', content: 'It began with a single conversation under a mango tree at the edge of Galgamuwa town. A handful of community elders, a few young professionals who had returned from Colombo, and one shared conviction: that the children of this district deserved more.', attribution: null, sort_order: 0 },
+            { type: 'text', content: 'The Education & Development Foundation was Founded in January 2016 with a modest treasury donated by its twelve founding members.', attribution: null, sort_order: 1 },
+            { type: 'quote', content: 'We did not set out to build an institution. We set out to solve a single injustice — and discovered that one injustice was connected to a thousand others.', attribution: '— Founding Chairman, EDF Galgamuwa', sort_order: 2 },
+            { type: 'text', content: 'Today, EDF operates across four pillars — education, health, livelihood, and community — with over 50+ active volunteers and a full-time coordination team with the support of 240+ donors and partners. An institution trusted by families across the North Western Province.', attribution: null, sort_order: 3 },
+            { type: 'text', content: 'Every programme we run begins with listening. Every rupee we spend is accounted for. Every family we serve is treated with dignity, not charity.', attribution: null, sort_order: 4 },
+        ];
+        for (const item of items) {
+            await db.run('INSERT INTO origin_paragraphs (type,content,attribution,sort_order) VALUES (?,?,?,?)', [item.type, item.content, item.attribution, item.sort_order]);
+        }
+    }
+
     // Create a default admin user if it doesn't exist
     const adminExists = await db.get('SELECT * FROM users WHERE username = ?', ['admin']);
     if (!adminExists) {
-        const hashedPassword = await bcrypt.hash('admin', 10);
+        const hashedPassword = await bcrypt.hash('admin@123', 10);
         await db.run(
             'INSERT INTO users (username, email, password, role, full_name) VALUES (?, ?, ?, ?, ?)',
             ['admin', 'admin@example.org', hashedPassword, 'admin', 'System Administrator']

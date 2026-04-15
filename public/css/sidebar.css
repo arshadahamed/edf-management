@@ -72,7 +72,8 @@
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.35s ease,
-        margin 0.35s ease;
+        margin 0.35s ease,
+        width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 }
 
@@ -439,9 +440,34 @@
 
 /* ── Collapsed Sidebar ─────────────────────────────────── */
 .sidebar.collapsed {
-    transform: translateX(calc(-100% - 28px));
+    width: 86px;
+}
+
+.sidebar.collapsed .brand-info,
+.sidebar.collapsed .nav-section-label,
+.sidebar.collapsed .sidebar-footer,
+.sidebar.collapsed .nav-text,
+.sidebar.collapsed .menu-arrow {
+    display: none;
     opacity: 0;
     pointer-events: none;
+}
+
+.sidebar.collapsed .nav-submenu {
+    display: none !important;
+}
+
+.sidebar.collapsed .logo-container {
+    margin: 0 auto;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: center;
+    padding: 0.8rem;
+}
+
+.sidebar.collapsed .nav-link i:not(.menu-arrow) {
+    margin: 0;
 }
 
 .main-content {
@@ -454,7 +480,7 @@
 }
 
 .main-content.expanded {
-    margin-left: 1.5rem;
+    margin-left: calc(86px + 28px);
 }
 
 
@@ -714,7 +740,8 @@
     }
 }
 
-.user-profile:hover .user-dropdown {
+.user-profile:hover .user-dropdown,
+.lang-selector-wrap:hover .user-dropdown {
     display: block;
 }
 

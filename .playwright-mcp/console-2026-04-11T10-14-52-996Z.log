@@ -1,0 +1,7 @@
+[     256ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5001/dashboard:0
+[     256ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5001/dashboard:0
+[     256ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5001/dashboard:0
+[     256ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5001/dashboard:0
+[     256ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5001/dashboard:0
+[     256ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5001/dashboard:0
+[     297ms] [ERROR] Failed to load branding: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON @ http://localhost:5001/js/dashboard.js:5833

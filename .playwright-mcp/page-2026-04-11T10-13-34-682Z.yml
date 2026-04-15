@@ -1,0 +1,255 @@
+- generic [ref=e2]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e1681]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1684]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1689]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1694]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1697]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e1699]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1701]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1702]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1705]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1708]
+              - generic [ref=e51]: Programs
+              - img [ref=e1711]
+            - list [ref=e1052]:
+              - listitem [ref=e1053]:
+                - link "All Programs" [ref=e1054] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1713]
+                  - generic [ref=e1056]: All Programs
+              - listitem [ref=e1057]:
+                - link "App Customizer" [ref=e1058] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1714]
+                  - generic [ref=e1063]: App Customizer
+          - listitem [ref=e54]:
+            - link "Subscriptions" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1718]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1720]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1722]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1726]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1728]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1731]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1735]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1737]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1741]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - button [ref=e1458] [cursor=pointer]:
+          - img [ref=e1744]
+        - generic [ref=e118]:
+          - link "Dashboard" [ref=e119] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e120]: /
+          - generic [ref=e121]: Inventory & Assets
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e1745]
+          - generic [ref=e127]: Apr 11, 2026, 03:43 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e1748]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e1751]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e1753]
+        - generic [ref=e144] [cursor=pointer]:
+          - img "User" [ref=e145]
+          - generic [ref=e1460]:
+            - generic [ref=e1461]: System Administrator
+            - generic [ref=e1462]: Admin
+    - generic [ref=e1538]:
+      - generic [ref=e1539]:
+        - generic [ref=e1540]:
+          - generic [ref=e1541]:
+            - img [ref=e1756]
+            - text: Inventory & Assets
+          - generic [ref=e1546]: IT Equipment · Furniture · Library · Electronics · Consumables
+        - generic [ref=e1547]:
+          - generic [ref=e1548]:
+            - img [ref=e1760]
+            - textbox "Search name, S/N, author…" [ref=e1552]
+          - button "Loans" [ref=e1553] [cursor=pointer]:
+            - img [ref=e1763]
+            - text: Loans
+          - button "Maintenance" [ref=e1557] [cursor=pointer]:
+            - img [ref=e1766]
+            - text: Maintenance
+          - button "Log Usage" [ref=e1560] [cursor=pointer]:
+            - img [ref=e1768]
+            - text: Log Usage
+          - button "Add Item" [ref=e1563] [cursor=pointer]:
+            - img [ref=e1770]
+            - text: Add Item
+      - generic [ref=e1565]:
+        - generic [ref=e1566]:
+          - img [ref=e1771]
+          - generic [ref=e1572]: Total Assets
+          - generic [ref=e1573]: "0"
+          - generic [ref=e1574]: Registered items
+        - generic [ref=e1575]:
+          - img [ref=e1775]
+          - generic [ref=e1580]: Items Out
+          - generic [ref=e1581]: "0"
+          - generic [ref=e1582]: Currently checked out
+        - generic [ref=e1583]:
+          - img [ref=e1778]
+          - generic [ref=e1588]: Overdue
+          - generic [ref=e1589]: "0"
+          - generic [ref=e1590]: Past return date
+        - generic [ref=e1591]:
+          - img [ref=e1781]
+          - generic [ref=e1595]: Low Stock
+          - generic [ref=e1596]: "0"
+          - generic [ref=e1597]: Below minimum level
+        - generic [ref=e1598]:
+          - img [ref=e1783]
+          - generic [ref=e1603]: Total Value
+          - generic [ref=e1604]: LKR 0
+          - generic [ref=e1605]: Current asset value
+      - generic [ref=e1606]:
+        - generic [ref=e1607]:
+          - generic [ref=e1608]:
+            - button "All" [ref=e1609] [cursor=pointer]
+            - button "IT & Media" [ref=e1610] [cursor=pointer]:
+              - img [ref=e1786]
+              - text: IT & Media
+            - button "Furniture" [ref=e1613] [cursor=pointer]:
+              - img [ref=e1788]
+              - text: Furniture
+            - button "Library" [ref=e1617] [cursor=pointer]:
+              - img [ref=e1791]
+              - text: Library
+            - button "Electronics" [ref=e1620] [cursor=pointer]:
+              - img [ref=e1793]
+              - text: Electronics
+            - button "Stationery" [ref=e1623] [cursor=pointer]:
+              - img [ref=e1795]
+              - text: Stationery
+          - generic [ref=e1629]:
+            - combobox [ref=e1630]:
+              - option "All Status" [selected]
+              - option "Available"
+              - option "In Use"
+              - option "Maintenance"
+              - option "Retired"
+            - combobox [ref=e1631]:
+              - option "12 / page" [selected]
+              - option "24 / page"
+              - option "48 / page"
+            - generic [ref=e1632]:
+              - button "Table view" [ref=e1633] [cursor=pointer]:
+                - img [ref=e1800]
+              - button "Grid view" [ref=e1635] [cursor=pointer]:
+                - img [ref=e1801]
+        - generic [ref=e1643]: 0 items
+        - table [ref=e1646]:
+          - rowgroup [ref=e1647]:
+            - row "Asset Name Category Status Condition Qty Value Actions" [ref=e1648]:
+              - columnheader "Asset Name" [ref=e1649] [cursor=pointer]:
+                - text: Asset Name
+                - img [ref=e1806]
+              - columnheader "Category" [ref=e1652] [cursor=pointer]:
+                - text: Category
+                - img [ref=e1808]
+              - columnheader "Status" [ref=e1656] [cursor=pointer]:
+                - text: Status
+                - img [ref=e1811]
+              - columnheader "Condition" [ref=e1660] [cursor=pointer]:
+                - text: Condition
+                - img [ref=e1814]
+              - columnheader "Qty" [ref=e1664] [cursor=pointer]:
+                - text: Qty
+                - img [ref=e1817]
+              - columnheader "Value" [ref=e1668] [cursor=pointer]:
+                - text: Value
+                - img [ref=e1820]
+              - columnheader "Actions" [ref=e1672]
+          - rowgroup [ref=e1673]:
+            - row "No items found" [ref=e1674]:
+              - cell "No items found" [ref=e1675]:
+                - img [ref=e1823]
+                - text: No items found

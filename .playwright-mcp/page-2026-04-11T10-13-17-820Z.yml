@@ -1,0 +1,192 @@
+- generic [ref=e2]:
+  - button [ref=e3] [cursor=pointer]:
+    - img [ref=e1313]
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e1314]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1317]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1322]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1327]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1330]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e1332]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1334]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1335]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1338]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1341]
+              - generic [ref=e51]: Programs
+              - img [ref=e1344]
+            - list [ref=e1052]:
+              - listitem [ref=e1053]:
+                - link "All Programs" [ref=e1054] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1346]
+                  - generic [ref=e1056]: All Programs
+              - listitem [ref=e1057]:
+                - link "App Customizer" [ref=e1058] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1347]
+                  - generic [ref=e1063]: App Customizer
+          - listitem [ref=e54]:
+            - link "Subscriptions" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1351]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1353]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1355]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1359]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1361]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1364]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1368]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1370]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1374]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e118]:
+        - link "Dashboard" [ref=e119] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=e120]: /
+        - generic [ref=e121]: Donation Board
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e1377]
+          - generic [ref=e127]: Apr 11, 2026, 03:43 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e1380]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e1383]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138] [cursor=pointer]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e1385]
+        - img "User" [ref=e145] [cursor=pointer]
+    - generic [ref=e1388]:
+      - generic [ref=e1389]:
+        - generic [ref=e1390]:
+          - heading "Donations Management" [level=2] [ref=e1391]
+          - paragraph [ref=e1392]: Track Zakat, Sadaqah, and other external contributions.
+        - generic [ref=e1393]:
+          - generic [ref=e1394]:
+            - img [ref=e1395]
+            - textbox "Search donor, type..." [ref=e1398]
+          - button "Record Donation" [ref=e1399] [cursor=pointer]:
+            - img [ref=e1400]
+            - text: Record Donation
+      - generic [ref=e1401]:
+        - generic [ref=e1403]:
+          - generic [ref=e1404]:
+            - generic [ref=e1405]: Total Donations
+            - generic [ref=e1406]: LKR 0
+          - img [ref=e1408]
+        - generic [ref=e1411]:
+          - generic [ref=e1412]:
+            - generic [ref=e1413]: Zakat
+            - generic [ref=e1414]: LKR 0
+          - img [ref=e1416]
+        - generic [ref=e1419]:
+          - generic [ref=e1420]:
+            - generic [ref=e1421]: Sadaqah
+            - generic [ref=e1422]: LKR 0
+          - img [ref=e1424]
+        - generic [ref=e1429]:
+          - generic [ref=e1430]:
+            - generic [ref=e1431]: Records
+            - generic [ref=e1432]: "0"
+          - img [ref=e1434]
+      - generic [ref=e1435]:
+        - generic [ref=e1436]: "TYPE:"
+        - button "All" [ref=e1437] [cursor=pointer]
+        - button "Zakat" [ref=e1438] [cursor=pointer]
+        - button "Sadaqah" [ref=e1439] [cursor=pointer]
+        - button "Fitrana" [ref=e1440] [cursor=pointer]
+        - button "Lillah" [ref=e1441] [cursor=pointer]
+        - button "Other" [ref=e1442] [cursor=pointer]
+      - table [ref=e1445]:
+        - rowgroup [ref=e1446]:
+          - row "Donor Name Phone Type Amount Method Date Actions" [ref=e1447]:
+            - columnheader "Donor Name" [ref=e1448]
+            - columnheader "Phone" [ref=e1449]
+            - columnheader "Type" [ref=e1450]
+            - columnheader "Amount" [ref=e1451]
+            - columnheader "Method" [ref=e1452]
+            - columnheader "Date" [ref=e1453]
+            - columnheader "Actions" [ref=e1454]
+        - rowgroup [ref=e1455]:
+          - row "No donations/transactions found" [ref=e1456]:
+            - cell "No donations/transactions found" [ref=e1457]

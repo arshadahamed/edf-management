@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDF Gallery — Design Directions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0C0C10;
+    color: #F0EAE0;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 48px 40px 36px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: #F0EAE0;
+    letter-spacing: -0.01em;
+  }
+
+  .page-header h1 em {
+    font-style: italic;
+    color: #C8A96E;
+  }
+
+  .page-header p {
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgba(240,234,224,0.45);
+    letter-spacing: 0.05em;
+  }
+
+  .directions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .dir-card {
+    position: relative;
+    cursor: pointer;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+
+  .dir-card:last-child { border-right: none; }
+
+  .dir-card.selected { outline: 2px solid #C8A96E; outline-offset: -2px; }
+
+  .dir-card:hover .dir-preview { transform: scale(1.01); }
+
+  /* ── Direction A: Liquid Dark ── */
+  .dir-preview {
+    height: 340px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.6s ease;
+  }
+
+  /* Direction A Preview */
+  .preview-a {
+    background: #080810;
+  }
+
+  .preview-a .nav-a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-a .logo-a {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .preview-a .logo-a span {
+    color: #C8A96E;
+    font-weight: 400;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+  }
+
+  .preview-a .nav-links-a {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .preview-a .nav-links-a li {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .preview-a .nav-links-a li.act {
+    color: #C8A96E;
+  }
+
+  .preview-a .nav-cta-a {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid rgba(200,169,110,0.4);
+    padding: 7px 18px;
+    color: #C8A96E;
+    border-radius: 2px;
+  }
+
+  .preview-a .hero-blob {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(80px);
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(200,169,110,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .preview-a .hero-label-a {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(200,169,110,0.6);
+    text-align: center;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-a .hero-label-a::before,
+  .preview-a .hero-label-a::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: rgba(200,169,110,0.4);
+  }
+
+  .preview-a .hero-title-a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-align: center;
+    margin-top: 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-a .hero-title-a em {
+    font-style: italic;
+    color: #C8A96E;
+  }
+
+  .preview-a .gallery-strip-a {
+    display: flex;
+    gap: 6px;
+    padding: 20px 28px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-a .gstrip-card {
+    flex: 1;
+    height: 70px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gstrip-card.gc1 { background: linear-gradient(135deg, #0A4A35, #1BA880); }
+  .gstrip-card.gc2 { background: linear-gradient(135deg, #941226, #E04060); flex: 1.6; }
+  .gstrip-card.gc3 { background: linear-gradient(135deg, #7B5200, #E8A020); }
+  .gstrip-card.gc4 { background: linear-gradient(135deg, #2D1B69, #7B52D0); flex: 0.8; }
+
+  .preview-a .filter-dots {
+    display: flex;
+    gap: 8px;
+    padding: 14px 28px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .filter-dot {
+    font-size: 7px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    font-family: 'DM Sans', sans-serif;
+    padding-bottom: 4px;
+    border-bottom: 1px solid transparent;
+  }
+
+  .filter-dot.factive {
+    color: #C8A96E;
+    border-bottom-color: #C8A96E;
+  }
+
+  /* Direction B Preview */
+  .preview-b {
+    background: #F5F0E8;
+  }
+
+  .preview-b .nav-b {
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    height: 48px;
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-b .logo-b {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1A1A2E;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .preview-b .logo-dot {
+    width: 7px;
+    height: 7px;
+    background: #295742;
+    border-radius: 50%;
+  }
+
+  .preview-b .nav-links-b {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    margin-right: auto;
+  }
+
+  .preview-b .nav-links-b li {
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: #555;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .preview-b .nav-links-b li.actb {
+    color: #295742;
+    font-weight: 600;
+  }
+
+  .preview-b .nav-pill-b {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    background: #295742;
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .preview-b .hero-b {
+    padding: 24px 28px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-b .hero-tag-b {
+    font-size: 7px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #295742;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .preview-b .hero-tag-b::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background: #295742;
+  }
+
+  .preview-b .hero-title-b {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: #0A0A14;
+  }
+
+  .preview-b .hero-title-b .line2 {
+    font-weight: 300;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    color: #295742;
+    letter-spacing: -0.02em;
+  }
+
+  .preview-b .masonry-b {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 60px 50px;
+    gap: 4px;
+    padding: 12px 28px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .masonry-b .mb1 { background: linear-gradient(135deg, #0A4A35, #1BA880); grid-row: span 2; border-radius: 8px; }
+  .masonry-b .mb2 { background: linear-gradient(135deg, #941226, #E04060); border-radius: 6px; }
+  .masonry-b .mb3 { background: linear-gradient(135deg, #2D1B69, #7B52D0); border-radius: 6px; }
+  .masonry-b .mb4 { background: linear-gradient(135deg, #7B5200, #E8A020); grid-column: span 2; border-radius: 6px; }
+
+  .preview-b .filter-row-b {
+    display: flex;
+    gap: 0;
+    padding: 10px 28px 0;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    margin-top: 10px;
+  }
+
+  .filter-chip-b {
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+  }
+
+  .filter-chip-b.fcb { background: #295742; color: #fff; }
+
+  /* Direction C Preview */
+  .preview-c {
+    background: #0E0E12;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-c::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(41,87,66,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(200,169,110,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .preview-c .nav-c {
+    display: flex;
+    align-items: center;
+    padding: 16px 28px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-c .logo-c {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: auto;
+  }
+
+  .preview-c .logo-mark-c {
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(200,169,110,0.4);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: #C8A96E;
+    letter-spacing: 0.05em;
+  }
+
+  .preview-c .logo-text-c {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.08em;
+  }
+
+  .preview-c .logo-text-c span {
+    color: rgba(255,255,255,0.35);
+    font-weight: 400;
+  }
+
+  .preview-c .nav-center-c {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .preview-c .nav-center-c li {
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+  }
+
+  .preview-c .nav-center-c li.actc {
+    color: #C8A96E;
+  }
+
+  .preview-c .nav-end-c {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .preview-c .nav-counter-c {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 9px;
+    color: rgba(200,169,110,0.5);
+    letter-spacing: 0.1em;
+  }
+
+  .preview-c .nav-btn-c {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,169,110,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-c .nav-btn-c svg { width: 10px; height: 10px; stroke: #C8A96E; fill: none; }
+
+  .preview-c .hero-c {
+    padding: 8px 28px 0;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .preview-c .hero-main-c {
+    flex: 1;
+  }
+
+  .preview-c .hero-num-c {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    font-weight: 300;
+    color: rgba(200,169,110,0.08);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+  }
+
+  .preview-c .hero-eyebrow-c {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #C8A96E;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-c .hero-title-c {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-c .hero-title-c .outline-c {
+    -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+    color: transparent;
+  }
+
+  .preview-c .hero-sidebar-c {
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .preview-c .scroll-line-c {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(#C8A96E, transparent);
+  }
+
+  .preview-c .scroll-text-c {
+    font-size: 6px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(200,169,110,0.4);
+    writing-mode: vertical-rl;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .preview-c .bento-c {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    grid-template-rows: 55px 45px;
+    gap: 5px;
+    padding: 12px 28px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .bento-c .bc1 { background: linear-gradient(135deg, #0A4A35, #1BA880); grid-row: span 2; border-radius: 10px; position: relative; overflow: hidden; }
+  .bento-c .bc2 { background: linear-gradient(135deg, #941226, #C21833); border-radius: 8px; }
+  .bento-c .bc3 { background: linear-gradient(135deg, #2D1B69, #5E35B1); border-radius: 8px; }
+  .bento-c .bc4 { background: linear-gradient(135deg, #3C2200, #C8820A); border-radius: 8px; }
+  .bento-c .bc5 { background: linear-gradient(135deg, #0D2744, #1E4080); border-radius: 8px; }
+
+  .bento-c .bc1::after {
+    content: 'EDUCATION';
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 5px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  /* ── Info sections ── */
+  .dir-info {
+    padding: 24px 28px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .dir-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .letter-a { background: rgba(200,169,110,0.15); color: #C8A96E; border: 1px solid rgba(200,169,110,0.3); }
+  .letter-b { background: rgba(41,87,66,0.15); color: #4CAF81; border: 1px solid rgba(41,87,66,0.4); }
+  .letter-c { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+
+  .dir-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #F0EAE0;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .dir-desc {
+    font-size: 12px;
+    color: rgba(240,234,224,0.45);
+    line-height: 1.6;
+  }
+
+  .dir-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .dir-tag {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: rgba(240,234,224,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .dir-rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #C8A96E;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .dir-rec::before {
+    content: '★';
+    font-size: 8px;
+  }
+
+  /* Select overlay */
+  .dir-card .sel-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(200,169,110,0.04);
+    border: 2px solid transparent;
+    pointer-events: none;
+    transition: border-color 0.3s;
+    z-index: 10;
+  }
+
+  .dir-card.selected .sel-overlay {
+    border-color: #C8A96E;
+  }
+
+  .dir-card .sel-check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #C8A96E;
+    color: #0C0C10;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    z-index: 11;
+  }
+
+  .dir-card.selected .sel-check {
+    display: flex;
+  }
+
+  .footer-hint {
+    text-align: center;
+    padding: 28px 40px;
+    font-size: 12px;
+    color: rgba(240,234,224,0.3);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-family: 'DM Sans', sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Pick a Design Direction — <em>Gallery & Navbar</em></h1>
+  <p>Three distinct Awwwards-level directions. Click a card to select your preference.</p>
+</div>
+
+<div class="directions">
+
+  <!-- ── Direction A ── -->
+  <div class="dir-card" onclick="selectDir(this, 'a', 'Direction A — Liquid Dark Editorial')">
+    <div class="sel-overlay"></div>
+    <div class="sel-check">✓</div>
+    <div class="dir-preview preview-a">
+      <div class="hero-blob"></div>
+      <!-- Navbar -->
+      <div class="nav-a">
+        <div class="logo-a">EDF <span>Galgamuwa</span></div>
+        <ul class="nav-links-a">
+          <li>About</li>
+          <li>Programs</li>
+          <li class="act">Gallery</li>
+          <li>Get Involved</li>
+        </ul>
+        <div class="nav-cta-a">Donate</div>
+      </div>
+      <!-- Hero -->
+      <div class="hero-label-a">Moments of Change</div>
+      <div class="hero-title-a"><em>Our</em><br>Gallery</div>
+      <!-- Filter dots -->
+      <div class="filter-dots">
+        <span class="filter-dot factive">All</span>
+        <span class="filter-dot">Education</span>
+        <span class="filter-dot">Health</span>
+        <span class="filter-dot">Livelihood</span>
+      </div>
+      <!-- Gallery strip -->
+      <div class="gallery-strip-a">
+        <div class="gstrip-card gc1"></div>
+        <div class="gstrip-card gc2"></div>
+        <div class="gstrip-card gc3"></div>
+        <div class="gstrip-card gc4"></div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div class="dir-letter letter-a">A</div>
+      <div class="dir-name">Liquid Dark Editorial</div>
+      <div class="dir-desc">Deep black canvas, gold serif typography, glowing gradients. Navbar floats as a transparent panel. Gallery cards emerge like film stills with parallax depth. Inspired by Lusion, Active Theory.</div>
+      <div class="dir-tags">
+        <span class="dir-tag">Dark Theme</span>
+        <span class="dir-tag">Gold Accents</span>
+        <span class="dir-tag">Cormorant Serif</span>
+        <span class="dir-tag">Grain Texture</span>
+        <span class="dir-tag">Editorial Layout</span>
+      </div>
+      <div class="dir-rec">Recommended — matches current gallery aesthetic</div>
+    </div>
+  </div>
+
+  <!-- ── Direction B ── -->
+  <div class="dir-card" onclick="selectDir(this, 'b', 'Direction B — Clean Light Architectural')">
+    <div class="sel-overlay"></div>
+    <div class="sel-check">✓</div>
+    <div class="dir-preview preview-b">
+      <!-- Navbar -->
+      <div class="nav-b">
+        <div class="logo-b"><div class="logo-dot"></div> EDF Galgamuwa</div>
+        <ul class="nav-links-b">
+          <li>About</li>
+          <li>Programs</li>
+          <li class="actb">Gallery</li>
+          <li>Get Involved</li>
+        </ul>
+        <div class="nav-pill-b">Donate</div>
+      </div>
+      <!-- Hero -->
+      <div class="hero-b">
+        <div class="hero-tag-b">Photo Gallery</div>
+        <div class="hero-title-b">
+          Our<br><span class="line2">Moments</span>
+        </div>
+      </div>
+      <!-- Filter chips -->
+      <div class="filter-row-b">
+        <span class="filter-chip-b fcb">All</span>
+        <span class="filter-chip-b">Education</span>
+        <span class="filter-chip-b">Health</span>
+        <span class="filter-chip-b">Livelihood</span>
+      </div>
+      <!-- Masonry grid preview -->
+      <div class="masonry-b">
+        <div class="mb1"></div>
+        <div class="mb2"></div>
+        <div class="mb3"></div>
+        <div class="mb4"></div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div class="dir-letter letter-b">B</div>
+      <div class="dir-name">Clean Light Architectural</div>
+      <div class="dir-desc">Bright cream-white canvas, bold weight-contrast typography, EDF green as the primary accent. Geometric precision. Navbar is minimal and fast. Gallery uses a structured masonry layout.</div>
+      <div class="dir-tags">
+        <span class="dir-tag">Light Theme</span>
+        <span class="dir-tag">EDF Green</span>
+        <span class="dir-tag">Space Grotesk</span>
+        <span class="dir-tag">Minimal Nav</span>
+        <span class="dir-tag">Masonry Grid</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Direction C ── -->
+  <div class="dir-card" onclick="selectDir(this, 'c', 'Direction C — Bento Dark Kinetic')">
+    <div class="sel-overlay"></div>
+    <div class="sel-check">✓</div>
+    <div class="dir-preview preview-c">
+      <!-- Navbar -->
+      <div class="nav-c">
+        <div class="logo-c">
+          <div class="logo-mark-c">EDF</div>
+          <div class="logo-text-c">Galgamuwa <span>/ Gallery</span></div>
+        </div>
+        <ul class="nav-center-c">
+          <li>About</li>
+          <li>Programs</li>
+          <li class="actc">Gallery</li>
+          <li>Donate</li>
+        </ul>
+        <div class="nav-end-c">
+          <span class="nav-counter-c">48 images</span>
+          <div class="nav-btn-c"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></div>
+        </div>
+      </div>
+      <!-- Hero -->
+      <div class="hero-c">
+        <div class="hero-num-c">48</div>
+        <div class="hero-main-c">
+          <div class="hero-eyebrow-c">EDF Galgamuwa · Gallery</div>
+          <div class="hero-title-c">
+            VISUAL<br>
+            <span class="outline-c">STORIES</span>
+          </div>
+        </div>
+        <div class="hero-sidebar-c">
+          <div class="scroll-line-c"></div>
+          <div class="scroll-text-c">Scroll</div>
+        </div>
+      </div>
+      <!-- Bento grid -->
+      <div class="bento-c">
+        <div class="bc1"></div>
+        <div class="bc2"></div>
+        <div class="bc3"></div>
+        <div class="bc4"></div>
+        <div class="bc5"></div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div class="dir-letter letter-c">C</div>
+      <div class="dir-name">Bento Dark Kinetic</div>
+      <div class="dir-desc">High-contrast dark canvas, display-weight type mixing filled + outline styles, green glow ambience. Bento-style gallery grid with varied aspect ratios. Bold, energetic, unexpected. Inspired by Basement Studio.</div>
+      <div class="dir-tags">
+        <span class="dir-tag">Dark Theme</span>
+        <span class="dir-tag">Syne Display</span>
+        <span class="dir-tag">Outline Type</span>
+        <span class="dir-tag">Bento Grid</span>
+        <span class="dir-tag">Green Glow</span>
+        <span class="dir-tag">Kinetic Feel</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-hint">
+  Click a card to select · Then reply in the terminal with your choice or any feedback
+</div>
+
+<script>
+  function selectDir(el, choice, text) {
+    document.querySelectorAll('.dir-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+
+    // Record to superpowers helper if available
+    if (window.__sp && window.__sp.select) {
+      window.__sp.select(choice, text);
+    } else {
+      // Fallback: fire a custom event
+      document.dispatchEvent(new CustomEvent('sp-select', { detail: { choice, text } }));
+    }
+  }
+</script>
+
+</body>
+</html>

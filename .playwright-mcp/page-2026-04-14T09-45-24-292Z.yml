@@ -1,0 +1,462 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - img "Logo" [ref=e4]
+    - generic [ref=e5]:
+      - text: EDF
+      - emphasis [ref=e6]: Galgamuwa
+    - generic [ref=e9]: 2%
+  - navigation [ref=e10]:
+    - link "Logo EDF Galgamuwa" [ref=e11] [cursor=pointer]:
+      - /url: "#"
+      - img "Logo" [ref=e13]
+      - generic [ref=e14]: EDF Galgamuwa
+    - list [ref=e15]:
+      - listitem [ref=e16]:
+        - link "About Us" [ref=e17] [cursor=pointer]:
+          - /url: /about
+      - listitem [ref=e18]:
+        - link "Programs" [ref=e19] [cursor=pointer]:
+          - /url: "#programs-wrap"
+      - listitem [ref=e20]:
+        - link "Impact" [ref=e21] [cursor=pointer]:
+          - /url: "#stories"
+      - listitem [ref=e22]:
+        - link "Gallery" [ref=e23] [cursor=pointer]:
+          - /url: /gallery
+      - listitem [ref=e24]:
+        - link "Get Involved" [ref=e25] [cursor=pointer]:
+          - /url: "#get-involved"
+    - generic [ref=e26]:
+      - link "Staff Login" [ref=e27] [cursor=pointer]:
+        - /url: /login
+      - link "Join Us" [ref=e28] [cursor=pointer]:
+        - /url: "#join"
+        - text: Join Us
+        - img [ref=e29]
+  - generic [ref=e31]:
+    - generic:
+      - generic:
+        - img
+      - generic:
+        - generic: 📚
+        - generic:
+          - generic: Education First
+          - generic: 100+ students enrolled
+      - generic:
+        - generic: ☽
+        - generic:
+          - generic: Ramadan Aid
+          - generic: Distribution active
+      - generic:
+        - generic: 🎓
+        - generic:
+          - generic: Scholarships
+          - generic: Open for 2025
+      - generic: Knowledge · علم
+      - generic: Empowerment
+      - generic: تعليم · Growth
+      - generic: Est. 2016 · Galgamuwa
+    - generic [ref=e33]:
+      - generic [ref=e34]: Galgamuwa, Sri Lanka — Est. 2016
+      - heading "Building Brighter Futures." [level=1] [ref=e36]:
+        - generic [ref=e37]: Building
+        - generic [ref=e38]: Brighter
+        - generic [ref=e39]: Futures.
+      - paragraph [ref=e40]: The Education & Development Foundation supports vulnerable families in Galgamuwa through education, women's empowerment, and Livelihood & Youth Development — transforming lives one family at a time.
+      - generic [ref=e41]:
+        - link "Join Our Community" [ref=e42] [cursor=pointer]:
+          - /url: "#join"
+          - text: Join Our Community
+          - img [ref=e43]
+        - link "Our Story" [ref=e45] [cursor=pointer]:
+          - /url: "#mission"
+          - text: Our Story
+          - img [ref=e46]
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]: 240+
+          - generic [ref=e51]: Families helped
+        - generic [ref=e53]:
+          - generic [ref=e54]: 100+
+          - generic [ref=e55]: Students enrolled
+        - generic [ref=e57]:
+          - generic [ref=e58]: 10 yrs
+          - generic [ref=e59]: Of service
+    - generic [ref=e60]: Scroll to explore
+  - generic [ref=e63]:
+    - generic [ref=e64]: Education Scholarships Open for 2025
+    - generic [ref=e66]: Ramadan Aid Distribution Now Active
+    - generic [ref=e68]: Free Health Clinic Every Saturday
+    - generic [ref=e70]: New Vocational Training Batch Starting June
+    - generic [ref=e72]: Volunteer Applications Open — Join EDF Today
+    - generic [ref=e74]: Education Scholarships Open for 2025
+    - generic [ref=e76]: Ramadan Aid Distribution Now Active
+    - generic [ref=e78]: Free Health Clinic Every Saturday
+    - generic [ref=e80]: New Vocational Training Batch Starting June
+    - generic [ref=e82]: Volunteer Applications Open — Join EDF Today
+  - generic [ref=e84]:
+    - generic [ref=e85]:
+      - generic [ref=e86]:
+        - generic [ref=e87]: "0"
+        - generic [ref=e88]: Families Supported
+        - generic [ref=e89]: Direct beneficiaries across Galgamuwa district
+      - generic [ref=e90]:
+        - generic [ref=e91]: "0"
+        - generic [ref=e92]: Students Enrolled
+        - generic [ref=e93]: Active education & scholarship recipients
+      - generic [ref=e94]:
+        - generic [ref=e95]: "0"
+        - generic [ref=e96]: Active Programs
+        - generic [ref=e97]: Spanning health, education & livelihood
+      - generic [ref=e98]:
+        - generic [ref=e99]: "0"
+        - generic [ref=e100]: Years of Service
+        - generic [ref=e101]: Building lasting community resilience since 2016
+    - generic: EDF GALGAMUWA
+  - generic [ref=e102]:
+    - generic [ref=e103]:
+      - generic [ref=e104]: Our Mission
+      - heading "Empowering communities, one family at a time." [level=2] [ref=e105]:
+        - emphasis [ref=e106]: Empowering
+        - text: communities,
+        - text: one family
+        - text: at a time.
+      - paragraph [ref=e107]: "EDF Galgamuwa was founded on a single conviction: every child deserves an education and every family deserves a life of dignity. We address root causes of poverty through sustainable, community-led programs."
+      - link "Explore Programs" [ref=e108] [cursor=pointer]:
+        - /url: "#programs-wrap"
+    - generic [ref=e109]:
+      - generic [ref=e110]:
+        - generic [ref=e111]: 🎓
+        - heading "Education First" [level=3] [ref=e112]
+        - paragraph [ref=e113]: Scholarships, tutoring centres, and school supplies for children from low-income families. We ensure no child is left without learning.
+      - generic [ref=e114]:
+        - generic [ref=e115]: 🏥
+        - heading "Healthcare Access" [level=3] [ref=e116]
+        - paragraph [ref=e117]: Free mobile clinics, mental health support, and medicine subsidies for families who cannot afford basic medical care.
+      - generic [ref=e118]:
+        - generic [ref=e119]: 💼
+        - heading "Livelihood & Jobs" [level=3] [ref=e120]
+        - paragraph [ref=e121]: Vocational training, micro-financing, and job linkages to break cycles of poverty and build lasting financial independence.
+      - generic [ref=e122]:
+        - generic [ref=e123]: 🌙
+        - heading "Ramadan & Zakat Aid" [level=3] [ref=e124]
+        - paragraph [ref=e125]: Annual Ramadan food packs, Eid grants, and Zakat distributions — ensuring no family goes without during sacred seasons.
+  - generic [ref=e128]:
+    - generic [ref=e129]:
+      - generic [ref=e130]:
+        - generic [ref=e131]: WHAT WE DO
+        - heading "Three pillars. One mission." [level=2] [ref=e132]:
+          - text: Three pillars.
+          - emphasis [ref=e133]: One mission.
+        - paragraph [ref=e134]: Scroll sideways to explore how EDF Galgamuwa changes lives through targeted programs across education, healthcare, and livelihood.
+      - generic [ref=e135]:
+        - generic [ref=e136]: Program 01
+        - generic: "01"
+        - generic [ref=e137]: 🎓
+        - heading "QURAN & CLASSES" [level=3] [ref=e138]
+        - paragraph [ref=e139]:
+          - text: Supporting 100+ students with Quran and other classes
+          - text: We provide Quran and other classes to students in need. Our classes are conducted by qualified teachers and we provide all the necessary materials to our students.
+        - link "Learn More →" [ref=e140] [cursor=pointer]:
+          - /url: "#get-involved"
+      - generic [ref=e141]: 01 / 03
+    - generic [ref=e142]:
+      - generic [ref=e143]:
+        - generic [ref=e144]: LADIES & PROGRAMS
+        - heading "Empowering women through learning & skills." [level=2] [ref=e145]:
+          - text: Empowering women through
+          - emphasis [ref=e146]: learning & skills.
+        - paragraph [ref=e147]: We organize Bayans, cooking classes, tailoring classes, and one-day workshops, creating opportunities for women to gain knowledge, develop practical skills, and build a stronger community.
+      - generic [ref=e148]:
+        - generic [ref=e149]: Program 02
+        - generic: "02"
+        - generic [ref=e150]: 🧵
+        - heading "Women Skill Development" [level=3] [ref=e151]
+        - paragraph [ref=e152]: Engaging Bayans, hands-on cooking sessions, tailoring training, and interactive one-day workshops designed to inspire learning, creativity, and self-reliance among women.
+        - link "Learn More →" [ref=e153] [cursor=pointer]:
+          - /url: "#get-involved"
+      - generic [ref=e154]: 02 / 03
+    - generic [ref=e155]:
+      - generic [ref=e156]:
+        - generic [ref=e157]: LIVELIHOOD
+        - heading "Skills that last forever." [level=2] [ref=e158]:
+          - text: Skills that
+          - emphasis [ref=e159]: last forever.
+        - paragraph [ref=e160]: We empower youth and families with practical skills, knowledge, and financial support to build sustainable and independent livelihoods.
+      - generic [ref=e161]:
+        - generic [ref=e162]: Program 03
+        - generic: "03"
+        - generic [ref=e163]: 💼
+        - heading "Livelihood & Youth Development" [level=3] [ref=e164]
+        - paragraph [ref=e165]: We offer free vocational training programs such as mobile phone repair, CCTV installation, and entrepreneurship development. Our initiatives also include business and tax guidance, educational bayans, and one-day skill workshops. In addition, we provide financial assistance to selected university students in Galgamuwa to support their living expenses and continue their education without hardship.
+        - link "Learn More →" [ref=e166] [cursor=pointer]:
+          - /url: "#get-involved"
+      - generic [ref=e167]: 03 / 03
+  - generic [ref=e168]:
+    - generic [ref=e169]:
+      - generic [ref=e170]: Real Voices
+      - heading "Stories of Impact" [level=2] [ref=e171]:
+        - text: Stories of
+        - emphasis [ref=e172]: Impact
+    - generic [ref=e174]:
+      - generic [ref=e175]:
+        - generic: "\""
+        - paragraph [ref=e176]: "\"In 2016, we saw gaps in our local education system. We didn't want to just talk about it—we wanted to act. Seeing students thrive today makes every challenge we faced completely worth it.\""
+        - generic [ref=e177]:
+          - generic [ref=e178]: A
+          - generic [ref=e179]:
+            - generic [ref=e180]: Arshad Ahamed
+            - generic [ref=e181]: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"Building EDF from the ground up taught me that true strength lies in community support. Providing consistent healthcare and resources isn't just charity; it's our fundamental duty.\""
+        - generic:
+          - generic: A
+          - generic:
+            - generic: Anshak Ahamed
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"Every time we deploy a new livelihood program, I see a family break the cycle of poverty. We're not just offering funds; we're giving people the skills to forge their own paths.\""
+        - generic:
+          - generic: M
+          - generic:
+            - generic: Musthaq Ahamed
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"From coordinating relief during Ramadan to setting up youth workshops, our mission has always been clear: no one gets left behind. Galgamuwa's youth are our brightest future.\""
+        - generic:
+          - generic: R
+          - generic:
+            - generic: Rikas
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"Running our operations means hearing countless heartbreaking stories, but more importantly, it means being part of their solutions. We stand shoulder-to-shoulder with our people.\""
+        - generic:
+          - generic: H
+          - generic:
+            - generic: Hamas
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"It's incredible to see how a handful of volunteers transformed into a massive support network. Organizing events and training programs reminds me why I joined EDF in the first place.\""
+        - generic:
+          - generic: A
+          - generic:
+            - generic: Arshad Anver
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"Our skills development programs have turned dreams into reality for many young men and women. The dedication of our community to learn and grow pushes us to expand our efforts daily.\""
+        - generic:
+          - generic: A
+          - generic:
+            - generic: Amhar
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"Logistics and groundwork often go unnoticed, but the smiles of the families receiving our aid are the only rewards we need. We're building a foundation that will outlast us all.\""
+        - generic:
+          - generic: F
+          - generic:
+            - generic: Fasmer
+            - generic: Executive Member
+      - generic:
+        - generic: "\""
+        - paragraph: "\"The true measure of our success is not the numbers, but the individual lives we've touched. Ensuring children have their school supplies feels like watching seeds grow into forests.\""
+        - generic:
+          - generic: F
+          - generic:
+            - generic: Faham
+            - generic: Executive Member
+    - generic [ref=e182]:
+      - button "Previous story" [ref=e183] [cursor=pointer]:
+        - img [ref=e184]
+      - button "Next story" [ref=e196] [cursor=pointer]:
+        - img [ref=e197]
+  - generic [ref=e199]:
+    - generic [ref=e200]:
+      - heading "Life-changing moments" [level=2] [ref=e201]:
+        - text: Life-changing
+        - emphasis [ref=e202]: moments
+      - link "View full gallery →" [ref=e203] [cursor=pointer]:
+        - /url: /gallery
+    - generic [ref=e204]:
+      - generic [ref=e208]: Students at EDF Learning Centre
+      - generic [ref=e212]: Free Health Camp, 2024
+      - generic [ref=e216]: Scholarship Award Ceremony
+      - generic [ref=e220]: Vocational Training Workshop
+      - generic [ref=e224]: Ramadan Food Distribution
+  - generic [ref=e225]:
+    - generic [ref=e226]:
+      - generic [ref=e227]: Take Action
+      - heading "Three ways to make a difference" [level=2] [ref=e228]:
+        - text: Three ways to make a
+        - emphasis [ref=e229]: difference
+    - generic [ref=e230]:
+      - generic [ref=e231]:
+        - generic [ref=e232]: 🏛️
+        - heading "Become a Member" [level=3] [ref=e233]
+        - paragraph [ref=e234]: Join EDF as a contributing community member. Your membership forms the backbone of every programme we run — sustaining the foundation from within.
+        - link "Join Now →" [ref=e235] [cursor=pointer]:
+          - /url: "#join"
+      - generic [ref=e236]:
+        - generic [ref=e237]: 🤝
+        - heading "Volunteer" [level=3] [ref=e238]
+        - paragraph [ref=e239]: Join our weekend teaching sessions, health camps, and community drives. Skills of any kind are welcome — what matters is the heart behind them.
+        - link "Join Us →" [ref=e240] [cursor=pointer]:
+          - /url: /login
+      - generic [ref=e241]:
+        - generic [ref=e242]: 🌟
+        - heading "Partner" [level=3] [ref=e243]
+        - paragraph [ref=e244]: Businesses and organisations can partner with EDF through CSR programs, event sponsorships, and in-kind donations to multiply community impact.
+        - link "Become a Partner →" [ref=e245] [cursor=pointer]:
+          - /url: "#"
+  - generic [ref=e247]:
+    - generic [ref=e248]: EDF IN NUMBERS
+    - heading "Behind every number lies a human story." [level=2] [ref=e249]:
+      - text: Behind every number
+      - text: lies a
+      - emphasis [ref=e250]: human story.
+    - link "See Our Impact" [ref=e251] [cursor=pointer]:
+      - /url: "#impact"
+      - text: See Our Impact
+      - img [ref=e252]
+  - generic [ref=e257]:
+    - generic [ref=e258]: OUR COMMUNITY
+    - heading "Join the EDF family." [level=2] [ref=e259]:
+      - text: Join the EDF
+      - emphasis [ref=e260]: family.
+    - paragraph [ref=e261]: EDF runs entirely on the dedication of our community members. Becoming a member means standing alongside the families we serve — and being part of every milestone we reach together.
+    - generic [ref=e262]:
+      - generic [ref=e263]:
+        - generic [ref=e264]: Community
+        - generic [ref=e265]: Regular Member
+        - paragraph [ref=e266]: Active participation in programmes, community events, and annual general meetings. Your voice shapes the direction of EDF.
+      - generic [ref=e267]:
+        - generic [ref=e268]: Commitment
+        - generic [ref=e269]: Life Member
+        - paragraph [ref=e270]: A lifetime dedication to the EDF mission. Life members are the permanent stewards of our foundation and its values.
+      - generic [ref=e271]:
+        - generic [ref=e272]: Legacy
+        - generic [ref=e273]: Founding Patron
+        - paragraph [ref=e274]: Recognised as pillars of the organisation. Founding Patrons have sustained EDF through its most formative years.
+    - generic [ref=e275]:
+      - link "Enquire via WhatsApp" [ref=e276] [cursor=pointer]:
+        - /url: https://wa.me/94771234567?text=Hello%2C%20I%20would%20like%20to%20learn%20more%20about%20becoming%20an%20EDF%20member.
+        - text: Enquire via WhatsApp
+        - img [ref=e277]
+      - link "Already a Member? Login →" [ref=e279] [cursor=pointer]:
+        - /url: /login
+    - generic [ref=e280]:
+      - generic [ref=e281]:
+        - strong [ref=e282]: "40"
+        - text: Active Members
+      - generic [ref=e284]:
+        - text: Est.
+        - strong [ref=e285]: "2016"
+      - generic [ref=e287]:
+        - strong [ref=e288]: "10"
+        - text: Years of Community Service
+  - generic [ref=e289]:
+    - generic [ref=e290]: Trusted By & In Partnership With
+    - generic [ref=e292]:
+      - generic [ref=e293]: M.K.C. TRADE CENTER
+      - generic [ref=e295]: UNION HARDWARE
+      - generic [ref=e297]: UNION HARDWARE
+      - generic [ref=e299]: FANCY HOUSE
+      - generic [ref=e301]: REGAL GROUPS
+      - generic [ref=e303]: Local Government — Galgamuwa
+      - generic [ref=e305]: M.K.C. TRADE CENTER
+      - generic [ref=e307]: UNION HARDWARE
+      - generic [ref=e309]: HELLOTEL KEGALLE
+      - generic [ref=e311]: FANCY HOUSE
+      - generic [ref=e313]: REGAL GROUPS
+      - generic [ref=e315]: Local Government — Galgamuwa
+  - contentinfo [ref=e317]:
+    - generic [ref=e318]:
+      - generic [ref=e319]:
+        - generic [ref=e320]: EDF Galgamuwa
+        - paragraph [ref=e321]: Education & Development Foundation, Galgamuwa — building lasting resilience through education, livelihood, and healthcare in Sri Lanka since 2018.
+        - generic [ref=e322]: Stay Updated
+        - generic [ref=e323]:
+          - textbox "Your email address" [ref=e324]
+          - button "Subscribe" [ref=e325] [cursor=pointer]
+      - generic [ref=e326]:
+        - generic [ref=e327]: Programs
+        - list [ref=e328]:
+          - listitem [ref=e329]:
+            - link "Education & Scholarships" [ref=e330] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e331]:
+            - link "Community Healthcare" [ref=e332] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e333]:
+            - link "Livelihood Training" [ref=e334] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e335]:
+            - link "Ramadan Aid" [ref=e336] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e337]:
+            - link "Zakat Distribution" [ref=e338] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e339]:
+            - link "Volunteer Program" [ref=e340] [cursor=pointer]:
+              - /url: "#"
+      - generic [ref=e341]:
+        - generic [ref=e342]: Organisation
+        - list [ref=e343]:
+          - listitem [ref=e344]:
+            - link "About EDF" [ref=e345] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=e346]:
+            - link "Our Team" [ref=e347] [cursor=pointer]:
+              - /url: /about#team
+          - listitem [ref=e348]:
+            - link "Annual Reports" [ref=e349] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e350]:
+            - link "News & Updates" [ref=e351] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e352]:
+            - link "Gallery" [ref=e353] [cursor=pointer]:
+              - /url: /gallery
+          - listitem [ref=e354]:
+            - link "Contact" [ref=e355] [cursor=pointer]:
+              - /url: "#"
+      - generic [ref=e356]:
+        - generic [ref=e357]: Contact
+        - generic [ref=e358]:
+          - paragraph [ref=e359]:
+            - strong [ref=e360]: Address
+            - text: EDF Office, Galgamuwa,
+            - text: North Western Province, Sri Lanka
+          - paragraph [ref=e361]:
+            - strong [ref=e362]: Email
+            - link "info@edfgalgamuwa.org" [ref=e363] [cursor=pointer]:
+              - /url: mailto:info@edfgalgamuwa.org
+          - paragraph [ref=e364]:
+            - strong [ref=e365]: Phone
+            - text: +94 37 000 0000
+    - generic [ref=e367]:
+      - generic [ref=e368]:
+        - text: © 2026 Education & Development Foundation, Galgamuwa. All rights reserved.
+        - generic [ref=e369]: "|"
+        - text: Crafted with
+        - img [ref=e370]
+        - text: by
+        - link "Arshad Ahamed" [ref=e371] [cursor=pointer]:
+          - /url: https://arshadahamed.com/
+      - generic [ref=e372]:
+        - link "f" [ref=e373] [cursor=pointer]:
+          - /url: https://www.facebook.com/edf28jan2016/
+        - link "in" [ref=e374] [cursor=pointer]:
+          - /url: https://www.Instagram.com/
+        - link "▶" [ref=e375] [cursor=pointer]:
+          - /url: https://www.youtube.com/
+        - link "w" [ref=e376] [cursor=pointer]:
+          - /url: https://wa.me/94715358380
+  - button "Back to Top":
+    - img

@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About EDF — Education & Development Foundation, Galgamuwa</title>
+  <meta name="description"
+    content="Born from a single community gathering in 2016, EDF Galgamuwa has grown into Sri Lanka's most trusted grassroots foundation for education, health, and livelihood support.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --cream: #F7F0E3;
+      --linen: #EDE3CE;
+      --parchment: #DFD0B0;
+      --navy: #0C1A34;
+      --navy-mid: #162A50;
+      --crimson: #C21833;
+      --emerald: #0A5C3E;
+      --amber: #C8820A;
+      --amber-lt: #E8A020;
+      --text: #1A0E08;
+      --text-soft: #5A4030;
+      --text-muted: #9A8470;
+      --border: rgba(26, 14, 8, 0.1);
+      --serif: 'Cinzel', serif;
+      --body: 'Lora', Georgia, serif;
+      --display: 'Bebas Neue', sans-serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: var(--body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    ::selection {
+      background: var(--crimson);
+      color: white;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* ── Custom cursor ── */
+    #cur-dot {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      background: var(--crimson);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width .18s, height .18s;
+    }
+
+    #cur-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(194, 24, 51, .4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width .35s var(--ease), height .35s var(--ease);
+    }
+
+    /* ══════════════════════════════════════════
+       NAV
+    ══════════════════════════════════════════ */
+    #nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 90px;
+      padding: 0 48px;
+      z-index: 999;
+      background: rgba(249, 244, 236, 0.95);
+      border-bottom: 1px solid rgba(24, 16, 10, .08);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 4px 40px rgba(24, 16, 10, .07);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      z-index: 1;
+      text-decoration: none;
+    }
+
+    .nav-badge {
+      width: 38px;
+      height: 38px;
+      background: #295742;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-badge svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-wordmark {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #18100A;
+      letter-spacing: .02em;
+    }
+
+    .nav-wordmark span {
+      color: #295742;
+    }
+
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 38px;
+      list-style: none;
+      z-index: 1;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-links a {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #18100A;
+      text-decoration: none;
+      transition: color .2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: #295742;
+      transition: width .25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #295742;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .nav-login {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #5E4E3E;
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .nav-login:hover {
+      color: #295742;
+    }
+
+    .nav-donate {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #295742;
+      color: white;
+      padding: 11px 26px;
+      text-decoration: none;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-donate:hover {
+      background: #1d3e2f;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(194, 24, 51, 0.18);
+    }
+
+    /* ══════════════════════════════════════════
+       HERO — OPENING STATEMENT
+    ══════════════════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 64px 100px;
+      text-align: center;
+    }
+
+    /* Islamic geometric SVG background */
+    .hero-geo {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-geo svg {
+      width: 100%;
+      height: 100%;
+      opacity: .04;
+    }
+
+    .hero-est {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: rgba(200, 130, 10, .8);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: revealUp .8s .4s var(--ease) forwards;
+    }
+
+    .hero-statement {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 400;
+      line-height: 1.18;
+      letter-spacing: .02em;
+      color: white;
+      max-width: 900px;
+      opacity: 0;
+      animation: revealUp .9s .6s var(--ease) forwards;
+    }
+
+    .hero-statement em {
+      font-style: italic;
+      color: rgba(200, 130, 10, 0.9);
+    }
+
+    .hero-divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200, 130, 10, .6), transparent);
+      margin: 40px auto;
+      opacity: 0;
+      animation: revealUp .6s .85s var(--ease) forwards;
+    }
+
+    .hero-sub {
+      font-family: var(--body);
+      font-size: 17px;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, .5);
+      max-width: 600px;
+      opacity: 0;
+      animation: revealUp .8s 1s var(--ease) forwards;
+    }
+
+    /* Scroll cue */
+    .hero-scroll {
+      position: absolute;
+      bottom: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: revealUp .6s 1.3s var(--ease) forwards;
+    }
+
+    .scroll-cue {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .25);
+    }
+
+    .scroll-chevron {
+      width: 20px;
+      height: 20px;
+      border-right: 1px solid rgba(200, 130, 10, .4);
+      border-bottom: 1px solid rgba(200, 130, 10, .4);
+      transform: rotate(45deg);
+      animation: bounce 2s 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: rotate(45deg) translateY(0);
+        opacity: .3;
+      }
+
+      50% {
+        transform: rotate(45deg) translateY(6px);
+        opacity: 1;
+      }
+    }
+
+    @keyframes revealUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Floating stats in hero */
+    .hero-stats {
+      position: absolute;
+      bottom: 120px;
+      left: 64px;
+      right: 64px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .h-stat {
+      opacity: 0;
+      animation: revealUp .7s var(--ease) forwards;
+    }
+
+    .h-stat:nth-child(1) {
+      animation-delay: 1.1s;
+    }
+
+    .h-stat:nth-child(2) {
+      animation-delay: 1.2s;
+    }
+
+    .h-stat:nth-child(3) {
+      animation-delay: 1.3s;
+    }
+
+    .h-stat:nth-child(4) {
+      animation-delay: 1.4s;
+    }
+
+    .h-stat-num {
+      font-family: var(--display);
+      font-size: 44px;
+      color: rgba(200, 130, 10, .85);
+      line-height: 1;
+    }
+
+    .h-stat-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .35);
+      margin-top: 4px;
+    }
+
+    /* ══════════════════════════════════════════
+       ORIGIN STORY
+    ══════════════════════════════════════════ */
+    #origin {
+      padding: 120px 64px;
+      background: var(--cream);
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .origin-left {
+      position: sticky;
+      top: 120px;
+    }
+
+    .chapter-tag {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chapter-tag::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--crimson);
+    }
+
+    .origin-heading {
+      font-family: var(--serif);
+      font-size: clamp(32px, 3.5vw, 52px);
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--navy);
+      letter-spacing: .04em;
+    }
+
+    .origin-heading em {
+      color: var(--crimson);
+      font-style: italic;
+    }
+
+    .year-badge {
+      display: inline-block;
+      margin-top: 32px;
+      font-family: var(--display);
+      font-size: 96px;
+      line-height: 1;
+      color: var(--linen);
+      position: relative;
+      user-select: none;
+    }
+
+    .year-badge::after {
+      content: 'EST.';
+      position: absolute;
+      top: 16px;
+      left: 0;
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      color: var(--text-muted);
+    }
+
+    .origin-text {
+      font-size: 17px;
+      line-height: 1.9;
+      color: var(--text-soft);
+      margin-bottom: 28px;
+    }
+
+    .origin-text:first-of-type {
+      font-size: 20px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .pull-quote {
+      border-left: 3px solid var(--crimson);
+      padding: 16px 24px;
+      margin: 40px 0;
+      font-family: var(--body);
+      font-size: 21px;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--navy);
+    }
+
+    /* ══════════════════════════════════════════
+       TIMELINE
+    ══════════════════════════════════════════ */
+    #timeline {
+      padding: 100px 64px;
+      background: var(--navy);
+      position: relative;
+    }
+
+    .timeline-hdr {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .timeline-hdr .chapter-tag {
+      justify-content: center;
+      color: rgba(200, 130, 10, .7);
+    }
+
+    .timeline-hdr .chapter-tag::before {
+      background: rgba(200, 130, 10, .4);
+    }
+
+    .timeline-hdr h2 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 56px);
+      font-weight: 400;
+      color: white;
+      letter-spacing: .04em;
+      margin-top: 12px;
+    }
+
+    .timeline-hdr h2 em {
+      color: rgba(200, 130, 10, .9);
+      font-style: italic;
+    }
+
+    /* Vertical timeline */
+    .timeline-track {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(var(--navy), rgba(200, 130, 10, .3) 20%, rgba(200, 130, 10, .3) 80%, var(--navy));
+      transform: translateX(-50%);
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 64px;
+      position: relative;
+    }
+
+    .tl-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .tl-item.right .tl-content {
+      grid-column: 3;
+      text-align: left;
+    }
+
+    .tl-item.right .tl-empty {
+      grid-column: 1;
+    }
+
+    .tl-item.left .tl-content {
+      grid-column: 1;
+      text-align: right;
+    }
+
+    .tl-item.left .tl-empty {
+      grid-column: 3;
+    }
+
+    .tl-dot {
+      grid-column: 2;
+      grid-row: 1;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--navy-mid);
+      border: 2px solid rgba(200, 130, 10, .4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--display);
+      font-size: 12px;
+      color: rgba(200, 130, 10, .8);
+      letter-spacing: .05em;
+      flex-shrink: 0;
+      transition: border-color .3s, background .3s;
+      cursor: default;
+    }
+
+    .tl-item.active .tl-dot {
+      background: rgba(200, 130, 10, .15);
+      border-color: rgba(200, 130, 10, .9);
+    }
+
+    .tl-year {
+      font-family: var(--display);
+      font-size: 52px;
+      line-height: 1;
+      color: rgba(255, 255, 255, .07);
+      margin-bottom: 8px;
+    }
+
+    .tl-title {
+      font-family: var(--serif);
+      font-size: 19px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: .04em;
+      margin-bottom: 10px;
+    }
+
+    .tl-desc {
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, .45);
+    }
+
+    .tl-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(200, 130, 10, .12);
+      border: 1px solid rgba(200, 130, 10, .2);
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(200, 130, 10, .8);
+      margin-bottom: 12px;
+    }
+
+    /* ══════════════════════════════════════════
+       MISSION & VISION
+    ══════════════════════════════════════════ */
+    #mission-vision {
+      padding: 120px 64px;
+      background: var(--cream);
+    }
+
+    .mv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      /* thin divider */
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      overflow: hidden;
+    }
+
+    .mv-block {
+      padding: 64px 56px;
+      position: relative;
+    }
+
+    .mv-block:first-child {
+      background: var(--navy);
+      border-radius: 32px 0 0 32px;
+    }
+
+    .mv-block:last-child {
+      background: var(--crimson);
+      border-radius: 0 32px 32px 0;
+    }
+
+    .mv-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: 24px;
+    }
+
+    .mv-heading {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 44px);
+      font-weight: 400;
+      line-height: 1.2;
+      color: white;
+      letter-spacing: .04em;
+      margin-bottom: 24px;
+    }
+
+    .mv-heading em {
+      font-style: italic;
+      opacity: .7;
+    }
+
+    .mv-text {
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.9;
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .mv-number {
+      position: absolute;
+      bottom: 40px;
+      right: 48px;
+      font-family: var(--display);
+      font-size: 96px;
+      line-height: 1;
+      color: rgba(255, 255, 255, .04);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════════
+       PILLARS / VALUES
+    ══════════════════════════════════════════ */
+    #pillars {
+      padding: 100px 64px;
+      background: var(--linen);
+    }
+
+    .pillars-hdr {
+      margin-bottom: 64px;
+      text-align: center;
+    }
+
+    .pillars-hdr h2 {
+      font-family: var(--serif);
+      font-size: clamp(30px, 3.5vw, 48px);
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: .05em;
+      margin-top: 12px;
+    }
+
+    .pillars-hdr h2 em {
+      color: var(--crimson);
+      font-style: italic;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .pillar-card {
+      background: var(--cream);
+      border-radius: 24px;
+      padding: 44px 32px;
+      border: 1px solid var(--border);
+      transition: transform .4s var(--ease), box-shadow .4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pillar-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 64px rgba(26, 14, 8, .1);
+    }
+
+    .pillar-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .pillar-card.p-edu::before {
+      background: var(--navy);
+    }
+
+    .pillar-card.p-health::before {
+      background: var(--crimson);
+    }
+
+    .pillar-card.p-livelihood::before {
+      background: var(--emerald);
+    }
+
+    .pillar-card.p-community::before {
+      background: var(--amber);
+    }
+
+    .pillar-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .p-edu .pillar-icon {
+      background: rgba(12, 26, 52, .08);
+    }
+
+    .p-health .pillar-icon {
+      background: rgba(194, 24, 51, .08);
+    }
+
+    .p-livelihood .pillar-icon {
+      background: rgba(10, 92, 62, .08);
+    }
+
+    .p-community .pillar-icon {
+      background: rgba(200, 130, 10, .08);
+    }
+
+    .pillar-name {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: .04em;
+      margin-bottom: 12px;
+    }
+
+    .pillar-desc {
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-soft);
+    }
+
+    .pillar-bg-num {
+      position: absolute;
+      bottom: 12px;
+      right: 20px;
+      font-family: var(--display);
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(26, 14, 8, .03);
+      user-select: none;
+    }
+
+    /* ══════════════════════════════════════════
+       LEADERSHIP / TEAM
+    ══════════════════════════════════════════ */
+    #team {
+      padding: 120px 64px;
+      background: var(--cream);
+    }
+
+    .team-hdr {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .team-hdr h2 {
+      font-family: var(--serif);
+      font-size: clamp(30px, 3.5vw, 48px);
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: .04em;
+      margin-top: 12px;
+    }
+
+    .team-hdr h2 em {
+      color: var(--crimson);
+      font-style: italic;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .team-card {
+      text-align: center;
+      position: relative;
+    }
+
+    .team-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 42px;
+      font-weight: 600;
+      color: white;
+      position: relative;
+    }
+
+    .team-avatar::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+
+    .team-name {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: .04em;
+      margin-bottom: 6px;
+    }
+
+    .team-role {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 14px;
+    }
+
+    .team-bio {
+      font-family: var(--body);
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      font-style: italic;
+    }
+
+    /* ══════════════════════════════════════════
+       IMPACT NUMBERS
+    ══════════════════════════════════════════ */
+    #impact-numbers {
+      padding: 120px 64px;
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #impact-numbers::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(200, 130, 10, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .impact-hdr {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .impact-hdr h2 {
+      font-family: var(--serif);
+      font-size: clamp(30px, 3.5vw, 48px);
+      font-weight: 400;
+      color: white;
+      letter-spacing: .04em;
+      margin-top: 12px;
+    }
+
+    .impact-hdr h2 em {
+      color: rgba(200, 130, 10, .9);
+      font-style: italic;
+    }
+
+    .impact-hdr .chapter-tag {
+      justify-content: center;
+      color: rgba(200, 130, 10, .6);
+    }
+
+    .impact-hdr .chapter-tag::before {
+      background: rgba(200, 130, 10, .4);
+    }
+
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      border-radius: 28px;
+      overflow: hidden;
+    }
+
+    .num-cell {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .05);
+      padding: 52px 40px;
+      text-align: center;
+      transition: background .3s;
+    }
+
+    .num-cell:hover {
+      background: rgba(200, 130, 10, .06);
+    }
+
+    .num-val {
+      font-family: var(--display);
+      font-size: clamp(56px, 6vw, 88px);
+      line-height: 1;
+      color: white;
+      display: block;
+    }
+
+    .num-unit {
+      color: rgba(200, 130, 10, .8);
+    }
+
+    .num-label {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .35);
+      margin-top: 12px;
+      display: block;
+    }
+
+    .num-sub {
+      font-family: var(--body);
+      font-size: 13px;
+      font-style: italic;
+      color: rgba(255, 255, 255, .2);
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    footer {
+      padding: 36px 64px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--cream);
+    }
+
+    .foot-brand {
+      font-family: var(--serif);
+      font-size: 14px;
+      color: var(--navy);
+      letter-spacing: .1em;
+    }
+
+    .foot-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-family: var(--sans);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .foot-links a:hover {
+      color: var(--navy);
+    }
+
+    .foot-copy {
+      font-family: var(--sans);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ══════════════════════════════════════════
+       JS-REVEAL
+    ══════════════════════════════════════════ */
+    .js-reveal {
+      opacity: 0;
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      #nav {
+        padding: 0 32px;
+      }
+
+      #origin {
+        padding: 80px 32px;
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .origin-left {
+        position: static;
+      }
+
+      #timeline {
+        padding: 80px 32px;
+      }
+
+      .tl-item {
+        grid-template-columns: 1fr 48px 1fr;
+        gap: 20px;
+      }
+
+      #mission-vision {
+        padding: 80px 32px;
+      }
+
+      .mv-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mv-block:first-child {
+        border-radius: 32px 32px 0 0;
+      }
+
+      .mv-block:last-child {
+        border-radius: 0 0 32px 32px;
+      }
+
+      #pillars {
+        padding: 80px 32px;
+      }
+
+      .pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      #team {
+        padding: 80px 32px;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr 1fr;
+        max-width: 100%;
+      }
+
+      #impact-numbers {
+        padding: 80px 32px;
+      }
+
+      .numbers-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      footer {
+        padding: 28px 32px;
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #nav .nav-links {
+        display: none;
+      }
+
+      .hero-stats {
+        display: none;
+      }
+
+      .timeline-track::before {
+        left: 24px;
+      }
+
+      .tl-item {
+        grid-template-columns: 48px 1fr;
+        gap: 20px;
+      }
+
+      .tl-item.left .tl-content,
+      .tl-item.right .tl-content {
+        grid-column: 2;
+        text-align: left;
+      }
+
+      .tl-item.left .tl-empty,
+      .tl-item.right .tl-empty {
+        display: none;
+      }
+
+      .tl-dot {
+        grid-column: 1;
+      }
+
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .numbers-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+
+  <!-- ══════════════════════════════════════════
+       NAV
+  ══════════════════════════════════════════ -->
+  <nav id="nav">
+    <a href="/" class="nav-logo">
+      <div class="nav-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+          stroke-linecap="round">
+          <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8Z" />
+        </svg>
+      </div>
+      <span class="nav-wordmark">EDF <span>Galgamuwa</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/about" class="active">About Us</a></li>
+      <li><a href="/#programs-wrap">Programs</a></li>
+      <li><a href="/#stories">Impact</a></li>
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/#get-involved">Get Involved</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="/login" class="nav-login">Staff Login</a>
+      <a href="/#join" class="nav-donate">
+        Join Us
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-geo">
+      <svg viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Islamic-inspired geometric circles -->
+        <circle cx="720" cy="450" r="420" stroke="white" stroke-width=".5" />
+        <circle cx="720" cy="450" r="300" stroke="white" stroke-width=".5" />
+        <circle cx="720" cy="450" r="180" stroke="white" stroke-width=".5" />
+        <!-- 8-pointed star lines -->
+        <line x1="720" y1="30" x2="720" y2="870" stroke="white" stroke-width=".5" />
+        <line x1="30" y1="450" x2="1410" y2="450" stroke="white" stroke-width=".5" />
+        <line x1="123" y1="153" x2="1317" y2="747" stroke="white" stroke-width=".5" />
+        <line x1="1317" y1="153" x2="123" y2="747" stroke="white" stroke-width=".5" />
+        <line x1="421" y1="30" x2="1019" y2="870" stroke="white" stroke-width=".3" />
+        <line x1="1019" y1="30" x2="421" y2="870" stroke="white" stroke-width=".3" />
+      </svg>
+    </div>
+
+    <div class="hero-stats">
+      <div class="h-stat">
+        <div class="h-stat-num">6+</div>
+        <div class="h-stat-label">Years Active</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num">240+</div>
+        <div class="h-stat-label">Lives Touched</div>
+      </div>
+      <div class="h-stat">100</div>
+      <div class="h-stat-label">Active Students</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num">80+</div>
+      <div class="h-stat-label">Core Programs</div>
+    </div>
+    </div>
+
+    <p class="hero-est">Education & Development Foundation — Galgamuwa, Sri Lanka</p>
+    <h1 class="hero-statement" id="pub-hero-stmt">
+      Rooted in <em>faith.</em><br>Driven by <em>compassion.</em>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub" id="pub-hero-sub">Since 2016, we have walked alongside the families of Galgamuwa — not as
+      benefactors, but as neighbours committed to a shared future.</p>
+
+    <div class="hero-scroll">
+      <div class="scroll-chevron"></div>
+      <span class="scroll-cue">Scroll to read our story</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       ORIGIN STORY
+  ══════════════════════════════════════════ -->
+  <section id="origin">
+    <div class="origin-left js-reveal">
+      <div class="chapter-tag" id="pub-origin-tag">Chapter One</div>
+      <h2 class="origin-heading" id="pub-origin-heading">How it <em>began</em></h2>
+      <div class="year-badge" id="pub-origin-year">2016</div>
+    </div>
+
+    <div class="origin-right" id="pub-origin-right">
+      <!-- Dynamically populated from /api/frontdesk/origin-paragraphs -->
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       TIMELINE
+  ══════════════════════════════════════════ -->
+  <section id="timeline">
+    <div class="timeline-hdr">
+      <div class="chapter-tag">Our Journey</div>
+      <h2>Six years of <em>milestones</em></h2>
+    </div>
+
+    <div class="timeline-track" id="pub-timeline-track">
+
+      <div class="tl-item left js-reveal">
+        <div class="tl-content">
+          <div class="tl-year">2016</div>
+          <div class="tl-tag">Foundation</div>
+          <div class="tl-title">EDF is Established</div>
+          <div class="tl-desc">06 founding members register the foundation.</div>
+        </div>
+        <div class="tl-dot">06</div>
+        <div class="tl-empty"></div>
+      </div>
+
+      <div class="tl-item right js-reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-dot">19</div>
+        <div class="tl-content">
+          <div class="tl-year">2019</div>
+          <div class="tl-tag">Health</div>
+          <div class="tl-title">First Mobile Health Camp</div>
+          <div class="tl-desc">A partnership with a Colombo medical college brings doctors to Galgamuwa for free
+            consultations. 340 patients treated in the first camp.</div>
+        </div>
+      </div>
+
+      <div class="tl-item left js-reveal">
+        <div class="tl-content">
+          <div class="tl-year">2020</div>
+          <div class="tl-tag">Resilience</div>
+          <div class="tl-title">COVID-19 Emergency Response</div>
+          <div class="tl-desc">EDF pivots to emergency food distribution during the pandemic. 800 families receive
+            monthly food parcels for four months.</div>
+        </div>
+        <div class="tl-dot">20</div>
+        <div class="tl-empty"></div>
+      </div>
+
+      <div class="tl-item right js-reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-dot">21</div>
+        <div class="tl-content">
+          <div class="tl-year">2021</div>
+          <div class="tl-tag">Livelihood</div>
+          <div class="tl-title">Vocational Training Centre Opened</div>
+          <div class="tl-desc">The EDF Skills Centre begins offering tailoring, computing, and small business management
+            courses. First 28 graduates complete the programme.</div>
+        </div>
+      </div>
+
+      <div class="tl-item left js-reveal">
+        <div class="tl-content">
+          <div class="tl-year">2022</div>
+          <div class="tl-tag">Growth</div>
+          <div class="tl-title">10,000 Lives Milestone</div>
+          <div class="tl-desc">EDF reaches its ten-thousandth beneficiary. The Ramadan Zakat programme scales to serve
+            1,000 families annually.</div>
+        </div>
+        <div class="tl-dot">22</div>
+        <div class="tl-empty"></div>
+      </div>
+
+      <div class="tl-item right js-reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-dot">23</div>
+        <div class="tl-content">
+          <div class="tl-year">2023</div>
+          <div class="tl-tag">Systems</div>
+          <div class="tl-title">Digital Management Platform Launched</div>
+          <div class="tl-desc">EDF launches its own digital management platform for member records, donations, and
+            programme tracking — enhancing transparency and accountability.</div>
+        </div>
+      </div>
+
+      <div class="tl-item left js-reveal">
+        <div class="tl-content">
+          <div class="tl-year">2024</div>
+          <div class="tl-tag">Now</div>
+          <div class="tl-title">Expanding the Vision</div>
+          <div class="tl-desc">EDF launches a three-year strategic plan targeting 25,000 direct beneficiaries, an
+            expanded scholarship fund, and a permanent community centre.</div>
+        </div>
+        <div class="tl-dot">24</div>
+        <div class="tl-empty"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       MISSION & VISION
+  ══════════════════════════════════════════ -->
+  <section id="mission-vision">
+    <div class="mv-grid js-reveal">
+      <div class="mv-block">
+        <div class="mv-label">Our Mission</div>
+        <h2 class="mv-heading">To uplift every family through <em>education, health, and economic dignity.</em></h2>
+        <p class="mv-text">We believe poverty is a circumstance, not a destiny. Our mission is to provide the resources,
+          opportunities, and community support that allow every family in our region to chart their own path forward.
+        </p>
+        <div class="mv-number">M</div>
+      </div>
+      <div class="mv-block">
+        <div class="mv-label">Our Vision</div>
+        <h2 class="mv-heading">A Galgamuwa where <em>no child's future</em> is determined by their family's income.</h2>
+        <p class="mv-text">We envision a thriving, self-sustaining community where quality education, accessible
+          healthcare, and economic opportunity are the shared inheritance of every child — regardless of background.</p>
+        <div class="mv-number">V</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       PILLARS
+  ══════════════════════════════════════════ -->
+  <section id="pillars">
+    <div class="pillars-hdr">
+      <div class="chapter-tag" style="justify-content:center">What We Do</div>
+      <h2>Four <em>pillars</em> of change</h2>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card p-edu js-reveal">
+        <div class="pillar-icon">📚</div>
+        <div class="pillar-name">Education</div>
+        <p class="pillar-desc">Scholarships, after-school programmes, English and computer literacy — removing every
+          barrier between a child and their potential.</p>
+        <div class="pillar-bg-num">01</div>
+      </div>
+      <div class="pillar-card p-health js-reveal">
+        <div class="pillar-icon">🏥</div>
+        <div class="pillar-name">Health</div>
+        <p class="pillar-desc">Free mobile clinics, eye care, dental camps, and mental wellness support — because a
+          healthy community is a thriving one.</p>
+        <div class="pillar-bg-num">02</div>
+      </div>
+      <div class="pillar-card p-livelihood js-reveal">
+        <div class="pillar-icon">💼</div>
+        <div class="pillar-name">Livelihood</div>
+        <p class="pillar-desc">Vocational training, microfinance access, and small business mentoring — creating
+          sustainable income for families to stand on their own.</p>
+        <div class="pillar-bg-num">03</div>
+      </div>
+      <div class="pillar-card p-community js-reveal">
+        <div class="pillar-icon">🤝</div>
+        <div class="pillar-name">Community</div>
+        <p class="pillar-desc">Ramadan aid, Zakat distribution, Eid programmes, and community gatherings — weaving a
+          fabric of care that holds through every season.</p>
+        <div class="pillar-bg-num">04</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       LEADERSHIP
+  ══════════════════════════════════════════ -->
+  <section id="team">
+    <div class="team-hdr">
+      <div class="chapter-tag" style="justify-content:center">The People Behind EDF</div>
+      <h2>Leadership &amp; <em>Founders</em></h2>
+    </div>
+    <div class="team-grid" id="pub-team-grid">
+      <div class="team-card js-reveal">
+        <div class="team-avatar" style="background:linear-gradient(145deg,#0A5C3E,#12A070)">M</div>
+        <div class="team-name">Mohamed Faris</div>
+        <div class="team-role">Founding Chairman</div>
+        <p class="team-bio">"Every programme we started came from a conversation with a family we failed to help in
+          time. That memory keeps us moving."</p>
+      </div>
+      <div class="team-card js-reveal">
+        <div class="team-avatar" style="background:linear-gradient(145deg,#0C1A34,#1E4080)">A</div>
+        <div class="team-name">Mohamed Irfan (Naleemi)</div>
+        <div class="team-role">Secretary</div>
+        <p class="team-bio">"Accountability is not a bureaucratic requirement for us — it is how we honour the trust of
+          every donor and every family we serve."</p>
+      </div>
+      <div class="team-card js-reveal">
+        <div class="team-avatar" style="background:linear-gradient(145deg,#941226,#C21833)">F</div>
+        <div class="team-name">Mohamed Faiz</div>
+        <div class="team-role">Treasurer</div>
+        <p class="team-bio">"I was one of the first scholarship students. Now I design the scholarship programme. EDF is
+          not just an organisation — it is a cycle of hope."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       IMPACT NUMBERS
+  ══════════════════════════════════════════ -->
+  <section id="impact-numbers">
+    <div class="impact-hdr">
+      <div class="chapter-tag">By The Numbers</div>
+      <h2>Six years, <em>immeasurable</em> impact</h2>
+    </div>
+    <div class="numbers-grid">
+      <div class="num-cell js-reveal">
+        <span class="num-val" data-target="12400">240<span class="num-unit">+</span></span>
+        <span class="num-label">Donors & Partners</span>
+        <span class="num-sub">Families directly supported</span>
+      </div>
+      <div class="num-cell js-reveal">
+        <span class="num-val" data-target="43">0<span class="num-unit"></span></span>
+        <span class="num-label">Active Scholars</span>
+        <span class="num-sub">Currently funded</span>
+      </div>
+      <div class="num-cell js-reveal">
+        <span class="num-val" data-target="1200">0<span class="num-unit">+</span></span>
+        <span class="num-label">Ramadan Packages</span>
+        <span class="num-sub">Delivered annually</span>
+      </div>
+      <div class="num-cell js-reveal">
+        <span class="num-val" data-target="120">0<span class="num-unit">+</span></span>
+        <span class="num-label">Active Volunteers</span>
+        <span class="num-sub">Weekend contributors</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer>
+    <div class="foot-brand">EDF — Galgamuwa</div>
+    <ul class="foot-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/login">Staff Login</a></li>
+    </ul>
+    <div class="foot-copy">
+      © 2026 Education &amp; Development Foundation, Galgamuwa. All rights reserved.
+      <span style="display: inline-block; margin: 0 6px; opacity: 0.4;">|</span>
+      Crafted with <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--crimson)" stroke="var(--crimson)"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        style="vertical-align: -2px; display: inline-block;">
+        <path
+          d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0l-1.1 1-1.1-1a5.5 5.5 0 0 0-7.8 7.8l1 1 7.9 7.9 7.9-7.9 1-1a5.5 5.5 0 0 0 0-7.8z">
+        </path>
+      </svg> by <a href="https://arshadahamed.com/" target="_blank"
+        style="color: var(--text-muted); text-decoration: none; transition: color 0.2s; font-weight: 600;"
+        onmouseover="this.style.color='var(--navy)'" onmouseout="this.style.color='var(--text-muted)'">Arshad Ahamed</a>
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── Cursor ── */
+    const dot = document.getElementById('cur-dot');
+    const ring = document.getElementById('cur-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    gsap.ticker.add(() => {
+      rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    });
+
+    async function initPage() {
+      try {
+        const [cRes, tlRes, tmRes, opRes] = await Promise.all([
+          fetch('/api/frontdesk/content/about').then(r => r.ok ? r.json() : {}),
+          fetch('/api/frontdesk/timeline').then(r => r.ok ? r.json() : []),
+          fetch('/api/frontdesk/team').then(r => r.ok ? r.json() : []),
+          fetch('/api/frontdesk/origin-paragraphs').then(r => r.ok ? r.json() : [])
+        ]);
+
+        // 1. Text Content
+        const setC = (id, html) => { const e = document.getElementById(id); if (e && html) e.innerHTML = html.replace(/\n/g, '<br>'); };
+        if (cRes['hero.stmt']) setC('pub-hero-stmt', cRes['hero.stmt']);
+        if (cRes['hero.sub']) setC('pub-hero-sub', cRes['hero.sub']);
+
+        // 2. Origin section fixed fields
+        if (cRes['origin.tag'])     setC('pub-origin-tag',     cRes['origin.tag']);
+        if (cRes['origin.heading']) setC('pub-origin-heading', cRes['origin.heading']);
+        if (cRes['origin.year'])    setC('pub-origin-year',    cRes['origin.year']);
+
+        // 3. Origin paragraphs
+        const originRight = document.getElementById('pub-origin-right');
+        if (originRight && opRes.length) {
+          originRight.innerHTML = opRes.map(item => {
+            if (item.type === 'quote') {
+              return `<blockquote class="pull-quote js-reveal">"${item.content}"${item.attribution ? `<cite style="display:block;margin-top:12px;font-size:14px;font-style:normal;color:var(--text-muted)">${item.attribution}</cite>` : ''}</blockquote>`;
+            }
+            return `<p class="origin-text js-reveal">${item.content.replace(/\n/g, '<br>')}</p>`;
+          }).join('');
+        }
+
+        // 2. Timeline items
+        const tlWrap = document.getElementById('pub-timeline-track');
+        if (tlRes && tlRes.length > 0 && tlWrap) {
+          tlWrap.innerHTML = tlRes.map((t, i) => {
+            const side = (i % 2 === 0) ? 'left' : 'right';
+            const content = `<div class="tl-content">
+              <div class="tl-year">${t.year}</div>
+              ${t.label ? `<div class="tl-tag">${t.label}</div>` : ''}
+              <div class="tl-title">${t.title}</div>
+              <div class="tl-desc">${t.description}</div>
+            </div>`;
+            const dot = `<div class="tl-dot">${String(t.year).slice(-2)}</div>`;
+            const empty = `<div class="tl-empty"></div>`;
+
+            return `<div class="tl-item ${side} js-reveal">
+              ${side === 'left' ? content + dot + empty : empty + dot + content}
+            </div>`;
+          }).join('');
+        }
+
+        // 3. Team members
+        const tmWrap = document.getElementById('pub-team-grid');
+        if (tmRes && tmRes.length > 0 && tmWrap) {
+          tmWrap.innerHTML = tmRes.map(m => `
+            <div class="team-card js-reveal">
+              <div class="team-avatar" style="background:${m.avatar_color || '#0A5C3E'}">${m.avatar_letter || m.name[0]}</div>
+              <div class="team-name">${m.name}</div>
+              <div class="team-role">${m.role}</div>
+              ${m.bio ? `<div class="team-bio">"${m.bio}"</div>` : ''}
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic data:', err);
+      }
+
+      /* ── Scroll reveals ── */
+      gsap.utils.toArray('.js-reveal').forEach((el, i) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 36 },
+          {
+            opacity: 1, y: 0, duration: .9, ease: 'power3.out',
+            delay: (i % 3) * 0.08,
+            scrollTrigger: { trigger: el, start: 'top 87%', once: true }
+          }
+        );
+      });
+
+      /* ── Counter animation ── */
+      document.querySelectorAll('.num-val[data-target]').forEach(el => {
+        const target = +el.dataset.target;
+        const unit = el.querySelector('.num-unit');
+        const unitHtml = unit ? unit.outerHTML : '';
+
+        ScrollTrigger.create({
+          trigger: el, start: 'top 80%', once: true,
+          onEnter: () => {
+            let current = 0;
+            const step = target / 60;
+            const timer = setInterval(() => {
+              current = Math.min(current + step, target);
+              el.innerHTML = Math.floor(current).toLocaleString() + unitHtml;
+              if (current >= target) clearInterval(timer);
+            }, 16);
+          }
+        });
+      });
+
+      /* ── Timeline items activate on scroll ── */
+      gsap.utils.toArray('.tl-item').forEach(item => {
+        ScrollTrigger.create({
+          trigger: item, start: 'top 65%', once: true,
+          onEnter: () => item.classList.add('active')
+        });
+      });
+
+      /* ── Team card subtle tilt ── */
+      document.querySelectorAll('.team-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const { left, top, width, height } = card.getBoundingClientRect();
+          const x = (e.clientX - left) / width - 0.5;
+          const y = (e.clientY - top) / height - 0.5;
+          gsap.to(card, { rotationY: x * 8, rotationX: -y * 8, duration: .4, ease: 'power2.out', transformPerspective: 600 });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { rotationY: 0, rotationX: 0, duration: .6, ease: 'elastic.out(1,.5)' });
+        });
+      });
+
+      // Refresh ScrollTrigger to recalculate dimensions after dynamic content added
+      ScrollTrigger.refresh();
+    }
+
+    // Call init on load
+    initPage();
+  </script>
+</body>
+
+</html>

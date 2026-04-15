@@ -1,0 +1,237 @@
+- generic [ref=e2]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e4416]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4419]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4424]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4429]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4432]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e4434]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e4436]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e4437]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e4440]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4443]
+              - generic [ref=e51]: Programs
+              - img [ref=e4446]
+            - list [ref=e1052]:
+              - listitem [ref=e1053]:
+                - link "All Programs" [ref=e1054] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e4448]
+                  - generic [ref=e1056]: All Programs
+              - listitem [ref=e1057]:
+                - link "App Customizer" [ref=e1058] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e4449]
+                  - generic [ref=e1063]: App Customizer
+          - listitem [ref=e54]:
+            - link "Subscriptions" [active] [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4453]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4455]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4457]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4461]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4463]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4466]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4470]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4472]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e4476]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - button [ref=e1458] [cursor=pointer]:
+          - img [ref=e4479]
+        - generic [ref=e118]:
+          - link "Dashboard" [ref=e119] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e120]: /
+          - generic [ref=e121]: Settings
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e4480]
+          - generic [ref=e127]: Apr 11, 2026, 03:44 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e4483]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e4486]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e4488]
+        - generic [ref=e144] [cursor=pointer]:
+          - img "User" [ref=e145]
+          - generic [ref=e1460]:
+            - generic [ref=e1461]: System Administrator
+            - generic [ref=e1462]: Admin
+    - generic [ref=e4300]:
+      - generic [ref=e4302]:
+        - heading "Settings" [level=2] [ref=e4303]
+        - paragraph [ref=e4304]: Customize your experience and manage system preferences.
+      - generic [ref=e4305]:
+        - navigation "Settings navigation" [ref=e4306]:
+          - generic [ref=e4307]: General
+          - button "Appearance" [ref=e4308] [cursor=pointer]:
+            - img [ref=e4491]
+            - text: Appearance
+          - button "Notifications" [ref=e4315] [cursor=pointer]:
+            - img [ref=e4497]
+            - text: Notifications
+          - generic [ref=e4320]: Account
+          - button "Security" [ref=e4321] [cursor=pointer]:
+            - img [ref=e4500]
+            - text: Security
+          - button "Privacy" [ref=e4324] [cursor=pointer]:
+            - img [ref=e4502]
+            - text: Privacy
+          - generic [ref=e4331]: System
+          - button "Organization" [ref=e4332] [cursor=pointer]:
+            - img [ref=e4507]
+            - text: Organization
+          - button "Data & Backup" [ref=e4337] [cursor=pointer]:
+            - img [ref=e4511]
+            - text: Data & Backup
+          - button "Danger Zone" [ref=e4343] [cursor=pointer]:
+            - img [ref=e4515]
+            - text: Danger Zone
+        - generic [ref=e4347]:
+          - generic [ref=e4348]:
+            - generic [ref=e4349]:
+              - img [ref=e4517]
+              - generic [ref=e4355]:
+                - generic [ref=e4356]: Theme
+                - generic [ref=e4357]: Choose how the interface looks to you
+            - generic [ref=e4359]:
+              - button "Light" [ref=e4360] [cursor=pointer]:
+                - generic [ref=e4362]: Light
+              - button "Dark" [ref=e4363] [cursor=pointer]:
+                - generic [ref=e4365]: Dark
+              - button "System" [ref=e4366] [cursor=pointer]:
+                - generic [ref=e4368]: System
+          - generic [ref=e4369]:
+            - generic [ref=e4370]:
+              - img [ref=e4521]
+              - generic [ref=e4373]:
+                - generic [ref=e4374]: Interface Preferences
+                - generic [ref=e4375]: Customize layout and display options
+            - generic [ref=e4376]:
+              - generic [ref=e4377]:
+                - generic [ref=e4378]:
+                  - heading "Compact Sidebar" [level=4] [ref=e4379]
+                  - paragraph [ref=e4380]: Start with sidebar collapsed by default
+                - generic [ref=e4381]:
+                  - checkbox
+              - generic [ref=e4383]:
+                - generic [ref=e4384]:
+                  - heading "Animated Transitions" [level=4] [ref=e4385]
+                  - paragraph [ref=e4386]: Enable smooth animations throughout the UI
+                - generic [ref=e4387]:
+                  - checkbox [checked]
+              - generic [ref=e4389]:
+                - generic [ref=e4390]:
+                  - heading "Ambient Glow Effect" [level=4] [ref=e4391]
+                  - paragraph [ref=e4392]: Show decorative background glow on the dashboard
+                - generic [ref=e4393]:
+                  - checkbox [checked]
+          - generic [ref=e4395]:
+            - generic [ref=e4396]:
+              - img [ref=e4522]
+              - generic [ref=e4402]:
+                - generic [ref=e4403]: Language & Region
+                - generic [ref=e4404]: Set your preferred language and date format
+            - generic [ref=e4405]:
+              - generic [ref=e4406]:
+                - generic [ref=e4407]:
+                  - generic [ref=e4408]: Language
+                  - combobox [ref=e4409] [cursor=pointer]:
+                    - option "English" [selected]
+                    - option "සිංහල (Sinhala)"
+                    - option "தமிழ் (Tamil)"
+                - generic [ref=e4410]:
+                  - generic [ref=e4411]: Date Format
+                  - combobox [ref=e4412] [cursor=pointer]:
+                    - option "DD/MM/YYYY" [selected]
+                    - option "MM/DD/YYYY"
+                    - option "YYYY-MM-DD"
+              - generic [ref=e4413]:
+                - generic [ref=e4414]: Currency Display
+                - combobox [ref=e4415] [cursor=pointer]:
+                  - option "LKR — Sri Lankan Rupee" [selected]
+                  - option "USD — US Dollar"

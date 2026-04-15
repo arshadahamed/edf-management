@@ -1,0 +1,175 @@
+- generic [ref=e2]:
+  - button [ref=e3] [cursor=pointer]:
+    - img [ref=e557]
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e558]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e561]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e566]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e571]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e574]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e576]
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e578]
+              - generic [ref=e51]: Programs
+              - img [ref=e581]
+          - listitem [ref=e54]:
+            - link "Subscriptions" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e583]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e585]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e587]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e591]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e593]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e596]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e600]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e602]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e606]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e118]:
+        - link "Dashboard" [ref=e119] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=e120]: /
+        - generic [ref=e121]: Family Registry
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e609]
+          - generic [ref=e127]: Apr 11, 2026, 03:42 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e612]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e615]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138] [cursor=pointer]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e617]
+        - img "User" [ref=e145] [cursor=pointer]
+    - generic [ref=e620]:
+      - generic [ref=e621]:
+        - generic [ref=e622]:
+          - heading "Family Registry" [level=2] [ref=e623]
+          - paragraph [ref=e624]: Tracking families requiring humanitarian support.
+        - generic [ref=e625]:
+          - generic [ref=e626]:
+            - img [ref=e627]
+            - textbox "Search name, address..." [ref=e630]
+          - button "Register Family" [ref=e631] [cursor=pointer]:
+            - img [ref=e632]
+            - text: Register Family
+      - generic [ref=e633]:
+        - generic [ref=e635]:
+          - generic [ref=e636]:
+            - generic [ref=e637]: Total Families
+            - generic [ref=e638]: "0"
+          - img [ref=e640]
+        - generic [ref=e644]:
+          - generic [ref=e645]:
+            - generic [ref=e646]: Active
+            - generic [ref=e647]: "0"
+          - img [ref=e649]
+        - generic [ref=e653]:
+          - generic [ref=e654]:
+            - generic [ref=e655]: High Need
+            - generic [ref=e656]: "0"
+          - img [ref=e658]
+        - generic [ref=e661]:
+          - generic [ref=e662]:
+            - generic [ref=e663]: Total Aid Given
+            - generic [ref=e664]: LKR 0
+          - img [ref=e666]
+      - generic [ref=e670]:
+        - generic [ref=e671]: "POVERTY:"
+        - button "All" [ref=e672] [cursor=pointer]
+        - button "Low" [ref=e673] [cursor=pointer]
+        - button "Medium" [ref=e674] [cursor=pointer]
+        - button "High" [ref=e675] [cursor=pointer]
+        - generic [ref=e676]: "STATUS:"
+        - button "All" [ref=e677] [cursor=pointer]
+        - button "Active" [ref=e678] [cursor=pointer]
+        - button "Inactive" [ref=e679] [cursor=pointer]
+      - table [ref=e682]:
+        - rowgroup [ref=e683]:
+          - row "Head of Family Phone Address Members Poverty Level Status Actions" [ref=e684]:
+            - columnheader "Head of Family" [ref=e685] [cursor=pointer]:
+              - text: Head of Family
+              - img [ref=e686]
+            - columnheader "Phone" [ref=e689]
+            - columnheader "Address" [ref=e690] [cursor=pointer]:
+              - text: Address
+              - img [ref=e691]
+            - columnheader "Members" [ref=e694] [cursor=pointer]:
+              - text: Members
+              - img [ref=e695]
+            - columnheader "Poverty Level" [ref=e698] [cursor=pointer]:
+              - text: Poverty Level
+              - img [ref=e699]
+            - columnheader "Status" [ref=e702]
+            - columnheader "Actions" [ref=e703]
+        - rowgroup [ref=e704]:
+          - row "No families found" [ref=e705]:
+            - cell "No families found" [ref=e706]

@@ -106,8 +106,11 @@ const FB = (() => {
         return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    let _isInit = false;
     /* ── INIT ────────────────────────────────────────────────── */
     function init() {
+        if (_isInit) return;
+        _isInit = true;
         _setupPaletteDrag();
         _syncTitleInputs();
         _setupKeyboardShortcuts();

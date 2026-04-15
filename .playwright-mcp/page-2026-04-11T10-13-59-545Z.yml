@@ -1,0 +1,162 @@
+- generic [ref=e2]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e1967]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1970]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1975]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1980]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1983]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e1985]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1987]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1988]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1991]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1994]
+              - generic [ref=e51]: Programs
+              - img [ref=e1997]
+            - list [ref=e1052]:
+              - listitem [ref=e1053]:
+                - link "All Programs" [ref=e1054] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1999]
+                  - generic [ref=e1056]: All Programs
+              - listitem [ref=e1057]:
+                - link "App Customizer" [ref=e1058] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e2000]
+                  - generic [ref=e1063]: App Customizer
+          - listitem [ref=e54]:
+            - link "Subscriptions" [active] [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2004]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2006]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2008]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2012]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2014]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2017]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2021]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2023]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e2027]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - button [ref=e1458] [cursor=pointer]:
+          - img [ref=e2030]
+        - generic [ref=e118]:
+          - link "Dashboard" [ref=e119] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e120]: /
+          - generic [ref=e121]: Volunteers
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e2031]
+          - generic [ref=e127]: Apr 11, 2026, 03:43 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e2034]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e2037]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e2039]
+        - generic [ref=e144] [cursor=pointer]:
+          - img "User" [ref=e145]
+          - generic [ref=e1460]:
+            - generic [ref=e1461]: System Administrator
+            - generic [ref=e1462]: Admin
+    - generic [ref=e2042]:
+      - generic [ref=e2043]:
+        - generic [ref=e2044]:
+          - heading "Volunteer Registry" [level=2] [ref=e2045]
+          - paragraph [ref=e2046]: Manage dedicated individuals helping organization activities.
+        - button "Register Volunteer" [ref=e2047] [cursor=pointer]:
+          - img [ref=e2048]
+          - text: Register Volunteer
+      - table [ref=e2051]:
+        - rowgroup [ref=e2052]:
+          - row "Full Name Phone Skills Status Actions" [ref=e2053]:
+            - columnheader "Full Name" [ref=e2054]
+            - columnheader "Phone" [ref=e2055]
+            - columnheader "Skills" [ref=e2056]
+            - columnheader "Status" [ref=e2057]
+            - columnheader "Actions" [ref=e2058]
+        - rowgroup [ref=e2059]:
+          - row "No volunteers registered yet" [ref=e2060]:
+            - cell "No volunteers registered yet" [ref=e2061]

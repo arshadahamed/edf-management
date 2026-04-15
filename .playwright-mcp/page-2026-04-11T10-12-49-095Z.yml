@@ -1,0 +1,199 @@
+- generic [ref=e2]:
+  - button [ref=e3] [cursor=pointer]:
+    - img [ref=e1019]
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - img [ref=e1020]
+        - generic [ref=e12]:
+          - heading "EDF Portal" [level=1] [ref=e13]
+          - generic [ref=e14]: Galgamuwa
+      - navigation [ref=e15]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Overview" [ref=e18] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1023]
+              - generic [ref=e24]: Overview
+          - listitem [ref=e25]:
+            - link "Members" [ref=e26] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1028]
+              - generic [ref=e32]: Members
+          - listitem [ref=e33]:
+            - link "Family Registry" [ref=e34] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1033]
+              - generic [ref=e38]: Family Registry
+          - listitem [ref=e39]:
+            - link "Beneficiaries" [ref=e40] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1036]
+              - generic [ref=e43]: Beneficiaries
+              - img [ref=e1038]
+            - list [ref=e728]:
+              - listitem [ref=e729]:
+                - link "All Records" [ref=e730] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1040]
+                  - generic [ref=e732]: All Records
+              - listitem [ref=e733]:
+                - link "Register New" [ref=e734] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1041]
+                  - generic [ref=e738]: Register New
+              - listitem [ref=e739]:
+                - link "Categories" [ref=e740] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1044]
+                  - generic [ref=e744]: Categories
+          - listitem [ref=e46]:
+            - link "Programs" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1047]
+              - generic [ref=e51]: Programs
+              - img [ref=e1050]
+            - list [ref=e1052]:
+              - listitem [ref=e1053]:
+                - link "All Programs" [ref=e1054] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1055]
+                  - generic [ref=e1056]: All Programs
+              - listitem [ref=e1057]:
+                - link "App Customizer" [ref=e1058] [cursor=pointer]:
+                  - /url: "#"
+                  - img [ref=e1059]
+                  - generic [ref=e1063]: App Customizer
+          - listitem [ref=e54]:
+            - link "Subscriptions" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1064]
+              - generic [ref=e58]: Subscriptions
+          - listitem [ref=e59]:
+            - link "Donation Board" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1066]
+              - generic [ref=e63]: Donation Board
+          - listitem [ref=e64]:
+            - link "Inventory & Assets" [ref=e65] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1068]
+              - generic [ref=e70]: Inventory & Assets
+          - listitem [ref=e71]:
+            - link "Ramadan Tokens" [ref=e72] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1072]
+              - generic [ref=e75]: Ramadan Tokens
+          - listitem [ref=e76]:
+            - link "Volunteers" [ref=e77] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1074]
+              - generic [ref=e81]: Volunteers
+        - list [ref=e83]:
+          - listitem [ref=e84]:
+            - link "User Accounts" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1077]
+              - generic [ref=e90]: User Accounts
+          - listitem [ref=e91]:
+            - link "System Logs" [ref=e92] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1081]
+              - generic [ref=e95]: System Logs
+          - listitem [ref=e96]:
+            - link "My Profile" [ref=e97] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1083]
+              - generic [ref=e102]: My Profile
+          - listitem [ref=e103]:
+            - link "Settings" [ref=e104] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e1087]
+              - generic [ref=e108]: Settings
+      - generic [ref=e110]:
+        - heading "System Status" [level=4] [ref=e111]:
+          - generic [ref=e113]: System Status
+        - paragraph [ref=e114]: All services operational — synced just now.
+  - main [ref=e115]:
+    - generic [ref=e116]:
+      - generic [ref=e118]:
+        - link "Dashboard" [ref=e119] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=e120]: /
+        - generic [ref=e121]: Programs
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - img [ref=e1090]
+          - generic [ref=e127]: Apr 11, 2026, 03:42 PM
+        - button "EN" [ref=e129] [cursor=pointer]:
+          - img [ref=e1093]
+          - generic [ref=e133]: EN
+        - button "Toggle Theme" [ref=e134] [cursor=pointer]:
+          - img [ref=e1096]
+        - generic [ref=e137]:
+          - img
+          - textbox "Search members, programs..." [ref=e138] [cursor=pointer]
+        - generic "Notifications" [ref=e140] [cursor=pointer]:
+          - img [ref=e1098]
+        - img "User" [ref=e145] [cursor=pointer]
+    - generic [ref=e1101]:
+      - generic [ref=e1102]:
+        - generic [ref=e1103]:
+          - heading "Educational Programs" [level=2] [ref=e1104]
+          - paragraph [ref=e1105]: Manage programs, batches and participant applications.
+        - generic [ref=e1106]:
+          - button "New Application" [ref=e1107] [cursor=pointer]:
+            - img [ref=e1108]
+            - text: New Application
+          - button "New Program" [ref=e1111] [cursor=pointer]:
+            - img [ref=e1112]
+            - text: New Program
+      - generic [ref=e1113]:
+        - generic [ref=e1114]:
+          - generic [ref=e1115]: "0"
+          - generic [ref=e1116]: Total
+        - generic [ref=e1117]:
+          - generic [ref=e1118]: "0"
+          - generic [ref=e1119]: Active
+        - generic [ref=e1120]:
+          - generic [ref=e1121]: "0"
+          - generic [ref=e1122]: Batches
+        - generic [ref=e1123]:
+          - generic [ref=e1124]: "0"
+          - generic [ref=e1125]: Applicants
+        - generic [ref=e1126]:
+          - generic [ref=e1127]: "0"
+          - generic [ref=e1128]: Pending
+        - generic [ref=e1129]:
+          - generic [ref=e1130]: "0"
+          - generic [ref=e1131]: Approved
+      - generic [ref=e1132]:
+        - button "Programs" [ref=e1133] [cursor=pointer]
+        - button "All Applications" [ref=e1134] [cursor=pointer]
+      - generic [ref=e1135]:
+        - generic [ref=e1136]:
+          - generic [ref=e1137]:
+            - img
+            - textbox "Search programs..." [ref=e1138] [cursor=pointer]
+          - generic [ref=e1139]:
+            - button "All" [ref=e1140] [cursor=pointer]
+            - button "Quran" [ref=e1141] [cursor=pointer]
+            - button "Skills" [ref=e1142] [cursor=pointer]
+            - button "Bayan" [ref=e1143] [cursor=pointer]
+            - button "Tech" [ref=e1144] [cursor=pointer]
+            - button "Health" [ref=e1145] [cursor=pointer]
+            - button "Other" [ref=e1146] [cursor=pointer]
+          - combobox [ref=e1147]:
+            - option "All Audiences" [selected]
+            - option "Men"
+            - option "Women"
+            - option "Children"
+          - combobox [ref=e1148]:
+            - option "All Status" [selected]
+            - option "Active"
+            - option "Inactive"
+            - option "Completed"
+        - generic [ref=e1150]:
+          - img [ref=e1151]
+          - paragraph [ref=e1153]: No programs found
+          - paragraph [ref=e1154]: Try adjusting filters or create a new program.
