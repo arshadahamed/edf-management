@@ -3411,87 +3411,167 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Maintenance Mode -->
+                                <div class="settings-card" id="maintenanceCard">
+                                    <div class="settings-card-header">
+                                        <div class="settings-card-icon" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.18);">
+                                            <i data-lucide="wrench" style="color:#ef4444;"></i>
+                                        </div>
+                                        <div style="flex:1;">
+                                            <div class="settings-card-title">Maintenance Mode</div>
+                                            <div class="settings-card-subtitle">Take the public site offline for all non-admin users</div>
+                                        </div>
+                                        <label class="toggle-switch" style="flex-shrink:0;">
+                                            <input type="checkbox" id="maintenanceModeToggle" onchange="setMaintenanceMode(this.checked)">
+                                            <span class="toggle-track"></span>
+                                        </label>
+                                    </div>
+                                    <div class="settings-card-body" id="maintenanceBanner" style="display:none; padding-top:0;">
+                                        <div style="display:flex; align-items:flex-start; gap:0.6rem; padding:0.75rem 1rem; background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.2); border-radius:10px; font-size:0.82rem; color:var(--text-muted); line-height:1.55;">
+                                            <i data-lucide="triangle-alert" style="width:15px; height:15px; flex-shrink:0; color:#ef4444; margin-top:1px;"></i>
+                                            <span>Maintenance mode is <strong style="color:#ef4444;">active</strong>. All public pages and dashboard routes are blocked for non-admin users. Admins can still log in and access the dashboard normally.</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div><!-- /.settings-organization -->
 
                             <!-- ── DATA & BACKUP ───────────────────────── -->
                             <div class="settings-panel" id="settings-data">
+
+                                <!-- Full System Backup -->
                                 <div class="settings-card">
                                     <div class="settings-card-header">
-                                        <div class="settings-card-icon"><i data-lucide="download"></i></div>
+                                        <div class="settings-card-icon" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.18);">
+                                            <i data-lucide="shield-check" style="color:#6366f1;"></i>
+                                        </div>
                                         <div>
-                                            <div class="settings-card-title">Export Data</div>
-                                            <div class="settings-card-subtitle">Download your organization data as CSV or JSON</div>
+                                            <div class="settings-card-title">Full System Backup</div>
+                                            <div class="settings-card-subtitle">Download a complete snapshot of all organization data</div>
                                         </div>
                                     </div>
                                     <div class="settings-card-body">
-                                        <div class="settings-row">
-                                            <div class="settings-row-info">
-                                                <h4>Members List</h4>
-                                                <p>Export all member records including contact info</p>
+                                        <div class="backup-hero">
+                                            <div class="backup-last-info">
+                                                <i data-lucide="clock-4"></i>
+                                                <span id="lastBackupLabel">No backup on record</span>
                                             </div>
-                                            <button class="btn btn-outline" style="font-size:0.82rem; white-space:nowrap;" onclick="exportData('members')">
-                                                <i data-lucide="download"></i> Export CSV
+                                            <button class="btn btn-primary" id="fullBackupBtn" style="font-size:0.82rem;" onclick="runFullBackup()">
+                                                <i data-lucide="database"></i> Download Full Backup
                                             </button>
                                         </div>
-                                        <div class="settings-row">
-                                            <div class="settings-row-info">
-                                                <h4>Donations & Transactions</h4>
-                                                <p>Full transaction history with amounts and dates</p>
-                                            </div>
-                                            <button class="btn btn-outline" style="font-size:0.82rem; white-space:nowrap;" onclick="exportData('transactions')">
-                                                <i data-lucide="download"></i> Export CSV
-                                            </button>
+                                        <div class="backup-includes">
+                                            <span class="backup-includes-label">Covers:</span>
+                                            <span class="backup-tag"><i data-lucide="users"></i> Members</span>
+                                            <span class="backup-tag"><i data-lucide="hand-heart"></i> Beneficiaries</span>
+                                            <span class="backup-tag"><i data-lucide="home"></i> Families</span>
+                                            <span class="backup-tag"><i data-lucide="heart-handshake"></i> Volunteers</span>
+                                            <span class="backup-tag"><i data-lucide="banknote"></i> Donations</span>
+                                            <span class="backup-tag"><i data-lucide="scroll-text"></i> Activity Logs</span>
                                         </div>
-                                        <div class="settings-row">
-                                            <div class="settings-row-info">
-                                                <h4>Beneficiaries</h4>
-                                                <p>All beneficiary records and categories</p>
-                                            </div>
-                                            <button class="btn btn-outline" style="font-size:0.82rem; white-space:nowrap;" onclick="exportData('beneficiaries')">
-                                                <i data-lucide="download"></i> Export CSV
-                                            </button>
+                                    </div>
+                                </div>
+
+                                <!-- Export by Module -->
+                                <div class="settings-card">
+                                    <div class="settings-card-header">
+                                        <div class="settings-card-icon"><i data-lucide="table-2"></i></div>
+                                        <div>
+                                            <div class="settings-card-title">Export by Module</div>
+                                            <div class="settings-card-subtitle">Download individual datasets as CSV files</div>
                                         </div>
-                                        <div class="settings-row" style="border-bottom:none; padding-bottom:0;">
-                                            <div class="settings-row-info">
-                                                <h4>Full Database Backup</h4>
-                                                <p>Complete JSON export of all organization data</p>
+                                    </div>
+                                    <div class="settings-card-body">
+                                        <div class="export-module-grid">
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(59,130,246,0.1);"><i data-lucide="users" style="color:#3b82f6;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Members</div>
+                                                    <div class="export-module-desc">Profiles &amp; contact info</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('members')"><i data-lucide="download"></i> CSV</button>
                                             </div>
-                                            <button class="btn btn-primary" style="font-size:0.82rem; white-space:nowrap;" onclick="exportData('all')">
-                                                <i data-lucide="database"></i> Full Backup
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(16,185,129,0.1);"><i data-lucide="hand-heart" style="color:#10b981;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Beneficiaries</div>
+                                                    <div class="export-module-desc">Aid recipients &amp; families</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('beneficiaries')"><i data-lucide="download"></i> CSV</button>
+                                            </div>
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(245,158,11,0.1);"><i data-lucide="home" style="color:#f59e0b;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Families</div>
+                                                    <div class="export-module-desc">Family aid records</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('families')"><i data-lucide="download"></i> CSV</button>
+                                            </div>
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(239,68,68,0.1);"><i data-lucide="heart-handshake" style="color:#ef4444;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Volunteers</div>
+                                                    <div class="export-module-desc">Volunteer profiles</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('volunteers')"><i data-lucide="download"></i> CSV</button>
+                                            </div>
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(99,102,241,0.1);"><i data-lucide="banknote" style="color:#6366f1;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Subscriptions</div>
+                                                    <div class="export-module-desc">Payments &amp; subscriptions</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('subscriptions')"><i data-lucide="download"></i> CSV</button>
+                                            </div>
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(20,184,166,0.1);"><i data-lucide="receipt" style="color:#14b8a6;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Transactions</div>
+                                                    <div class="export-module-desc">All financial records</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('transactions')"><i data-lucide="download"></i> CSV</button>
+                                            </div>
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(234,88,12,0.1);"><i data-lucide="gift" style="color:#ea580c;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Ext. Donations</div>
+                                                    <div class="export-module-desc">Zakat &amp; Sadaqah records</div>
+                                                </div>
+                                                <button class="btn btn-outline export-csv-btn" onclick="exportModule('external-donations')"><i data-lucide="download"></i> CSV</button>
+                                            </div>
+                                            <div class="export-module-card">
+                                                <div class="export-module-icon" style="background:rgba(107,114,128,0.1);"><i data-lucide="scroll-text" style="color:#6b7280;"></i></div>
+                                                <div class="export-module-info">
+                                                    <div class="export-module-name">Activity Logs</div>
+                                                    <div class="export-module-desc">System activity history</div>
+                                                </div>
+                                                <a class="btn btn-outline export-csv-btn" href="/api/logs/export" target="_blank"><i data-lucide="download"></i> CSV</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Storage & Cache -->
+                                <div class="settings-card">
+                                    <div class="settings-card-header">
+                                        <div class="settings-card-icon"><i data-lucide="hard-drive"></i></div>
+                                        <div>
+                                            <div class="settings-card-title">Storage &amp; Cache</div>
+                                            <div class="settings-card-subtitle">Manage locally cached application preferences</div>
+                                        </div>
+                                    </div>
+                                    <div class="settings-card-body">
+                                        <div class="settings-row" style="border-bottom:none;padding-bottom:0;padding-top:0;">
+                                            <div class="settings-row-info">
+                                                <h4>Local Preferences</h4>
+                                                <p>Theme, layout, and notification preferences stored in your browser</p>
+                                            </div>
+                                            <button class="btn btn-outline" style="font-size:0.82rem;white-space:nowrap;" onclick="clearLocalPreferences()">
+                                                <i data-lucide="trash-2"></i> Clear
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="settings-card">
-                                    <div class="settings-card-header">
-                                        <div class="settings-card-icon"><i data-lucide="hard-drive"></i></div>
-                                        <div>
-                                            <div class="settings-card-title">Storage & Cache</div>
-                                            <div class="settings-card-subtitle">Manage locally cached application data</div>
-                                        </div>
-                                    </div>
-                                    <div class="settings-card-body">
-                                        <div class="settings-row">
-                                            <div class="settings-row-info">
-                                                <h4>Local Preferences</h4>
-                                                <p>Stored theme, layout, and notification settings</p>
-                                            </div>
-                                            <button class="btn btn-outline" style="font-size:0.82rem;" onclick="clearLocalPreferences()">
-                                                <i data-lucide="trash-2"></i> Clear
-                                            </button>
-                                        </div>
-                                        <div class="settings-row" style="border-bottom:none; padding-bottom:0;">
-                                            <div class="settings-row-info">
-                                                <h4>Application Cache</h4>
-                                                <p>Cached API responses and temporary data</p>
-                                            </div>
-                                            <button class="btn btn-outline" style="font-size:0.82rem;" onclick="clearCache()">
-                                                <i data-lucide="refresh-cw"></i> Clear Cache
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div><!-- /.settings-data -->
 
                             <!-- ── DANGER ZONE ─────────────────────────── -->
@@ -3535,7 +3615,7 @@
                                         <div class="danger-row" style="border-bottom:none;padding-bottom:0;background:rgba(239,68,68,0.03);border-radius:12px;margin:-0.25rem;padding:1rem 1.25rem;border:1px dashed rgba(239,68,68,0.25);">
                                             <div>
                                                 <h4 style="color:#ef4444;display:flex;align-items:center;gap:0.5rem;"><i data-lucide="database-zap" style="width:15px;height:15px;"></i> Clear All System Data</h4>
-                                                <p style="margin-top:0.3rem;">Permanently deletes all members, beneficiaries, finances, volunteers, courses, Ramadan, and family records. User accounts and system settings are preserved.</p>
+                                                <p style="margin-top:0.3rem;">Permanently deletes all members, beneficiaries, finances, volunteers, courses, Ramadan, and family records. User accounts, documents &amp; files, and system settings are preserved.</p>
                                             </div>
                                             <button class="btn" style="background:#ef4444;color:#fff;border:none;font-size:0.82rem;white-space:nowrap;font-weight:600;box-shadow:0 2px 8px rgba(239,68,68,0.35);" onclick="openClearDataModal()">
                                                 <i data-lucide="trash-2"></i> Clear All Data
@@ -4024,6 +4104,7 @@
                             <div class="cld-item"><i data-lucide="lock" style="width:12px;height:12px;"></i> Roles &amp; Permissions</div>
                             <div class="cld-item"><i data-lucide="layout-template" style="width:12px;height:12px;"></i> Form Templates</div>
                             <div class="cld-item"><i data-lucide="tag" style="width:12px;height:12px;"></i> Beneficiary Categories</div>
+                            <div class="cld-item"><i data-lucide="folder-open" style="width:12px;height:12px;"></i> Documents &amp; Files</div>
                         </div>
                     </div>
                     <label class="cld-log-toggle">
@@ -6532,6 +6613,9 @@ document.addEventListener('click', (e) => {
     const panel = document.getElementById(`settings-${panelId}`);
     if (panel) panel.classList.add('active');
 
+    if (panelId === 'data') updateLastBackupStatus();
+    if (panelId === 'organization') loadMaintenanceStatus();
+
 });
 
 /* ── Theme Picker ─────────────────────────────────────────────── */
@@ -6678,37 +6762,111 @@ function loadOrgSettings() {
     if (data.desc)    setVal('orgDesc', data.desc);
 }
 
-/* ── Export Data ──────────────────────────────────────────────── */
-async function exportData(type) {
-    const endpointMap = {
-        members:      '/api/edf/members',
-        transactions: '/api/stats/stats',
-        beneficiaries:'/api/edf/beneficiaries',
-    };
+/* ── Maintenance Mode ─────────────────────────────────────────── */
+async function loadMaintenanceStatus() {
+    try {
+        const r = await fetch('/api/settings/maintenance');
+        if (!r.ok) return;
+        const d = await r.json();
+        const isOn = d.maintenance_mode === '1';
+        const toggle = document.getElementById('maintenanceModeToggle');
+        const banner = document.getElementById('maintenanceBanner');
+        if (toggle) toggle.checked = isOn;
+        if (banner) banner.style.display = isOn ? 'block' : 'none';
+        if (isOn) lucide.createIcons();
+    } catch (_) {}
+}
 
-    if (type === 'all') {
-        showToast('Preparing full backup...', 'info');
-        try {
-            const [members, stats, bens] = await Promise.all([
-                fetch('/api/edf/members').then(r => r.json()),
-                fetch('/api/stats/stats').then(r => r.json()),
-                fetch('/api/edf/beneficiaries').then(r => r.json()),
-            ]);
-            downloadJSON({ members, stats, beneficiaries: bens }, 'edf-backup');
-            showToast('Full backup downloaded', 'success');
-        } catch(e) { showToast('Export failed', 'error'); }
-        return;
+async function setMaintenanceMode(enabled) {
+    const toggle = document.getElementById('maintenanceModeToggle');
+    const banner = document.getElementById('maintenanceBanner');
+    try {
+        const r = await fetch('/api/settings/maintenance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ enabled }),
+        });
+        if (!r.ok) throw new Error('Request failed');
+        const d = await r.json();
+        const isOn = d.maintenance_mode === '1';
+        if (toggle) toggle.checked = isOn;
+        if (banner) { banner.style.display = isOn ? 'block' : 'none'; lucide.createIcons(); }
+        showToast(isOn ? 'Maintenance mode enabled' : 'Maintenance mode disabled', isOn ? 'warning' : 'success');
+    } catch (err) {
+        showToast('Failed to update maintenance mode', 'error');
+        // Revert toggle on failure
+        if (toggle) toggle.checked = !enabled;
     }
+}
 
-    const ep = endpointMap[type];
+/* ── Data & Backup ────────────────────────────────────────────── */
+const MODULE_ENDPOINTS = {
+    members:               '/api/edf/members',
+    beneficiaries:         '/api/edf/beneficiaries',
+    families:              '/api/edf/families',
+    volunteers:            '/api/edf/volunteers',
+    subscriptions:         '/api/edf/subscriptions',
+    transactions:          '/api/stats/transactions',
+    'external-donations':  '/api/edf/external-donations',
+};
+
+function updateLastBackupStatus() {
+    const ts = localStorage.getItem('edf-last-backup');
+    const el = document.getElementById('lastBackupLabel');
+    if (!el) return;
+    if (!ts) {
+        el.textContent = 'No backup on record';
+    } else {
+        const d = new Date(parseInt(ts, 10));
+        el.textContent = 'Last backup: ' + d.toLocaleDateString(undefined, {
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+}
+
+async function runFullBackup() {
+    const btn = document.getElementById('fullBackupBtn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" style="width:14px;height:14px;animation:spin 1s linear infinite;"></i> Backing up…'; lucide.createIcons(); }
+    showToast('Preparing full backup…', 'info');
+    try {
+        const entries = Object.entries(MODULE_ENDPOINTS);
+        const results = await Promise.all(
+            entries.map(([key, ep]) =>
+                fetch(ep).then(r => r.json()).then(d => {
+                    const arr = Array.isArray(d) ? d
+                        : (d.transactions || d.members || d.beneficiaries || d.families
+                            || d.volunteers || d.subscriptions || d.data || []);
+                    return [key, arr];
+                })
+            )
+        );
+        const payload = { exported_at: new Date().toISOString(), version: '1.0' };
+        results.forEach(([key, data]) => { payload[key] = data; });
+        downloadJSON(payload, 'edf-full-backup');
+        localStorage.setItem('edf-last-backup', Date.now().toString());
+        updateLastBackupStatus();
+        showToast('Full backup downloaded successfully', 'success');
+    } catch(e) {
+        showToast('Backup failed: ' + e.message, 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="database"></i> Download Full Backup'; lucide.createIcons(); }
+    }
+}
+
+async function exportModule(type) {
+    const ep = MODULE_ENDPOINTS[type];
     if (!ep) return;
-
+    showToast(`Preparing ${type} export…`, 'info');
     try {
         const res = await fetch(ep);
         const data = await res.json();
-        const arr = Array.isArray(data) ? data : (data.recentTransactions || []);
+        const arr = Array.isArray(data) ? data
+            : (data.transactions || data.members || data.beneficiaries || data.families
+                || data.volunteers || data.subscriptions || data.data || []);
+        if (!arr.length) { showToast('No data to export', 'error'); return; }
         downloadCSV(arr, `edf-${type}`);
-        showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} exported as CSV`, 'success');
+        showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} exported`, 'success');
     } catch(e) { showToast('Export failed', 'error'); }
 }
 
@@ -6739,10 +6897,6 @@ function clearLocalPreferences() {
     localStorage.removeItem('edf-org-settings');
     showToast('Preferences cleared. Reloading...', 'info');
     setTimeout(() => window.location.reload(), 1500);
-}
-
-function clearCache() {
-    showToast('Application cache cleared', 'success');
 }
 
 function resetAllPreferences() {
@@ -6931,6 +7085,7 @@ window.switchTab = function(tabId, clickedLink) {
     }
 
     loadOrgSettings();
+    loadMaintenanceStatus();
 })();
 
 // Spin keyframe for loader icon

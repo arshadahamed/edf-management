@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 – Page Not Found | EDF Galgamuwa</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="/uploads/favicon" id="faviconEl">
+    <style>
+        /* ── Reset & root ────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --crimson : #295742;
+            --amber   : #E8A020;
+            --navy    : #0C1A34;
+            --cream   : #F9F4EC;
+            --linen   : #EDE3D0;
+            --text    : rgba(255,255,255,0.88);
+            --muted   : rgba(255,255,255,0.42);
+            --border  : rgba(255,255,255,0.08);
+        }
+
+        html, body {
+            width: 100%; min-height: 100%;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--navy);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ── Canvas ─────────────────────────────────────────────────── */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Ambient orbs ───────────────────────────────────────────── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            top: -200px; left: -150px;
+            background: radial-gradient(circle, rgba(41,87,66,0.28) 0%, transparent 70%);
+            animation: orbDrift 12s ease-in-out infinite alternate;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            bottom: -150px; right: -100px;
+            background: radial-gradient(circle, rgba(232,160,32,0.15) 0%, transparent 70%);
+            animation: orbDrift 9s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes orbDrift {
+            from { transform: translate(0, 0); }
+            to   { transform: translate(40px, -50px); }
+        }
+
+        /* ── Floating geometric shards ──────────────────────────────── */
+        .shard {
+            position: fixed;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            animation: shardFloat var(--dur, 6s) ease-in-out infinite alternate var(--delay, 0s);
+        }
+        .shard-1 { width:60px; height:60px; top:12%; left:8%;  background:rgba(41,87,66,0.18);  transform:rotate(25deg);  --dur:7s;  --delay:0s;  }
+        .shard-2 { width:35px; height:35px; top:22%; right:12%; background:rgba(232,160,32,0.14); transform:rotate(-40deg); --dur:9s;  --delay:-2s; }
+        .shard-3 { width:80px; height:18px; top:60%; left:5%;  background:rgba(255,255,255,0.06); transform:rotate(12deg); --dur:11s; --delay:-4s; }
+        .shard-4 { width:45px; height:45px; bottom:20%; right:8%; background:rgba(41,87,66,0.12); transform:rotate(55deg); --dur:8s; --delay:-1s; }
+        .shard-5 { width:25px; height:25px; bottom:35%; left:15%; background:rgba(232,160,32,0.1); transform:rotate(-20deg); --dur:10s; --delay:-3s; }
+        .shard-6 { width:90px; height:14px; top:80%; right:18%; background:rgba(255,255,255,0.04); transform:rotate(-8deg); --dur:13s; --delay:-5s; }
+
+        @keyframes shardFloat {
+            from { transform: translateY(0px) rotate(var(--rot, 25deg)); }
+            to   { transform: translateY(-28px) rotate(calc(var(--rot, 25deg) + 15deg)); }
+        }
+
+        /* ── Main layout ─────────────────────────────────────────────── */
+        .scene {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            gap: 0;
+        }
+
+        /* ── 404 giant number ────────────────────────────────────────── */
+        .giant-404 {
+            position: relative;
+            font-size: clamp(7rem, 22vw, 16rem);
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            user-select: none;
+            margin-bottom: 0.3rem;
+
+            /* Gradient fill */
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,0.9) 0%,
+                var(--amber) 40%,
+                var(--crimson) 80%,
+                rgba(255,255,255,0.5) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glitch layers */
+        .giant-404::before,
+        .giant-404::after {
+            content: '404';
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .giant-404::before {
+            left: 3px;
+            background: linear-gradient(135deg, rgba(232,160,32,0.7) 0%, transparent 60%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: glitchA 4.5s infinite;
+        }
+        .giant-404::after {
+            left: -3px;
+            background: linear-gradient(135deg, rgba(41,87,66,0.5) 0%, transparent 60%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: glitchB 4.5s infinite;
+        }
+
+        @keyframes glitchA {
+            0%,  85%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+            86%            { clip-path: inset(12% 0 68% 0); transform: translate(4px,  2px); }
+            88%            { clip-path: inset(55% 0 20% 0); transform: translate(-3px, -1px); }
+            90%            { clip-path: inset(30% 0 45% 0); transform: translate(5px,  1px); }
+            92%            { clip-path: inset(70% 0 5%  0); transform: translate(-2px, 3px); }
+            94%            { clip-path: inset(0 0 100% 0); transform: translate(0); }
+        }
+        @keyframes glitchB {
+            0%,  85%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+            87%            { clip-path: inset(40% 0 30% 0); transform: translate(-4px, -2px); }
+            89%            { clip-path: inset(5%  0 80% 0); transform: translate(3px,  1px); }
+            91%            { clip-path: inset(60% 0 15% 0); transform: translate(-5px, 2px); }
+            93%            { clip-path: inset(20% 0 55% 0); transform: translate(2px, -3px); }
+            95%            { clip-path: inset(0 0 100% 0); transform: translate(0); }
+        }
+
+        /* ── Scanline stripe overlaying the 404 ─────────────────────── */
+        .scanline-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .scanline-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 3px,
+                rgba(0,0,0,0.08) 3px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+        }
+
+        /* ── Content card ────────────────────────────────────────────── */
+        .content-card {
+            position: relative;
+            background: rgba(255,255,255,0.035);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.75rem 3rem;
+            max-width: 540px;
+            width: 100%;
+            text-align: center;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.05) inset,
+                0 24px 64px rgba(0,0,0,0.5);
+        }
+
+        /* Thin animated top accent line */
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--amber), var(--crimson), transparent);
+            border-radius: 1px;
+            animation: accentShimmer 3s ease-in-out infinite;
+        }
+        @keyframes accentShimmer {
+            0%, 100% { opacity: 0.4; }
+            50%       { opacity: 1; }
+        }
+
+        /* ── Eyebrow tag ─────────────────────────────────────────────── */
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--amber);
+            background: rgba(232,160,32,0.1);
+            border: 1px solid rgba(232,160,32,0.2);
+            border-radius: 50px;
+            padding: 0.3rem 0.85rem;
+            margin-bottom: 1.1rem;
+        }
+        .eyebrow-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--amber);
+            animation: eyebrowPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes eyebrowPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        /* ── Typography ──────────────────────────────────────────────── */
+        .page-title {
+            font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 0.85rem;
+            letter-spacing: -0.02em;
+        }
+        .page-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.75;
+            max-width: 380px;
+            margin: 0 auto 1.75rem;
+        }
+
+        /* ── Suggestions ─────────────────────────────────────────────── */
+        .suggestions {
+            margin-bottom: 2rem;
+        }
+        .suggestions-label {
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+        .sugg-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        .sugg-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.77rem;
+            color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 50px;
+            padding: 0.3rem 0.85rem;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+        .sugg-chip:hover {
+            background: rgba(41,87,66,0.2);
+            border-color: rgba(41,87,66,0.4);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .sugg-chip:focus-visible {
+            outline: 2px solid var(--amber);
+            outline-offset: 2px;
+        }
+
+        /* ── Divider ─────────────────────────────────────────────────── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0 0 1.75rem;
+        }
+
+        /* ── CTA buttons ─────────────────────────────────────────────── */
+        .cta-row {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            white-space: nowrap;
+        }
+        .cta-btn:focus-visible {
+            outline: 2px solid var(--amber);
+            outline-offset: 3px;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, var(--crimson) 0%, color-mix(in srgb, var(--crimson) 70%, var(--amber)) 100%);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(41,87,66,0.4);
+        }
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(41,87,66,0.55);
+        }
+        .cta-primary:active { transform: translateY(0); }
+
+        .cta-secondary {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .cta-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .cta-secondary:active { transform: translateY(0); }
+
+        /* Button SVG icons */
+        .cta-btn svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        /* ── Path label under card ───────────────────────────────────── */
+        .path-hint {
+            margin-top: 1.25rem;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 0.05em;
+        }
+        .path-hint code {
+            font-family: 'Consolas', 'Fira Code', monospace;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            padding: 0.1em 0.45em;
+            color: rgba(255,255,255,0.35);
+        }
+
+        /* ── Responsive ──────────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            .content-card  { padding: 2rem 1.5rem; }
+            .giant-404     { font-size: clamp(6rem, 28vw, 8rem); }
+            .cta-row       { flex-direction: column; align-items: center; }
+            .cta-btn       { width: 100%; justify-content: center; }
+        }
+
+        /* ── Reduced motion ──────────────────────────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            .giant-404::before,
+            .giant-404::after,
+            .orb-1, .orb-2,
+            .shard { animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background canvas -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<!-- Ambient light orbs -->
+<div class="orb orb-1" aria-hidden="true"></div>
+<div class="orb orb-2" aria-hidden="true"></div>
+
+<!-- Floating geometric shards -->
+<div class="shard shard-1" aria-hidden="true"></div>
+<div class="shard shard-2" aria-hidden="true"></div>
+<div class="shard shard-3" aria-hidden="true"></div>
+<div class="shard shard-4" aria-hidden="true"></div>
+<div class="shard shard-5" aria-hidden="true"></div>
+<div class="shard shard-6" aria-hidden="true"></div>
+
+<main class="scene" role="main">
+
+    <!-- Giant glitched 404 number -->
+    <div class="scanline-wrap" aria-hidden="true" id="num404">
+        <div class="giant-404">404</div>
+    </div>
+
+    <!-- Content card -->
+    <div class="content-card" id="contentCard" role="region" aria-label="Page not found">
+
+        <!-- Eyebrow tag -->
+        <div class="eyebrow" id="eyebrow">
+            <span class="eyebrow-dot"></span>
+            Record Not Found
+        </div>
+
+        <!-- Headline -->
+        <h1 class="page-title" id="mainTitle">Oops! Page Not Found</h1>
+
+        <!-- Description -->
+        <p class="page-desc" id="mainDesc">
+            The page you're looking for has been moved, deleted, or never existed.
+            It might be a typo in the URL or an expired link.
+        </p>
+
+        <!-- Suggestions -->
+        <div class="suggestions" id="suggestSection">
+            <div class="suggestions-label">You might be looking for</div>
+            <div class="sugg-chips" id="suggChips">
+                <a href="/" class="sugg-chip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Home
+                </a>
+                <a href="/about" class="sugg-chip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    About EDF
+                </a>
+                <a href="/gallery" class="sugg-chip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    Gallery
+                </a>
+                <a href="/login" class="sugg-chip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Dashboard Login
+                </a>
+            </div>
+        </div>
+
+        <div class="divider" id="divider"></div>
+
+        <!-- CTA buttons -->
+        <div class="cta-row" id="ctaRow">
+            <a href="/" class="cta-btn cta-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Go Back Home
+            </a>
+            <button class="cta-btn cta-secondary" onclick="history.back()" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                Go Back
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Path hint -->
+    <p class="path-hint" id="pathHint" aria-live="polite">
+        Requested path: <code id="pathCode"></code>
+    </p>
+
+</main>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+/* ── Show requested path ─────────────────────────────────── */
+document.getElementById('pathCode').textContent = window.location.pathname;
+
+/* ── Load branding ───────────────────────────────────────── */
+(async () => {
+    try {
+        const r = await fetch('/api/settings');
+        if (r.ok) {
+            const cfg = await r.json();
+            if (cfg.favicon_url) document.getElementById('faviconEl').href = cfg.favicon_url;
+        }
+    } catch (_) {}
+})();
+
+/* ── Canvas particle network ─────────────────────────────── */
+(function () {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, nodes = [];
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        init();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function rand(a, b) { return Math.random() * (b - a) + a; }
+
+    function makeNode() {
+        return {
+            x:  rand(0, W), y: rand(0, H),
+            vx: rand(-0.15, 0.15), vy: rand(-0.15, 0.15),
+            r:  rand(1, 2.5),
+            a:  rand(0.04, 0.22),
+        };
+    }
+
+    function init() {
+        const n = Math.floor((W * H) / 11000);
+        nodes = Array.from({ length: n }, makeNode);
+    }
+
+    const LINK_DIST = 120;
+
+    function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Move
+        for (const n of nodes) {
+            n.x += n.vx; n.y += n.vy;
+            if (n.x < 0) n.x = W; if (n.x > W) n.x = 0;
+            if (n.y < 0) n.y = H; if (n.y > H) n.y = 0;
+        }
+
+        // Links
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const d  = Math.sqrt(dx * dx + dy * dy);
+                if (d < LINK_DIST) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = `rgba(41,87,66,${0.12 * (1 - d / LINK_DIST)})`;
+                    ctx.lineWidth   = 0.8;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Dots
+        for (const n of nodes) {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(232,160,32,${n.a})`;
+            ctx.fill();
+        }
+
+        requestAnimationFrame(frame);
+    }
+    frame();
+})();
+
+/* ── GSAP entrance timeline ──────────────────────────────── */
+(function () {
+    // Initial states
+    gsap.set('#num404',         { opacity: 0, y: -30, scale: 0.92 });
+    gsap.set('#contentCard',    { opacity: 0, y: 40 });
+    gsap.set('#pathHint',       { opacity: 0 });
+    gsap.set('.shard',          { opacity: 0 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.to('#num404',      { opacity: 1, y: 0, scale: 1, duration: 0.9 })
+      .to('#contentCard', { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
+      .to('#pathHint',    { opacity: 1,        duration: 0.4 }, '-=0.15')
+      .to('.shard',       { opacity: 1, stagger: 0.08, duration: 0.6 }, '-=0.5');
+
+    // Floating shard continuous motion (separate from entrance)
+    document.querySelectorAll('.shard').forEach((s, i) => {
+        gsap.to(s, {
+            y:        '-=20',
+            rotation: '+=12',
+            duration: 5 + i * 1.3,
+            ease:     'sine.inOut',
+            yoyo:     true,
+            repeat:   -1,
+            delay:    i * 0.7,
+        });
+    });
+
+    // Subtle 404 hover-float loop
+    gsap.to('#num404', {
+        y: -12,
+        duration: 3.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        delay: 1,
+    });
+})();
+</script>
+</body>
+</html>

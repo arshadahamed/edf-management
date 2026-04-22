@@ -107,6 +107,15 @@ document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     document.querySelector('.sidebar').classList.toggle('active');
 });
 
+// Close mobile sidebar when a nav link is clicked
+document.querySelectorAll('.nav-link, .nav-submenu-link').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) {
+            document.querySelector('.sidebar')?.classList.remove('active');
+        }
+    });
+});
+
 // Sidebar Toggle for Desktop
 document.getElementById('desktopToggle')?.addEventListener('click', () => {
     document.querySelector('.sidebar').classList.toggle('collapsed');

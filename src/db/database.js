@@ -585,6 +585,9 @@ async function initDb() {
         }
     }
 
+    // Seed default global settings
+    await db.run(`INSERT OR IGNORE INTO global_settings (key, value) VALUES ('maintenance_mode', '0')`);
+
     // Create a default admin user if it doesn't exist
     const adminExists = await db.get('SELECT * FROM users WHERE username = ?', ['admin']);
     if (!adminExists) {

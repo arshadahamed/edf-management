@@ -802,6 +802,145 @@
 .edf-toast.toast-error   { background: #ef4444; color: #fff; }
 .edf-toast.toast-info    { background: var(--text-main); color: var(--bg-main); }
 
+/* ── Data & Backup ────────────────────────────────────────── */
+.backup-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.backup-last-info {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.825rem;
+    color: var(--text-muted);
+}
+
+.backup-last-info i {
+    width: 14px;
+    height: 14px;
+    stroke-width: 1.75;
+    flex-shrink: 0;
+}
+
+.backup-includes {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+}
+
+.backup-includes-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-right: 0.2rem;
+}
+
+.backup-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.73rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--sb-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    padding: 0.2rem 0.625rem;
+    white-space: nowrap;
+}
+
+.backup-tag i {
+    width: 10px;
+    height: 10px;
+    stroke-width: 2;
+}
+
+/* Export Module Grid */
+.export-module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    column-gap: 2rem;
+}
+
+.export-module-card {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.export-module-card:nth-last-child(-n+2):not(:nth-last-child(2) ~ *),
+.export-module-card:last-child {
+    border-bottom: none;
+}
+
+.export-module-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.export-module-icon i {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.75;
+}
+
+.export-module-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.export-module-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.export-module-desc {
+    font-size: 0.745rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+    line-height: 1.3;
+}
+
+.export-csv-btn {
+    font-size: 0.78rem !important;
+    padding: 0.35rem 0.75rem !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.3rem;
+    text-decoration: none;
+}
+
+.export-csv-btn i {
+    width: 13px !important;
+    height: 13px !important;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
 /* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 1100px) {
     .profile-content-grid {
@@ -859,5 +998,22 @@
 
     .theme-picker {
         flex-direction: column;
+    }
+
+    .backup-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .export-module-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .export-module-card {
+        border-bottom: 1px solid var(--border-color) !important;
+    }
+
+    .export-module-card:last-child {
+        border-bottom: none !important;
     }
 }

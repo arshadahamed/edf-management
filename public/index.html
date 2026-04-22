@@ -193,62 +193,200 @@
       background: var(--navy);
       z-index: 20000;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 32px;
-    }
-
-    .pl-emblem {
-      width: 64px;
-      height: 64px;
-      opacity: 0;
-      display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .pl-emblem svg {
-      width: 100%;
-      height: 100%;
+    /* Pencil loader — from uiverse.io/gustavofusco */
+    .pencil {
+      display: block;
+      width: 10em;
+      height: 10em;
+      color: rgba(255, 255, 255, 0.55);
     }
 
-    .pl-word {
-      font-family: var(--serif);
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.85);
-      opacity: 0;
+    .pencil__body1,
+    .pencil__body2,
+    .pencil__body3,
+    .pencil__eraser,
+    .pencil__eraser-skew,
+    .pencil__point,
+    .pencil__rotate,
+    .pencil__stroke {
+      animation-duration: 3s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
 
-    .pl-word em {
-      color: var(--amber);
-      font-style: normal;
+    .pencil__body1,
+    .pencil__body2,
+    .pencil__body3 {
+      transform: rotate(-90deg);
     }
 
-    .pl-bar-wrap {
-      width: 180px;
-      height: 1px;
-      background: rgba(255, 255, 255, .08);
-      position: relative;
-      overflow: hidden;
+    .pencil__body1 {
+      animation-name: pencilBody1;
     }
 
-    .pl-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(to right, var(--crimson), var(--amber));
+    .pencil__body2 {
+      animation-name: pencilBody2;
     }
 
-    .pl-pct {
-      font-size: 11px;
-      letter-spacing: .2em;
-      color: rgba(255, 255, 255, .3);
+    .pencil__body3 {
+      animation-name: pencilBody3;
+    }
+
+    .pencil__eraser {
+      animation-name: pencilEraser;
+      transform: rotate(-90deg) translate(49px, 0);
+    }
+
+    .pencil__eraser-skew {
+      animation-name: pencilEraserSkew;
+      animation-timing-function: ease-in-out;
+    }
+
+    .pencil__point {
+      animation-name: pencilPoint;
+      transform: rotate(-90deg) translate(49px, -30px);
+    }
+
+    .pencil__rotate {
+      animation-name: pencilRotate;
+    }
+
+    .pencil__stroke {
+      animation-name: pencilStroke;
+      transform: translate(100px, 100px) rotate(-113deg);
+    }
+
+    @keyframes pencilBody1 {
+
+      from,
+      to {
+        stroke-dashoffset: 351.86;
+        transform: rotate(-90deg);
+      }
+
+      50% {
+        stroke-dashoffset: 150.8;
+        transform: rotate(-225deg);
+      }
+    }
+
+    @keyframes pencilBody2 {
+
+      from,
+      to {
+        stroke-dashoffset: 406.84;
+        transform: rotate(-90deg);
+      }
+
+      50% {
+        stroke-dashoffset: 174.36;
+        transform: rotate(-225deg);
+      }
+    }
+
+    @keyframes pencilBody3 {
+
+      from,
+      to {
+        stroke-dashoffset: 296.88;
+        transform: rotate(-90deg);
+      }
+
+      50% {
+        stroke-dashoffset: 127.23;
+        transform: rotate(-225deg);
+      }
+    }
+
+    @keyframes pencilEraser {
+
+      from,
+      to {
+        transform: rotate(-45deg) translate(49px, 0);
+      }
+
+      50% {
+        transform: rotate(0deg) translate(49px, 0);
+      }
+    }
+
+    @keyframes pencilEraserSkew {
+
+      from,
+      32.5%,
+      67.5%,
+      to {
+        transform: skewX(0);
+      }
+
+      35%,
+      65% {
+        transform: skewX(-4deg);
+      }
+
+      37.5%,
+      62.5% {
+        transform: skewX(8deg);
+      }
+
+      40%,
+      45%,
+      50%,
+      55%,
+      60% {
+        transform: skewX(-15deg);
+      }
+
+      42.5%,
+      47.5%,
+      52.5%,
+      57.5% {
+        transform: skewX(15deg);
+      }
+    }
+
+    @keyframes pencilPoint {
+
+      from,
+      to {
+        transform: rotate(-90deg) translate(49px, -30px);
+      }
+
+      50% {
+        transform: rotate(-225deg) translate(49px, -30px);
+      }
+    }
+
+    @keyframes pencilRotate {
+      from {
+        transform: translate(100px, 100px) rotate(0);
+      }
+
+      to {
+        transform: translate(100px, 100px) rotate(720deg);
+      }
+    }
+
+    @keyframes pencilStroke {
+      from {
+        stroke-dashoffset: 439.82;
+        transform: translate(100px, 100px) rotate(-113deg);
+      }
+
+      50% {
+        stroke-dashoffset: 164.93;
+        transform: translate(100px, 100px) rotate(-113deg);
+      }
+
+      75%,
+      to {
+        stroke-dashoffset: 439.82;
+        transform: translate(100px, 100px) rotate(112deg);
+      }
     }
 
     /* ═══════════════════════════════════════════════════
@@ -972,49 +1110,90 @@
     }
 
     .mission-right {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-      padding-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      padding-top: 8px;
+      align-items: start;
     }
 
     .pillar {
-      background: var(--linen);
+      background: #ffffff;
       border-radius: 22px;
-      padding: 38px;
-      border-left: 3px solid transparent;
-      transition: border-color .35s, transform .4s var(--ease-out), box-shadow .3s;
+      padding: 28px 26px 30px;
+      border: 1px solid rgba(24,16,10,0.07);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s var(--ease-out), box-shadow 0.35s;
       cursor: default;
     }
 
+    .pillar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--pillar-accent, var(--crimson));
+      border-radius: 3px 3px 0 0;
+    }
+
+    .pillar-num {
+      display: block;
+      position: absolute;
+      top: 20px;
+      right: 22px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--pillar-accent, var(--crimson));
+      opacity: 0.45;
+    }
+
     .pillar:hover {
-      border-color: var(--crimson);
-      transform: translateX(10px);
-      box-shadow: 0 8px 40px rgba(24, 16, 10, .06);
+      transform: translateY(-6px);
+      box-shadow: 0 18px 50px rgba(24,16,10,0.11);
     }
 
     .pillar-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      margin-bottom: 22px;
+      font-size: 22px;
+      margin-bottom: 16px;
+      margin-top: 8px;
     }
 
     .pillar h3 {
       font-family: var(--serif);
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      line-height: 1.25;
+      color: var(--text);
     }
 
     .pillar p {
-      font-size: 15px;
+      font-size: 13.5px;
       line-height: 1.7;
       color: var(--text-soft);
+    }
+
+    .pillar-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pillar-accent, var(--crimson));
+      background: color-mix(in srgb, var(--pillar-accent, var(--crimson)) 10%, transparent);
+      border-radius: 50px;
+      padding: 3px 10px;
+      margin-top: 16px;
     }
 
     /* ═══════════════════════════════════════════════════
@@ -2209,6 +2388,10 @@
         padding: 80px 24px;
       }
 
+      .mission-right {
+        grid-template-columns: 1fr;
+      }
+
       .impact-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -2258,22 +2441,34 @@
       position: fixed;
       bottom: 40px;
       right: 40px;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: var(--amber);
-      border: 1px solid rgba(232, 160, 32, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: none;
       z-index: 999;
       opacity: 0;
       pointer-events: none;
       transform: translateY(20px);
-      transition: all 0.4s var(--ease);
-      box-shadow: 0 10px 30px rgba(12, 26, 52, 0.3);
+      /* button design */
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: rgb(46, 88, 68);
+      border: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 0px 0px 4px rgb(225, 155, 34);
+      cursor: none;
+      overflow: hidden;
+      transition-duration: 0.3s;
+    }
+
+    .back-to-top .svgIcon {
+      width: 12px;
+      flex-shrink: 0;
+      transition-duration: 0.3s;
+    }
+
+    .back-to-top .svgIcon path {
+      fill: white;
     }
 
     .back-to-top.visible {
@@ -2283,20 +2478,233 @@
     }
 
     .back-to-top:hover {
-      background: var(--amber);
-      color: var(--navy);
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(232, 160, 32, 0.4);
+      width: 140px;
+      border-radius: 50px;
+      background-color: rgb(15, 29, 55);
+      transition-duration: 0.3s;
+    }
+
+    .back-to-top:hover .svgIcon {
+      transition-duration: 0.3s;
+      transform: translateY(-200%);
+    }
+
+    .back-to-top::before {
+      position: absolute;
+      bottom: -20px;
+      content: "Back to Top";
+      color: white;
+      font-size: 0px;
+      white-space: nowrap;
+    }
+
+    .back-to-top:hover::before {
+      font-size: 13px;
+      opacity: 1;
+      bottom: unset;
+      transition-duration: 0.3s;
     }
 
     @media (max-width: 720px) {
       .back-to-top {
         bottom: 24px;
         right: 24px;
-        width: 44px;
-        height: 44px;
       }
     }
+    /* ══════════════════════════════════════════
+       MISSION CTA BUTTON (uiverse / dexter-st)
+    ══════════════════════════════════════════ */
+    .btn-container {
+      --btn-color: #295742;
+      --corner-color: rgba(255,255,255,0.18);
+      --corner-dist: 24px;
+      --corner-multiplier: 1.5;
+      --timing-function: cubic-bezier(0,0,0,2.5);
+      --duration: 250ms;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-container .btn {
+      position: relative;
+      min-width: 200px;
+      min-height: calc(var(--corner-dist) * 2);
+      border-radius: 16px;
+      border: none;
+      padding: 0.35em 1.5em;
+      background: linear-gradient(rgba(255,255,255,0.08), rgba(0,0,0,0.08)), var(--btn-color);
+      box-shadow:
+        1px 1px 2px -1px rgba(255,255,255,0.15) inset,
+        0 2px 1px #00000018, 0 4px 2px #00000018,
+        0 8px 4px #00000018, 0 16px 8px #00000018;
+      transition:
+        transform var(--duration) var(--timing-function),
+        filter var(--duration) var(--timing-function);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-container .btn-drawer {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      min-height: 32px;
+      border-radius: 16px;
+      border: none;
+      padding: 0.25em 1em;
+      font-size: 0.8em;
+      font-weight: 600;
+      font-family: "Poppins", sans-serif;
+      color: rgba(10,10,10,0.85);
+      background: linear-gradient(rgba(255,255,255,0.15), rgba(0,0,0,0.05)), #E8A020;
+      opacity: 0;
+      transition:
+        transform calc(0.5 * var(--duration)) ease,
+        filter var(--duration) var(--timing-function),
+        opacity calc(0.5 * var(--duration)) ease;
+      filter: blur(2px);
+      white-space: nowrap;
+    }
+
+    .btn-container .transition-top {
+      top: 0; left: 0;
+      border-radius: 12px 12px 0 0;
+      align-items: start;
+    }
+    .btn-container .transition-bottom {
+      bottom: 0; right: 0;
+      border-radius: 0 0 12px 12px;
+      align-items: end;
+    }
+
+    .btn-container .btn-text {
+      display: inline-block;
+      font-size: 1.1em;
+      font-family: "Syne", "Poppins", "Inter", sans-serif;
+      font-weight: 700;
+      background-image: linear-gradient(rgba(255,255,255,0.97), rgba(255,255,255,0.78));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,0.12)) drop-shadow(0 -1px 0 rgba(0,0,0,0.35));
+      -webkit-filter: drop-shadow(0 1px 0 rgba(255,255,255,0.12)) drop-shadow(0 -1px 0 rgba(0,0,0,0.35));
+      transition:
+        transform var(--duration) var(--timing-function),
+        filter var(--duration) var(--timing-function);
+    }
+
+    .btn-container .btn-corner {
+      position: absolute;
+      width: 32px;
+      fill: none;
+      stroke: var(--corner-color);
+      transition:
+        transform var(--duration) var(--timing-function),
+        filter var(--duration) var(--timing-function);
+    }
+
+    .btn-container .btn-corner:nth-of-type(1) {
+      top: 0; left: 0;
+      transform: translate(calc(-1 * var(--corner-dist)), calc(-1 * var(--corner-dist))) rotate(90deg);
+    }
+    .btn-container .btn-corner:nth-of-type(2) {
+      top: 0; right: 0;
+      transform: translate(var(--corner-dist), calc(-1 * var(--corner-dist))) rotate(180deg);
+    }
+    .btn-container .btn-corner:nth-of-type(3) {
+      bottom: 0; right: 0;
+      transform: translate(var(--corner-dist), var(--corner-dist)) rotate(-90deg);
+    }
+    .btn-container .btn-corner:nth-of-type(4) {
+      bottom: 0; left: 0;
+      transform: translate(calc(-1 * var(--corner-dist)), var(--corner-dist)) rotate(0deg);
+    }
+
+    .btn-container:has(.btn:hover),
+    .btn-container:has(.btn:focus-visible) {
+      .btn {
+        transform: scale(1.05);
+        filter: drop-shadow(0 16px 16px rgba(41,87,66,0.45));
+        -webkit-filter: drop-shadow(0 16px 16px rgba(41,87,66,0.45));
+      }
+      .transition-top {
+        transform: translateY(-24px) rotateZ(4deg);
+        filter: blur(0px);
+        -webkit-filter: blur(0px);
+        animation: missionHueAnim 3s infinite linear;
+        opacity: 1;
+      }
+      .transition-bottom {
+        transform: translateY(24px) rotateZ(4deg);
+        filter: blur(0px);
+        -webkit-filter: blur(0px);
+        animation: missionHueAnim 3s infinite linear;
+        opacity: 1;
+      }
+      .btn-text {
+        filter: drop-shadow(0 1px 0 rgba(255,255,255,0.12)) drop-shadow(0 -1px 0 rgba(0,0,0,0.35)) drop-shadow(0 6px 2px rgba(0,0,0,0.2));
+        -webkit-filter: drop-shadow(0 1px 0 rgba(255,255,255,0.12)) drop-shadow(0 -1px 0 rgba(0,0,0,0.35)) drop-shadow(0 6px 2px rgba(0,0,0,0.2));
+        transform: scale(1.05);
+      }
+      --corner-color: rgba(255,255,255,0.4);
+      .btn-corner:nth-of-type(1) {
+        transform: translate(calc(-1 * var(--corner-multiplier) * var(--corner-dist)), calc(-1 * var(--corner-multiplier) * var(--corner-dist))) rotate(90deg);
+        filter: drop-shadow(-10px 10px 1px var(--corner-color)) drop-shadow(-20px 20px 2px var(--corner-color));
+      }
+      .btn-corner:nth-of-type(2) {
+        transform: translate(calc(var(--corner-multiplier) * var(--corner-dist)), calc(-1 * var(--corner-multiplier) * var(--corner-dist))) rotate(180deg);
+        filter: drop-shadow(-10px 10px 1px var(--corner-color)) drop-shadow(-20px 20px 2px var(--corner-color));
+      }
+      .btn-corner:nth-of-type(3) {
+        transform: translate(calc(var(--corner-multiplier) * var(--corner-dist)), calc(var(--corner-multiplier) * var(--corner-dist))) rotate(-90deg);
+        filter: drop-shadow(-10px 10px 1px var(--corner-color)) drop-shadow(-20px 20px 2px var(--corner-color));
+      }
+      .btn-corner:nth-of-type(4) {
+        transform: translate(calc(-1 * var(--corner-multiplier) * var(--corner-dist)), calc(var(--corner-multiplier) * var(--corner-dist))) rotate(0deg);
+        filter: drop-shadow(-10px 10px 1px var(--corner-color)) drop-shadow(-20px 20px 2px var(--corner-color));
+      }
+    }
+
+    .btn-container:has(.btn:active) {
+      .btn {
+        transform: scale(0.95);
+        filter: drop-shadow(0 10px 4px rgba(0,0,0,0.25));
+        -webkit-filter: drop-shadow(0 10px 4px rgba(0,0,0,0.25));
+      }
+      .transition-top,
+      .transition-bottom {
+        transform: translateY(0px) scale(0.5);
+      }
+      .btn-text {
+        transform: scale(1);
+      }
+      --corner-color: rgba(255,255,255,0.5);
+      --corner-multiplier: 0.95;
+      .btn-corner:nth-of-type(1) {
+        transform: translate(calc(-1 * var(--corner-multiplier) * var(--corner-dist)), calc(-1 * var(--corner-multiplier) * var(--corner-dist))) rotate(90deg);
+        filter: drop-shadow(-10px 10px 2px var(--corner-color)) drop-shadow(-20px 20px 3px var(--corner-color));
+      }
+      .btn-corner:nth-of-type(2) {
+        transform: translate(calc(var(--corner-multiplier) * var(--corner-dist)), calc(-1 * var(--corner-multiplier) * var(--corner-dist))) rotate(180deg);
+        filter: drop-shadow(-10px 10px 2px var(--corner-color)) drop-shadow(-20px 20px 3px var(--corner-color));
+      }
+      .btn-corner:nth-of-type(3) {
+        transform: translate(calc(var(--corner-multiplier) * var(--corner-dist)), calc(var(--corner-multiplier) * var(--corner-dist))) rotate(-90deg);
+        filter: drop-shadow(-10px 10px 2px var(--corner-color)) drop-shadow(-20px 20px 3px var(--corner-color));
+      }
+      .btn-corner:nth-of-type(4) {
+        transform: translate(calc(-1 * var(--corner-multiplier) * var(--corner-dist)), calc(var(--corner-multiplier) * var(--corner-dist))) rotate(0deg);
+        filter: drop-shadow(-10px 10px 2px var(--corner-color)) drop-shadow(-20px 20px 3px var(--corner-color));
+      }
+    }
+
+    @keyframes missionHueAnim {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50%       { filter: hue-rotate(-50deg); }
+    }
+
   </style>
 </head>
 
@@ -2316,19 +2724,42 @@
        PRELOADER
   ═══════════════════════════════════════════ -->
   <div id="preloader">
-    <div class="pl-emblem" id="pl-emblem">
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="32,4 40,20 56,12 48,28 62,36 48,42 56,60 40,52 32,60 24,52 8,60 16,42 2,36 16,28 8,12 24,20"
-          fill="none" stroke="#E8A020" stroke-width="1.5" stroke-linejoin="round" />
-        <circle cx="32" cy="32" r="10" fill="none" stroke="#C21833" stroke-width="1.5" />
-        <circle cx="32" cy="32" r="4" fill="#E8A020" />
-      </svg>
-    </div>
-    <div class="pl-word" id="pl-word">EDF <em>Galgamuwa</em></div>
-    <div class="pl-bar-wrap">
-      <div class="pl-bar" id="pl-bar"></div>
-    </div>
-    <div class="pl-pct" id="pl-pct">0%</div>
+    <svg xmlns="http://www.w3.org/2000/svg" height="200px" width="200px" viewBox="0 0 200 200" class="pencil">
+      <defs>
+        <clipPath id="pencil-eraser">
+          <rect height="30" width="30" ry="5" rx="5"></rect>
+        </clipPath>
+      </defs>
+      <circle transform="rotate(-113,100,100)" stroke-linecap="round" stroke-dashoffset="439.82"
+        stroke-dasharray="439.82 439.82" stroke-width="2" stroke="currentColor" fill="none" r="70"
+        class="pencil__stroke"></circle>
+      <g transform="translate(100,100)" class="pencil__rotate">
+        <g fill="none">
+          <circle transform="rotate(-90)" stroke-dashoffset="402" stroke-dasharray="402.12 402.12" stroke-width="30"
+            stroke="hsl(223,90%,50%)" r="64" class="pencil__body1"></circle>
+          <circle transform="rotate(-90)" stroke-dashoffset="465" stroke-dasharray="464.96 464.96" stroke-width="10"
+            stroke="hsl(223,90%,60%)" r="74" class="pencil__body2"></circle>
+          <circle transform="rotate(-90)" stroke-dashoffset="339" stroke-dasharray="339.29 339.29" stroke-width="10"
+            stroke="hsl(223,90%,40%)" r="54" class="pencil__body3"></circle>
+        </g>
+        <g transform="rotate(-90) translate(49,0)" class="pencil__eraser">
+          <g class="pencil__eraser-skew">
+            <rect height="30" width="30" ry="5" rx="5" fill="hsl(223,90%,70%)"></rect>
+            <rect clip-path="url(#pencil-eraser)" height="30" width="5" fill="hsl(223,90%,60%)"></rect>
+            <rect height="20" width="30" fill="hsl(223,10%,90%)"></rect>
+            <rect height="20" width="15" fill="hsl(223,10%,70%)"></rect>
+            <rect height="20" width="5" fill="hsl(223,10%,80%)"></rect>
+            <rect height="2" width="30" y="6" fill="hsla(223,10%,10%,0.2)"></rect>
+            <rect height="2" width="30" y="13" fill="hsla(223,10%,10%,0.2)"></rect>
+          </g>
+        </g>
+        <g transform="rotate(-90) translate(49,-30)" class="pencil__point">
+          <polygon points="15 0,30 30,0 30" fill="hsl(33,90%,70%)"></polygon>
+          <polygon points="15 0,6 30,0 30" fill="hsl(33,90%,50%)"></polygon>
+          <polygon points="15 0,20 10,10 10" fill="hsl(223,10%,10%)"></polygon>
+        </g>
+      </g>
+    </svg>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -2697,33 +3128,55 @@
         EDF Galgamuwa was founded on a single conviction: every child deserves an education and every family deserves a
         life of dignity. We address root causes of poverty through sustainable, community-led programs.
       </p>
-      <a href="#programs-wrap" class="btn-crim">Explore Programs</a>
+      <div class="btn-container">
+        <div class="btn-drawer transition-top">Explore our</div>
+        <div class="btn-drawer transition-bottom">Programs ↗</div>
+        <a href="#programs-wrap" class="btn">
+          <span class="btn-text">Explore Programs</span>
+        </a>
+        <svg class="btn-corner" xmlns="http://www.w3.org/2000/svg" viewBox="-1 1 32 32">
+          <path d="M32,32C14.355,32,0,17.645,0,0h.985c0,17.102,13.913,31.015,31.015,31.015v.985Z"></path>
+        </svg>
+        <svg class="btn-corner" xmlns="http://www.w3.org/2000/svg" viewBox="-1 1 32 32">
+          <path d="M32,32C14.355,32,0,17.645,0,0h.985c0,17.102,13.913,31.015,31.015,31.015v.985Z"></path>
+        </svg>
+        <svg class="btn-corner" xmlns="http://www.w3.org/2000/svg" viewBox="-1 1 32 32">
+          <path d="M32,32C14.355,32,0,17.645,0,0h.985c0,17.102,13.913,31.015,31.015,31.015v.985Z"></path>
+        </svg>
+        <svg class="btn-corner" xmlns="http://www.w3.org/2000/svg" viewBox="-1 1 32 32">
+          <path d="M32,32C14.355,32,0,17.645,0,0h.985c0,17.102,13.913,31.015,31.015,31.015v.985Z"></path>
+        </svg>
+      </div>
     </div>
 
     <div class="mission-right">
-      <div class="pillar js-reveal">
-        <div class="pillar-icon" style="background:rgba(194,24,51,0.1);">🎓</div>
+      <div class="pillar js-reveal" style="--pillar-accent:#295742;">
+        <span class="pillar-num">01</span>
+        <div class="pillar-icon" style="background:rgba(41,87,66,0.1);">🎓</div>
         <h3>Education First</h3>
-        <p>Scholarships, tutoring centres, and school supplies for children from low-income families. We ensure no child
-          is left without learning.</p>
+        <p>Scholarships, tutoring centres, and school supplies for children from low-income families. No child left without learning.</p>
+        <span class="pillar-tag">150+ students</span>
       </div>
-      <div class="pillar js-reveal">
+      <div class="pillar js-reveal" style="--pillar-accent:#0A6B4A;">
+        <span class="pillar-num">02</span>
         <div class="pillar-icon" style="background:rgba(10,107,74,0.1);">🏥</div>
         <h3>Healthcare Access</h3>
-        <p>Free mobile clinics, mental health support, and medicine subsidies for families who cannot afford basic
-          medical care.</p>
+        <p>Free mobile clinics, mental health support, and medicine subsidies for families who cannot afford basic medical care.</p>
+        <span class="pillar-tag">Free clinics</span>
       </div>
-      <div class="pillar js-reveal">
+      <div class="pillar js-reveal" style="--pillar-accent:#B8860B;">
+        <span class="pillar-num">03</span>
         <div class="pillar-icon" style="background:rgba(232,160,32,0.12);">💼</div>
         <h3>Livelihood &amp; Jobs</h3>
-        <p>Vocational training, micro-financing, and job linkages to break cycles of poverty and build lasting financial
-          independence.</p>
+        <p>Vocational training, micro-financing, and job linkages to break cycles of poverty and build lasting financial independence.</p>
+        <span class="pillar-tag">Skills training</span>
       </div>
-      <div class="pillar js-reveal">
+      <div class="pillar js-reveal" style="--pillar-accent:#5E35B1;">
+        <span class="pillar-num">04</span>
         <div class="pillar-icon" style="background:rgba(94,53,177,0.1);">🌙</div>
         <h3>Ramadan &amp; Zakat Aid</h3>
-        <p>Annual Ramadan food packs, Eid grants, and Zakat distributions — ensuring no family goes without during
-          sacred seasons.</p>
+        <p>Annual Ramadan food packs, Eid grants, and Zakat distributions — ensuring no family goes without during sacred seasons.</p>
+        <span class="pillar-tag">Annual relief</span>
       </div>
     </div>
   </section>
@@ -3199,9 +3652,10 @@
        SCROLL TO TOP
   ══════════════════════════════════════════ -->
   <button id="backToTop" class="back-to-top" aria-label="Back to Top">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 19V5M5 12l7-7 7 7" />
+    <svg class="svgIcon" viewBox="0 0 384 512">
+      <path
+        d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z">
+      </path>
     </svg>
   </button>
 
@@ -3263,29 +3717,20 @@
         // Duplicate the list for seamless infinite scroll
         row.innerHTML = partners.map(item).join('') + partners.map(item).join('');
       })
-      .catch(() => {});
+      .catch(() => { });
 
     /* ══════════════════════════════════════════
        PRELOADER
     ══════════════════════════════════════════ */
     (() => {
-      const bar = document.getElementById('pl-bar');
-      const pct = document.getElementById('pl-pct');
       const pl = document.getElementById('preloader');
-
-      // Emblem + word fade in
-      gsap.to('#pl-emblem', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
-      gsap.from('#pl-emblem', { y: 24, duration: 1, ease: 'power3.out', delay: 0.2 });
-      gsap.to('#pl-word', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.5 });
-      gsap.from('#pl-word', { y: 16, duration: 0.8, ease: 'power2.out', delay: 0.5 });
 
       let p = 0;
       const iv = setInterval(() => {
         p += Math.random() * 14;
-        if (p >= 100) { p = 100; clearInterval(iv); }
-        bar.style.width = p + '%';
-        pct.textContent = Math.floor(p) + '%';
-        if (p === 100) {
+        if (p >= 100) {
+          p = 100;
+          clearInterval(iv);
           setTimeout(() => {
             gsap.to(pl, {
               yPercent: -100, duration: 1.1, ease: 'power3.inOut',
@@ -3789,7 +4234,7 @@
         { cls: 'g4', cap: 'Vocational Training Workshop' },
         { cls: 'g5', cap: 'Ramadan Food Distribution' },
       ];
-      const CLS = ['g1','g2','g3','g4','g5'];
+      const CLS = ['g1', 'g2', 'g3', 'g4', 'g5'];
 
       function renderFallback() {
         grid.innerHTML = FALLBACKS.map(p =>
@@ -3823,7 +4268,7 @@
             `<div class="gal-item ${CLS[i] || ''} js-revealS">
               <img class="gal-photo"
                    src="/uploads/gallery/${img.filename}"
-                   alt="${img.caption ? img.caption.replace(/"/g,'&quot;') : 'EDF Gallery'}"
+                   alt="${img.caption ? img.caption.replace(/"/g, '&quot;') : 'EDF Gallery'}"
                    loading="lazy"
                    onerror="this.style.display='none'">
               <div class="gal-inner" style="background:none">
@@ -3860,8 +4305,8 @@
        PILLAR HOVER GSAP
     ══════════════════════════════════════════ */
     document.querySelectorAll('.pillar').forEach(p => {
-      p.addEventListener('mouseenter', () => gsap.to(p, { x: 10, duration: 0.4, ease: 'power2.out' }));
-      p.addEventListener('mouseleave', () => gsap.to(p, { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' }));
+      p.addEventListener('mouseenter', () => gsap.to(p, { y: -6, duration: 0.4, ease: 'power2.out' }));
+      p.addEventListener('mouseleave', () => gsap.to(p, { y: 0, duration: 0.55, ease: 'elastic.out(1, 0.45)' }));
     });
 
     /* ══════════════════════════════════════════

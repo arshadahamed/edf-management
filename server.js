@@ -14,9 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Initialize DB and start server
 async function startServer() {
     try {
@@ -36,10 +33,17 @@ async function startServer() {
         const settingsRoutes  = require('./src/routes/settings')(db);
         const frontdeskRoutes = require('./src/routes/frontdesk')(db);
         const documentsRoutes = require('./src/routes/documents')(db);
-        const activityLogger  = require('./src/middleware/activityLogger')(db);
-        const userGuard       = require('./src/middleware/userGuard')(db);
-        const permissionGuard = require('./src/middleware/permissionGuard')(db);
+        const activityLogger    = require('./src/middleware/activityLogger')(db);
+        const userGuard         = require('./src/middleware/userGuard')(db);
+        const permissionGuard   = require('./src/middleware/permissionGuard')(db);
+        const maintenanceGuard  = require('./src/middleware/maintenanceGuard')(db);
 
+        // maintenanceGuard MUST come before express.static so that requests for
+        // index.html, gallery.html, about.html etc. are intercepted first.
+        app.use(maintenanceGuard);
+
+        // Static files served after the maintenance check
+        app.use(express.static(path.join(__dirname, 'public')));
         app.use('/api', activityLogger);   // Log all /api requests
         app.use('/api', userGuard);        // Block/force-logout check + last_seen update
         app.use('/api', permissionGuard);  // Per-module permission enforcement
@@ -73,6 +77,10 @@ async function startServer() {
             res.sendFile(path.join(__dirname, 'public', 'about.html'));
         });
 
+        app.get('/maintenance', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'maintenance.html'));
+        });
+
         app.get('/dashboard', (req, res) => {
             const token = req.cookies.token;
             if (!token) {
@@ -87,8 +95,13 @@ async function startServer() {
             res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
         });
 
+        // 404 fallback — serves custom page with correct HTTP status
         app.use((req, res) => {
-            res.redirect('/login');
+            // API routes that don't exist get a JSON 404
+            if (req.path.startsWith('/api/')) {
+                return res.status(404).json({ message: 'API endpoint not found.' });
+            }
+            res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
         });
 
         app.listen(PORT, () => {

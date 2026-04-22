@@ -42,6 +42,35 @@ module.exports = (db) => {
         }
     });
 
+    // ── Maintenance mode ──────────────────────────────────────────────────────
+    // Public: GET /api/settings/maintenance — returns current flag
+    router.get('/maintenance', async (req, res) => {
+        try {
+            const row = await db.get("SELECT value FROM global_settings WHERE key = 'maintenance_mode'");
+            res.json({ maintenance_mode: row?.value ?? '0' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Failed to read maintenance status' });
+        }
+    });
+
+    // Admin: POST /api/settings/maintenance — toggle the flag
+    router.post('/maintenance', authenticateToken, requireAdmin, async (req, res) => {
+        const { enabled } = req.body; // true / false or 1 / 0
+        const value = (enabled === true || enabled === 1 || enabled === '1') ? '1' : '0';
+        try {
+            await db.run(
+                `INSERT INTO global_settings (key, value) VALUES ('maintenance_mode', ?)
+                 ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP`,
+                [value]
+            );
+            res.json({ message: value === '1' ? 'Maintenance mode enabled' : 'Maintenance mode disabled', maintenance_mode: value });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Failed to update maintenance mode' });
+        }
+    });
+
     // Update settings (logo and favicon)
     router.post('/', authenticateToken, requireAdmin, upload.fields([{ name: 'logo', maxCount: 1 }, { name: 'favicon', maxCount: 1 }]), async (req, res) => {
         try {
