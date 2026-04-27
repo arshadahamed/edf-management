@@ -1,0 +1,104 @@
+<h2>When a month row expands, what's the layout?</h2>
+<p class="subtitle">The row needs to show month-level controls + installments list. Two structural options:</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:14px;border-radius:8px;font-size:11px;color:#94a3b8;font-family:sans-serif;">
+
+      <!-- Month row header -->
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1e293b;border-radius:6px 6px 0 0;border:1px solid #334155;cursor:pointer;">
+        <span style="color:#f8fafc;font-weight:700;font-size:12px;">▼ Mar 2026</span>
+        <span style="margin-left:auto;color:#4ade80;font-size:12px;font-weight:600;">LKR 10,000</span>
+        <span style="color:#64748b;font-size:10px;">17 Apr 2026</span>
+        <span style="background:#14532d;color:#4ade80;padding:2px 7px;border-radius:10px;font-size:9px;">Paid</span>
+        <button style="background:#3b82f6;color:white;border:none;border-radius:4px;padding:2px 8px;font-size:9px;cursor:pointer;">+ Add Installment</button>
+        <button style="background:#ef4444;color:white;border:none;border-radius:4px;padding:2px 8px;font-size:9px;">✕ Delete Month</button>
+      </div>
+
+      <!-- Expanded: installments table -->
+      <div style="background:#0f172a;border:1px solid #334155;border-top:none;border-radius:0 0 6px 6px;padding:8px;">
+        <div style="color:#64748b;font-size:9px;text-transform:uppercase;letter-spacing:0.05em;display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 80px;gap:6px;padding:0 4px 6px;border-bottom:1px solid #1e293b;">
+          <span>Installment</span><span>Amount</span><span>Date</span><span>Method</span><span>Actions</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 80px;gap:6px;padding:6px 4px;align-items:center;">
+          <span style="color:#94a3b8;font-size:10px;">#1 — Cash payment</span>
+          <span style="color:#4ade80;font-size:10px;">LKR 10,000</span>
+          <span style="color:#64748b;font-size:10px;">17 Apr 2026</span>
+          <span style="color:#64748b;font-size:10px;">Cash</span>
+          <div style="display:flex;gap:4px;">
+            <button style="background:#1e293b;color:#93c5fd;border:1px solid #334155;border-radius:3px;padding:2px 5px;font-size:9px;">Edit</button>
+            <button style="background:#1e293b;color:#ef4444;border:1px solid #334155;border-radius:3px;padding:2px 5px;font-size:9px;">Del</button>
+          </div>
+        </div>
+        <!-- Inline edit row example -->
+        <div style="display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 80px;gap:6px;padding:6px 4px;align-items:center;background:#0f2040;border-radius:4px;border:1px solid #3b82f6;margin-top:4px;">
+          <input style="background:#0f172a;border:1px solid #334155;border-radius:3px;padding:3px 5px;color:#f8fafc;font-size:10px;width:100%;" value="Notes..." />
+          <input style="background:#0f172a;border:1px solid #334155;border-radius:3px;padding:3px 5px;color:#f8fafc;font-size:10px;width:100%;" value="10,000" />
+          <input style="background:#0f172a;border:1px solid #334155;border-radius:3px;padding:3px 5px;color:#f8fafc;font-size:10px;width:100%;" value="2026-04-17" />
+          <select style="background:#0f172a;border:1px solid #334155;border-radius:3px;padding:3px 5px;color:#f8fafc;font-size:10px;width:100%;"><option>Cash</option></select>
+          <div style="display:flex;gap:3px;">
+            <button style="background:#22c55e;color:white;border:none;border-radius:3px;padding:2px 6px;font-size:9px;">✓</button>
+            <button style="background:#475569;color:white;border:none;border-radius:3px;padding:2px 6px;font-size:9px;">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Flat Expand</h3>
+      <p>Month row expands to show installments in a sub-table. Actions (Add Installment, Delete Month) live on the header row. Installments edit inline inside the expanded area.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:14px;border-radius:8px;font-size:11px;color:#94a3b8;font-family:sans-serif;">
+
+      <!-- Month row header -->
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1e293b;border-radius:6px 6px 0 0;border:1px solid #334155;cursor:pointer;">
+        <span style="color:#f8fafc;font-weight:700;font-size:12px;">▼ Mar 2026</span>
+        <span style="margin-left:auto;color:#4ade80;font-size:12px;font-weight:600;">LKR 10,000</span>
+        <span style="color:#64748b;font-size:10px;">17 Apr 2026</span>
+        <span style="background:#14532d;color:#4ade80;padding:2px 7px;border-radius:10px;font-size:9px;">Paid</span>
+      </div>
+
+      <!-- Expanded: two-section layout -->
+      <div style="background:#0f172a;border:1px solid #334155;border-top:none;border-radius:0 0 6px 6px;">
+        <!-- Section 1: Month-level edit -->
+        <div style="padding:8px 10px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:8px;">
+          <span style="color:#64748b;font-size:9px;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;">Month Record</span>
+          <div style="display:flex;gap:5px;align-items:center;flex:1;">
+            <span style="color:#94a3b8;font-size:10px;">Amount:</span>
+            <div style="background:#1e293b;border:1px solid #334155;border-radius:3px;padding:2px 8px;color:#f8fafc;font-size:10px;">LKR 10,000</div>
+            <span style="color:#94a3b8;font-size:10px;">Method:</span>
+            <div style="background:#1e293b;border:1px solid #334155;border-radius:3px;padding:2px 8px;color:#f8fafc;font-size:10px;">Cash ▾</div>
+          </div>
+          <button style="background:#ef4444;color:white;border:none;border-radius:3px;padding:2px 8px;font-size:9px;margin-left:auto;">Delete Month</button>
+        </div>
+
+        <!-- Section 2: Installments -->
+        <div style="padding:8px 10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="color:#64748b;font-size:9px;text-transform:uppercase;letter-spacing:0.05em;">Installments</span>
+            <button style="background:#3b82f6;color:white;border:none;border-radius:3px;padding:2px 8px;font-size:9px;">+ Add</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 60px;gap:5px;padding:5px 4px;border:1px solid #1e3a5f;border-radius:4px;align-items:center;">
+            <span style="color:#4ade80;font-size:10px;">LKR 10,000</span>
+            <span style="color:#64748b;font-size:10px;">17 Apr 2026</span>
+            <span style="color:#64748b;font-size:10px;">Cash</span>
+            <div style="display:flex;gap:3px;">
+              <button style="background:#1e293b;color:#93c5fd;border:1px solid #334155;border-radius:3px;padding:2px 5px;font-size:9px;">✏</button>
+              <button style="background:#1e293b;color:#ef4444;border:1px solid #334155;border-radius:3px;padding:2px 5px;font-size:9px;">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Two-Section Expand</h3>
+      <p>Top section: month-level fields + delete. Bottom section: installments list with its own Add button. Clearer separation between the two levels.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Click your preferred layout, then reply in the terminal.</p>

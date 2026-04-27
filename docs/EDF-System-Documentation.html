@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDF Admin System — Technical & User Documentation</title>
+<style>
+  /* ── Reset & Base ────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #0f1117;
+    --ink-soft:  #374151;
+    --ink-muted: #6b7280;
+    --accent:    #1d4ed8;
+    --accent-lt: #eff6ff;
+    --accent-mid:#3b82f6;
+    --green:     #16a34a;
+    --green-lt:  #f0fdf4;
+    --amber:     #d97706;
+    --amber-lt:  #fffbeb;
+    --red:       #dc2626;
+    --red-lt:    #fef2f2;
+    --purple:    #7c3aed;
+    --purple-lt: #f5f3ff;
+    --border:    #e5e7eb;
+    --bg-soft:   #f9fafb;
+    --bg-code:   #1e293b;
+    --radius:    6px;
+    --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  }
+
+  html { font-size: 14px; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    line-height: 1.65;
+    background: #fff;
+  }
+
+  /* ── Page Layout ─────────────────────────────────────────── */
+  .page-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+
+  /* ── Cover Page ──────────────────────────────────────────── */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 60px 40px;
+    background: linear-gradient(160deg, #0f1117 0%, #1e3a5f 100%);
+    color: #fff;
+    page-break-after: always;
+  }
+  .cover-badge {
+    display: inline-block;
+    background: rgba(59,130,246,0.25);
+    border: 1px solid rgba(59,130,246,0.5);
+    color: #93c5fd;
+    padding: 4px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .cover-org {
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 16px;
+  }
+  .cover h1 {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 30%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cover-sub {
+    font-size: 18px;
+    color: #94a3b8;
+    max-width: 480px;
+    margin-bottom: 56px;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 56px;
+  }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b82f6;
+    display: block;
+  }
+  .cover-meta-item .lbl {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+  .cover-divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #7c3aed);
+    margin: 0 auto 48px;
+    border-radius: 2px;
+  }
+  .cover-footer {
+    font-size: 11px;
+    color: #475569;
+    letter-spacing: 1px;
+  }
+
+  /* ── Table of Contents ───────────────────────────────────── */
+  .toc {
+    page-break-after: always;
+    padding: 40px 0;
+  }
+  .toc h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .toc-list { list-style: none; }
+  .toc-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--border);
+  }
+  .toc-list li:last-child { border-bottom: none; }
+  .toc-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 28px;
+  }
+  .toc-title { flex: 1; font-size: 13px; color: var(--ink-soft); }
+  .toc-sub { font-size: 11px; color: var(--ink-muted); margin-left: 36px; display: block; padding: 3px 0; }
+
+  /* ── Section Structure ───────────────────────────────────── */
+  .section { page-break-inside: avoid; margin-bottom: 48px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .section-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 24px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section h3::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    background: var(--accent-mid);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .section h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin: 16px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  p { margin-bottom: 12px; color: var(--ink-soft); font-size: 13.5px; }
+
+  /* ── Stack Cards ─────────────────────────────────────────── */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .stack-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    background: var(--bg-soft);
+    box-shadow: var(--shadow);
+  }
+  .stack-card-title {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .stack-card-main {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .stack-card-sub { font-size: 12px; color: var(--ink-muted); }
+  .stack-card.accent  { border-left: 4px solid var(--accent); }
+  .stack-card.green   { border-left: 4px solid var(--green); }
+  .stack-card.amber   { border-left: 4px solid var(--amber); }
+  .stack-card.purple  { border-left: 4px solid var(--purple); }
+  .stack-card.red     { border-left: 4px solid var(--red); }
+
+  /* ── Tables ──────────────────────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead { background: var(--ink); color: #fff; }
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(even) { background: var(--bg-soft); }
+  tbody tr:hover { background: var(--accent-lt); }
+  td { padding: 9px 14px; color: var(--ink-soft); vertical-align: top; }
+  td:first-child { font-weight: 600; color: var(--ink); }
+
+  /* ── Code Blocks ─────────────────────────────────────────── */
+  pre {
+    background: var(--bg-code);
+    color: #e2e8f0;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+  code {
+    background: #f1f5f9;
+    color: #1d4ed8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+  .comment { color: #64748b; font-style: italic; }
+  .kw { color: #93c5fd; }
+  .str { color: #86efac; }
+  .num { color: #fca5a5; }
+  .fn  { color: #fde68a; }
+
+  /* ── Badges & Pills ──────────────────────────────────────── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .badge-blue   { background: var(--accent-lt); color: var(--accent); }
+  .badge-green  { background: var(--green-lt); color: var(--green); }
+  .badge-amber  { background: var(--amber-lt); color: var(--amber); }
+  .badge-red    { background: var(--red-lt); color: var(--red); }
+  .badge-purple { background: var(--purple-lt); color: var(--purple); }
+
+  /* ── Callout Boxes ───────────────────────────────────────── */
+  .callout {
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin: 14px 0;
+    border-left: 4px solid;
+    font-size: 13px;
+  }
+  .callout-info  { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+  .callout-warn  { background: var(--amber-lt); border-color: var(--amber); color: var(--amber); }
+  .callout-success { background: var(--green-lt); border-color: var(--green); color: var(--green); }
+  .callout-danger  { background: var(--red-lt); border-color: var(--red); color: var(--red); }
+  .callout strong { font-weight: 800; }
+  .callout p { color: inherit; margin-bottom: 0; }
+
+  /* ── Step Lists ──────────────────────────────────────────── */
+  .steps { list-style: none; margin: 12px 0; }
+  .steps li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 1px;
+  }
+  .step-body { flex: 1; font-size: 13px; color: var(--ink-soft); }
+  .step-body strong { color: var(--ink); }
+
+  /* ── Module Cards ────────────────────────────────────────── */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .module-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .module-card-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .module-card-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .module-card-desc {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  /* ── Permission Table ────────────────────────────────────── */
+  .perm-check { color: var(--green); font-size: 15px; }
+  .perm-cross { color: var(--red); font-size: 15px; }
+
+  /* ── Endpoint Pills ──────────────────────────────────────── */
+  .ep { display: inline-flex; align-items: center; gap: 6px; margin: 3px 2px; }
+  .ep-method {
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .ep-get    { background: #dcfce7; color: #16a34a; }
+  .ep-post   { background: #dbeafe; color: #1d4ed8; }
+  .ep-put    { background: #fef9c3; color: #854d0e; }
+  .ep-delete { background: #fee2e2; color: #dc2626; }
+  .ep-path   { font-family: monospace; font-size: 12px; color: var(--ink-soft); }
+
+  /* ── Role Color Labels ───────────────────────────────────── */
+  .role { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .role-admin   { background: #fce7f3; color: #9d174d; }
+  .role-super   { background: #fef3c7; color: #92400e; }
+  .role-manager { background: #dbeafe; color: #1e40af; }
+  .role-editor  { background: #dcfce7; color: #166534; }
+  .role-viewer  { background: #f3f4f6; color: #374151; }
+  .role-user    { background: #f0fdf4; color: #15803d; }
+
+  /* ── Page Breaks ─────────────────────────────────────────── */
+  .page-break { page-break-before: always; }
+  .no-break   { page-break-inside: avoid; }
+
+  /* ── Print Overrides ─────────────────────────────────────── */
+  @media print {
+    body { font-size: 11px; }
+    .cover { min-height: auto; padding: 80px 40px; }
+    .page-wrap { padding: 20px 0; }
+    a { color: inherit; text-decoration: none; }
+    pre { white-space: pre-wrap; }
+  }
+
+  /* ── Utility ─────────────────────────────────────────────── */
+  ul.bullets { list-style: disc; padding-left: 20px; margin: 8px 0; }
+  ul.bullets li { color: var(--ink-soft); font-size: 13px; margin-bottom: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-4 { margin-top: 16px; }
+  .mb-2 { margin-bottom: 8px; }
+  .flex-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .text-muted { color: var(--ink-muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     COVER PAGE
+════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">System Documentation · v1.0</div>
+  <div class="cover-org">Education &amp; Development Foundation</div>
+  <h1>EDF Admin<br>System Guide</h1>
+  <p class="cover-sub">Complete technical reference and user manual for the EDF Administration Platform</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><span class="val">32</span><span class="lbl">DB Tables</span></div>
+    <div class="cover-meta-item"><span class="val">15</span><span class="lbl">Admin Modules</span></div>
+    <div class="cover-meta-item"><span class="val">50+</span><span class="lbl">API Endpoints</span></div>
+    <div class="cover-meta-item"><span class="val">6</span><span class="lbl">User Roles</span></div>
+  </div>
+  <div class="cover-divider"></div>
+  <div class="cover-footer">GENERATED 2026 · INTERNAL USE ONLY · EDF FOUNDATION</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+════════════════════════════════════════════════════════════ -->
+<div class="page-wrap">
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ul class="toc-list">
+    <li><span class="toc-num">1</span><span class="toc-title">Technology Stack Overview</span></li>
+    <li><span class="toc-num">2</span><span class="toc-title">System Architecture</span></li>
+    <li><span class="toc-num">3</span><span class="toc-title">Installation &amp; Setup</span></li>
+    <li><span class="toc-num">4</span><span class="toc-title">Authentication &amp; Authorization</span>
+      <span class="toc-sub">4.1 JWT Flow · 4.2 User Roles · 4.3 Module Permissions</span>
+    </li>
+    <li><span class="toc-num">5</span><span class="toc-title">Database Schema</span>
+      <span class="toc-sub">5.1 Core Tables · 5.2 Financial Tables · 5.3 Program Tables · 5.4 Site &amp; Admin Tables</span>
+    </li>
+    <li><span class="toc-num">6</span><span class="toc-title">API Reference</span>
+      <span class="toc-sub">All route groups, methods, and endpoints</span>
+    </li>
+    <li><span class="toc-num">7</span><span class="toc-title">Admin Dashboard — Module Guide</span>
+      <span class="toc-sub">How to use every section of the admin panel</span>
+    </li>
+    <li><span class="toc-num">7.1</span><span class="toc-title">Overview Dashboard</span></li>
+    <li><span class="toc-num">7.2</span><span class="toc-title">Member Management</span></li>
+    <li><span class="toc-num">7.3</span><span class="toc-title">Family Registry</span></li>
+    <li><span class="toc-num">7.4</span><span class="toc-title">Beneficiaries</span></li>
+    <li><span class="toc-num">7.5</span><span class="toc-title">Subscriptions &amp; Payments</span></li>
+    <li><span class="toc-num">7.6</span><span class="toc-title">Donations</span></li>
+    <li><span class="toc-num">7.7</span><span class="toc-title">Programs &amp; Courses</span></li>
+    <li><span class="toc-num">7.8</span><span class="toc-title">Inventory &amp; Assets</span></li>
+    <li><span class="toc-num">7.9</span><span class="toc-title">Documents &amp; Files</span></li>
+    <li><span class="toc-num">7.10</span><span class="toc-title">Ramadan Token Distribution</span></li>
+    <li><span class="toc-num">7.11</span><span class="toc-title">Volunteers</span></li>
+    <li><span class="toc-num">7.12</span><span class="toc-title">User Accounts (Admin)</span></li>
+    <li><span class="toc-num">7.13</span><span class="toc-title">Front Desk — Public Website Management</span></li>
+    <li><span class="toc-num">7.14</span><span class="toc-title">System Logs</span></li>
+    <li><span class="toc-num">7.15</span><span class="toc-title">Settings</span></li>
+    <li><span class="toc-num">8</span><span class="toc-title">Public Website Pages</span></li>
+    <li><span class="toc-num">9</span><span class="toc-title">Security &amp; Middleware</span></li>
+    <li><span class="toc-num">10</span><span class="toc-title">File Uploads &amp; Storage</span></li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 1 — TECH STACK
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <h2>Technology Stack Overview</h2>
+  </div>
+
+  <p>The EDF system is a full-stack web application built entirely without a JavaScript frontend framework. The backend is a Node.js/Express server, the database is SQLite, and the frontend uses plain HTML, CSS variables, and vanilla ES6 JavaScript.</p>
+
+  <div class="stack-grid">
+    <div class="stack-card accent">
+      <div class="stack-card-title">Runtime</div>
+      <div class="stack-card-main">Node.js</div>
+      <div class="stack-card-sub">JavaScript server runtime</div>
+    </div>
+    <div class="stack-card accent">
+      <div class="stack-card-title">Web Framework</div>
+      <div class="stack-card-main">Express.js v5</div>
+      <div class="stack-card-sub">HTTP routing &amp; middleware</div>
+    </div>
+    <div class="stack-card green">
+      <div class="stack-card-title">Database</div>
+      <div class="stack-card-main">SQLite 3</div>
+      <div class="stack-card-sub">sqlite npm v5.1 + sqlite3 v5.1.7</div>
+    </div>
+    <div class="stack-card purple">
+      <div class="stack-card-title">Authentication</div>
+      <div class="stack-card-main">JWT (jsonwebtoken v9)</div>
+      <div class="stack-card-sub">httpOnly cookie tokens</div>
+    </div>
+    <div class="stack-card amber">
+      <div class="stack-card-title">Password Hashing</div>
+      <div class="stack-card-main">bcryptjs v3</div>
+      <div class="stack-card-sub">Salted bcrypt hashing</div>
+    </div>
+    <div class="stack-card red">
+      <div class="stack-card-title">File Uploads</div>
+      <div class="stack-card-main">multer v2</div>
+      <div class="stack-card-sub">Multipart form-data handling</div>
+    </div>
+    <div class="stack-card accent">
+      <div class="stack-card-title">Frontend</div>
+      <div class="stack-card-main">Vanilla JS (ES6+)</div>
+      <div class="stack-card-sub">No React/Vue/Angular</div>
+    </div>
+    <div class="stack-card green">
+      <div class="stack-card-title">CSS System</div>
+      <div class="stack-card-main">CSS Variables</div>
+      <div class="stack-card-sub">Custom properties + dark mode</div>
+    </div>
+    <div class="stack-card purple">
+      <div class="stack-card-title">Icons</div>
+      <div class="stack-card-main">Lucide Icons</div>
+      <div class="stack-card-sub">SVG icon library via CDN</div>
+    </div>
+    <div class="stack-card amber">
+      <div class="stack-card-title">Excel Export</div>
+      <div class="stack-card-main">SheetJS (xlsx)</div>
+      <div class="stack-card-sub">v0.20.3 via CDN</div>
+    </div>
+    <div class="stack-card red">
+      <div class="stack-card-title">Public Animations</div>
+      <div class="stack-card-main">GSAP v3 + Three.js</div>
+      <div class="stack-card-sub">Scroll animations &amp; 3D scene</div>
+    </div>
+    <div class="stack-card green">
+      <div class="stack-card-title">Environment</div>
+      <div class="stack-card-main">dotenv v17</div>
+      <div class="stack-card-sub">.env config management</div>
+    </div>
+  </div>
+
+  <h3>Package Summary</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Package</th><th>Version</th><th>Purpose</th><th>Type</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>express</td><td>5.2.1</td><td>HTTP server &amp; routing</td><td><span class="badge badge-blue">Core</span></td></tr>
+        <tr><td>sqlite3</td><td>5.1.7</td><td>SQLite native bindings</td><td><span class="badge badge-blue">Core</span></td></tr>
+        <tr><td>sqlite</td><td>5.1.1</td><td>Async/await wrapper for sqlite3</td><td><span class="badge badge-blue">Core</span></td></tr>
+        <tr><td>jsonwebtoken</td><td>9.0.3</td><td>JWT sign/verify</td><td><span class="badge badge-purple">Auth</span></td></tr>
+        <tr><td>bcryptjs</td><td>3.0.3</td><td>Password hashing</td><td><span class="badge badge-purple">Auth</span></td></tr>
+        <tr><td>cookie-parser</td><td>1.4.7</td><td>Parse HTTP cookies</td><td><span class="badge badge-purple">Auth</span></td></tr>
+        <tr><td>multer</td><td>2.1.1</td><td>File upload middleware</td><td><span class="badge badge-green">Upload</span></td></tr>
+        <tr><td>cors</td><td>2.8.6</td><td>Cross-origin resource sharing</td><td><span class="badge badge-amber">Network</span></td></tr>
+        <tr><td>dotenv</td><td>17.3.1</td><td>Environment variable loader</td><td><span class="badge badge-amber">Config</span></td></tr>
+        <tr><td>autoprefixer</td><td>10.4.27</td><td>CSS vendor prefixing</td><td><span class="badge badge-red">CSS</span></td></tr>
+        <tr><td>postcss</td><td>8.5.6</td><td>CSS transformation pipeline</td><td><span class="badge badge-red">CSS</span></td></tr>
+        <tr><td>tailwindcss</td><td>3.4.1</td><td>Utility CSS (build pipeline only)</td><td><span class="badge badge-red">CSS</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 2 — SYSTEM ARCHITECTURE
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <h2>System Architecture</h2>
+  </div>
+
+  <p>The EDF system follows a classic MVC-adjacent pattern: Express routes handle HTTP requests, SQLite provides persistence, and static HTML/JS files served from <code>/public</code> form the frontend. There is no build step for the frontend — all JS and CSS are authored directly.</p>
+
+  <h3>Directory Structure</h3>
+  <pre>EDF/
+├── server.js               <span class="comment"># Entry point — middleware stack + route mounting</span>
+├── .env                    <span class="comment"># PORT, JWT_SECRET, NODE_ENV</span>
+├── package.json
+├── src/
+│   ├── db/
+│   │   ├── database.sqlite <span class="comment"># SQLite database file</span>
+│   │   └── schema.sql      <span class="comment"># Table definitions</span>
+│   ├── routes/             <span class="comment"># All API route handlers</span>
+│   │   ├── auth.js
+│   │   ├── edf.js          <span class="comment"># Members, beneficiaries, subscriptions, donations</span>
+│   │   ├── admin.js        <span class="comment"># User management, permissions</span>
+│   │   ├── programs.js     <span class="comment"># Courses, batches, applications</span>
+│   │   ├── inventory.js
+│   │   ├── ramadan.js
+│   │   ├── forms.js        <span class="comment"># Form template builder</span>
+│   │   ├── logs.js
+│   │   ├── stats.js
+│   │   ├── settings.js
+│   │   ├── frontdesk.js    <span class="comment"># Gallery, site content, team</span>
+│   │   └── documents.js
+│   └── middleware/
+│       ├── authMiddleware.js   <span class="comment"># JWT verification</span>
+│       ├── userGuard.js        <span class="comment"># Block check + last_seen</span>
+│       ├── permissionGuard.js  <span class="comment"># Module-level permission enforcement</span>
+│       ├── maintenanceGuard.js <span class="comment"># Redirect to maintenance page</span>
+│       └── activityLogger.js   <span class="comment"># Audit trail logging</span>
+└── public/
+    ├── index.html          <span class="comment"># Public website homepage</span>
+    ├── about.html
+    ├── gallery.html
+    ├── login.html
+    ├── dashboard.html      <span class="comment"># Admin SPA (Single Page Application)</span>
+    ├── maintenance.html
+    ├── 404.html
+    ├── css/
+    │   ├── style.css       <span class="comment"># Main dashboard styles (~4000+ lines)</span>
+    │   ├── sidebar.css
+    │   ├── customizer.css
+    │   └── settings.css
+    ├── js/
+    │   ├── dashboard.js    <span class="comment"># Main admin JS (~285 KB, all modules)</span>
+    │   └── i18n.js         <span class="comment"># Internationalization helpers</span>
+    └── uploads/            <span class="comment"># User-uploaded files (images, documents)</span></pre>
+
+  <h3>Request Lifecycle</h3>
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body"><strong>Browser → Express</strong> — HTTP request arrives at port 5001.</div></li>
+    <li><div class="step-num">2</div><div class="step-body"><strong>maintenanceGuard</strong> — If maintenance mode is on and the request is for a public page, redirect to <code>/maintenance</code>. API and admin routes pass through.</div></li>
+    <li><div class="step-num">3</div><div class="step-body"><strong>Static Files</strong> — <code>express.static('public')</code> serves HTML, CSS, JS, and uploaded files directly.</div></li>
+    <li><div class="step-num">4</div><div class="step-body"><strong>activityLogger</strong> — Logs the incoming API request (user, action, entity, IP) to <code>system_logs</code>.</div></li>
+    <li><div class="step-num">5</div><div class="step-body"><strong>userGuard</strong> — Verifies the JWT cookie is valid, the account is not blocked, and no force-logout has been issued. Updates <code>last_seen</code> timestamp.</div></li>
+    <li><div class="step-num">6</div><div class="step-body"><strong>permissionGuard</strong> — For mutation methods (POST/PUT/DELETE), checks the user has the required module permission or is admin/super_user.</div></li>
+    <li><div class="step-num">7</div><div class="step-body"><strong>Route Handler</strong> — The matching Express route executes the business logic, queries SQLite, and returns a JSON response.</div></li>
+    <li><div class="step-num">8</div><div class="step-body"><strong>Response → Browser</strong> — JSON response is consumed by the frontend JS, which updates the DOM without a page reload.</div></li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 3 — INSTALLATION & SETUP
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <h2>Installation &amp; Setup</h2>
+  </div>
+
+  <h3>Prerequisites</h3>
+  <ul class="bullets">
+    <li>Node.js 18+ (LTS recommended)</li>
+    <li>npm 9+</li>
+    <li>Git (optional, for version control)</li>
+  </ul>
+
+  <h3>Step-by-Step Installation</h3>
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body"><strong>Clone or copy the project</strong><br>Place the <code>EDF/</code> folder in any location on your machine.</div></li>
+    <li><div class="step-num">2</div><div class="step-body"><strong>Install dependencies</strong>
+<pre>npm install</pre></div></li>
+    <li><div class="step-num">3</div><div class="step-body"><strong>Create the <code>.env</code> file</strong> in the project root:
+<pre>PORT=5001
+JWT_SECRET=your_unique_secret_here_change_this
+NODE_ENV=production</pre></div></li>
+    <li><div class="step-num">4</div><div class="step-body"><strong>Start the server</strong>
+<pre>node server.js</pre>
+The server starts at <code>http://localhost:5001</code></div></li>
+    <li><div class="step-num">5</div><div class="step-body"><strong>Access the admin dashboard</strong><br>Open <code>http://localhost:5001/login</code> in a browser. Log in with the default admin credentials, then navigate to <code>/dashboard</code>.</div></li>
+  </ul>
+
+  <div class="callout callout-warn">
+    <strong>Security:</strong> Always change <code>JWT_SECRET</code> to a long random string before deploying to production. Never commit the <code>.env</code> file to version control.
+  </div>
+
+  <h3>Environment Variables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>PORT</td><td>5001</td><td>TCP port the server listens on</td></tr>
+        <tr><td>JWT_SECRET</td><td><em>(required)</em></td><td>Secret key for signing/verifying JWT tokens. Must be unique and kept private.</td></tr>
+        <tr><td>NODE_ENV</td><td>development</td><td>Set to <code>production</code> for production deployments</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 4 — AUTH & AUTHORIZATION
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <h2>Authentication &amp; Authorization</h2>
+  </div>
+
+  <h3>4.1 JWT Authentication Flow</h3>
+  <p>Authentication uses <strong>JSON Web Tokens (JWT)</strong> stored in an <code>httpOnly</code> cookie. The <code>httpOnly</code> flag prevents JavaScript from reading the token, protecting against XSS-based token theft.</p>
+
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body">User submits username and password on the login page (<code>POST /api/auth/login</code>).</div></li>
+    <li><div class="step-num">2</div><div class="step-body">Server verifies the password with <code>bcryptjs.compare()</code> against the stored hash.</div></li>
+    <li><div class="step-num">3</div><div class="step-body">On success, a JWT is signed with <code>JWT_SECRET</code> and sent as an <code>httpOnly</code> cookie. The token contains: <code>userId</code>, <code>username</code>, <code>role</code>, <code>iat</code> (issued-at timestamp).</div></li>
+    <li><div class="step-num">4</div><div class="step-body">All subsequent API requests automatically include this cookie. The <code>userGuard</code> middleware verifies it on every <code>/api/*</code> request.</div></li>
+    <li><div class="step-num">5</div><div class="step-body">On logout (<code>POST /api/auth/logout</code>), the cookie is cleared server-side and a <code>logout</code> event is logged.</div></li>
+  </ul>
+
+  <div class="callout callout-info">
+    <strong>Force Logout:</strong> Admins can force-logout any user remotely. The server sets a <code>force_logout_at</code> timestamp on the user record. The <code>userGuard</code> then rejects any token minted before that timestamp, even if the JWT itself is still valid.
+  </div>
+
+  <h3>4.2 User Roles</h3>
+  <p>Six roles exist with hierarchical privilege levels. <strong>admin</strong> and <strong>super_user</strong> bypass all module permission checks.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Role</th><th>Level</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="role role-admin">admin</span></td><td>Highest</td><td>Full system access. Can manage users, permissions, settings, and all modules. Bypasses all permission guards.</td></tr>
+        <tr><td><span class="role role-super">super_user</span></td><td>Very High</td><td>Full operational access. Same as admin for data operations but cannot manage users/settings.</td></tr>
+        <tr><td><span class="role role-manager">manager</span></td><td>High</td><td>Access determined by granted module permissions. Typically has write access to most modules.</td></tr>
+        <tr><td><span class="role role-editor">editor</span></td><td>Medium</td><td>Access determined by granted module permissions. Typically read/write on assigned areas.</td></tr>
+        <tr><td><span class="role role-viewer">viewer</span></td><td>Low</td><td>Read-only access to permitted modules. Cannot perform POST/PUT/DELETE operations.</td></tr>
+        <tr><td><span class="role role-user">user</span></td><td>Lowest</td><td>Minimal access. Only permitted modules are accessible.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.3 Module Permissions</h3>
+  <p>Non-admin roles must be explicitly granted permission per module. Permissions only affect mutation operations (write). Read (GET) requests are not permission-gated.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Permission Key</th><th>Controls Access To</th></tr></thead>
+      <tbody>
+        <tr><td>members</td><td>Creating, editing, deleting member records and relatives</td></tr>
+        <tr><td>beneficiaries</td><td>Creating, editing, deleting beneficiary records and nested children</td></tr>
+        <tr><td>finance</td><td>Creating donations, subscriptions, family payments, external donations</td></tr>
+        <tr><td>volunteers</td><td>Creating and editing volunteer records</td></tr>
+        <tr><td>courses</td><td>Creating programs, batches, and managing applications</td></tr>
+        <tr><td>ramadan</td><td>Creating distributions, assigning tokens, marking collection</td></tr>
+        <tr><td>reports</td><td>Accessing report exports and log details</td></tr>
+        <tr><td>settings</td><td>Changing maintenance mode, uploading logo/favicon</td></tr>
+        <tr><td>users</td><td>Creating and managing user accounts (admin panel)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 5 — DATABASE SCHEMA
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <h2>Database Schema</h2>
+  </div>
+  <p>The database is SQLite 3, stored as a single file at <code>src/db/database.sqlite</code>. It contains 32 tables organized into logical groups below.</p>
+
+  <h3>5.1 User &amp; Authentication Tables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>users</td><td>id, username, email, password (bcrypt), role, full_name, status, last_seen, force_logout_at, blocked_by</td><td>System user accounts</td></tr>
+        <tr><td>user_permissions</td><td>user_id, permission</td><td>Per-user module permission grants</td></tr>
+        <tr><td>login_events</td><td>id, user_id, username, event_type (login/logout/force_logout), ip_address, created_at</td><td>Login/logout audit trail</td></tr>
+        <tr><td>system_logs</td><td>id, user_id, action, entity, entity_id, details, ip_address, created_at</td><td>All CRUD activity audit log</td></tr>
+        <tr><td>global_settings</td><td>key, value, updated_at</td><td>System-wide settings (maintenance mode, logo path)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.2 Member &amp; Financial Tables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>members</td><td>id, full_name, email, phone, nic_number, gender, age, member_type (executive/founder), monthly_subscription, status (active/deactivate), join_date</td><td>Foundation members</td></tr>
+        <tr><td>member_relatives</td><td>id, member_id, full_name, relationship (wife/son/daughter/other), gender, age, nic_number</td><td>Family members linked to each member</td></tr>
+        <tr><td>subscriptions</td><td>id, member_id, amount (expected), paid_amount (actual), month (YYYY-MM), payment_method, notes, is_advance, payment_date</td><td>Monthly subscription payment records</td></tr>
+        <tr><td>subscription_payments</td><td>id, subscription_id, amount, payment_method, reference_number, notes, payment_date</td><td>Installment-level payments within a subscription</td></tr>
+        <tr><td>transactions</td><td>id, type (income/expense), category, amount, description, date, reference_id</td><td>General ledger of all financial events</td></tr>
+        <tr><td>external_donations</td><td>id, donor_name, donor_phone, amount, donation_type (zakat/sadaqah/fitrana/lillah), payment_method, date</td><td>External donor contributions</td></tr>
+        <tr><td>families</td><td>id, head_name, address, phone, member_count, poverty_level (low/medium/high), status</td><td>Family registry for welfare</td></tr>
+        <tr><td>family_donations</td><td>id, family_id, amount, donation_type (cash/dry_ration/zakat), description, date</td><td>Aid given to registered families</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.3 Beneficiary Tables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>beneficiaries</td><td>Main record: application_number, male/female head details, NIC, income, category, children counts, status (Active/pending/deactivate/rejected)</td></tr>
+        <tr><td>beneficiary_children_study</td><td>Children currently enrolled in school (name, dob, grade, gender)</td></tr>
+        <tr><td>beneficiary_children_dropout</td><td>Children who dropped out of school</td></tr>
+        <tr><td>beneficiary_children_university</td><td>University-attending children (university name, year)</td></tr>
+        <tr><td>beneficiary_children_abroad</td><td>Children living abroad</td></tr>
+        <tr><td>beneficiary_children_other</td><td>Other child categories</td></tr>
+        <tr><td>beneficiary_categories</td><td>Custom categories for classifying beneficiaries</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.4 Program &amp; Course Tables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>Key Columns</th></tr></thead>
+      <tbody>
+        <tr><td>courses</td><td>id, title, category (quran/skills/bayan), target_audience (men/women/children), max_capacity, fee, location, duration_weeks, form_template_id</td></tr>
+        <tr><td>batches</td><td>id, course_id, batch_name, start_date, end_date, instructor_name, max_seats, location, status</td></tr>
+        <tr><td>program_applications</td><td>id, course_id, batch_id, applicant_name, applicant_phone, age, gender, guardian info, nic_number, status (pending/approved), custom_data (JSON)</td></tr>
+        <tr><td>form_templates</td><td>id, name, structure (JSON field definitions), is_default</td></tr>
+        <tr><td>volunteers</td><td>id, full_name, phone, email, skills (teaching/distribution/admin/events), status</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.5 Ramadan &amp; Inventory Tables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>Key Columns</th></tr></thead>
+      <tbody>
+        <tr><td>ramadan_distributions</td><td>id, year, title, collection_date, collection_location, voucher_value, status, notes</td></tr>
+        <tr><td>ramadan_tokens</td><td>id, distribution_id, beneficiary_id, token_number, status (pending/collected/absent), collected_at, collected_by</td></tr>
+        <tr><td>inventory_items</td><td>id, name, category, tracking_type, serial_number, quantity, min_threshold, condition, purchase_price, warranty_info, qr_code, book_author, book_language, book_subject, library_type</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.6 Site Content Tables</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>Key Columns</th></tr></thead>
+      <tbody>
+        <tr><td>gallery_images</td><td>id, filename, caption, detail, category, display_year, sort_order, is_active, uploaded_by</td></tr>
+        <tr><td>site_content</td><td>id, page, content_key, content_value, updated_by, updated_at</td></tr>
+        <tr><td>timeline_items</td><td>id, year, label, title, description, sort_order, is_active</td></tr>
+        <tr><td>team_members</td><td>id, name, role, bio, avatar_color, avatar_letter, sort_order, is_active</td></tr>
+        <tr><td>site_partners</td><td>id, name, sort_order, is_active</td></tr>
+        <tr><td>origin_paragraphs</td><td>id, type, content, attribution, sort_order, is_active</td></tr>
+        <tr><td>documents</td><td>id, original_name, filename, category (pdf/excel/word/etc.), description, file_size, mime_type, uploaded_by</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 6 — API REFERENCE
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <h2>API Reference</h2>
+  </div>
+  <p>All API routes are prefixed with <code>/api</code>. Authenticated routes require a valid JWT cookie. The base URL is <code>http://localhost:5001</code>.</p>
+
+  <h3>Authentication — <code>/api/auth</code></h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Auth?</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/auth/login</code></td><td>No</td><td>Login with username + password. Sets httpOnly JWT cookie.</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/auth/logout</code></td><td>Yes</td><td>Clears the cookie and logs the logout event.</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/auth/me</code></td><td>Yes</td><td>Returns current user profile and their permission list.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Members &amp; Subscriptions — <code>/api/edf</code></h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/edf/members</code></td><td>List all members with optional search/filter</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/edf/members</code></td><td>Create a new member</td></tr>
+      <tr><td><span class="badge badge-amber">PUT</span></td><td><code>/api/edf/members/:id</code></td><td>Update member details</td></tr>
+      <tr><td><span class="badge badge-red">DELETE</span></td><td><code>/api/edf/members/:id</code></td><td>Delete member record</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/edf/members/:id/payment-history</code></td><td>Get all subscriptions + installments for a member</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/edf/subscriptions</code></td><td>List all subscriptions</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/edf/subscriptions</code></td><td>Create subscription month record</td></tr>
+      <tr><td><span class="badge badge-amber">PUT</span></td><td><code>/api/edf/subscriptions/:id</code></td><td>Edit subscription month details</td></tr>
+      <tr><td><span class="badge badge-red">DELETE</span></td><td><code>/api/edf/subscriptions/:id</code></td><td>Delete a subscription month record</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/edf/subscriptions/:id/payments</code></td><td>Add an installment to a subscription</td></tr>
+      <tr><td><span class="badge badge-amber">PUT</span></td><td><code>/api/edf/subscriptions/:id/payments/:payId</code></td><td>Edit an installment (recalculates paid_amount)</td></tr>
+      <tr><td><span class="badge badge-red">DELETE</span></td><td><code>/api/edf/subscriptions/:id/payments/:payId</code></td><td>Delete an installment</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/edf/beneficiaries</code></td><td>List beneficiaries</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/edf/beneficiaries</code></td><td>Create beneficiary</td></tr>
+      <tr><td><span class="badge badge-amber">PUT</span></td><td><code>/api/edf/beneficiaries/:id</code></td><td>Update beneficiary</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/edf/donations</code></td><td>List all donation records</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/edf/external-donations</code></td><td>Record an external donation</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/edf/families</code></td><td>List registered families</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/edf/families</code></td><td>Register new family</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Programs — <code>/api/programs</code></h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/programs/programs</code></td><td>List all courses/programs</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/programs/programs</code></td><td>Create a new program</td></tr>
+      <tr><td><span class="badge badge-amber">PUT</span></td><td><code>/api/programs/programs/:id</code></td><td>Update program</td></tr>
+      <tr><td><span class="badge badge-red">DELETE</span></td><td><code>/api/programs/programs/:id</code></td><td>Delete program</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/programs/batches</code></td><td>List batches (optionally filtered by program)</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/programs/batches</code></td><td>Create batch</td></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td><code>/api/programs/applications</code></td><td>List program applications</td></tr>
+      <tr><td><span class="badge badge-blue">POST</span></td><td><code>/api/programs/applications</code></td><td>Submit a new application</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Other API Groups</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Route Group</th><th>Base Path</th><th>Key Operations</th></tr></thead>
+    <tbody>
+      <tr><td>Inventory</td><td><code>/api/inventory</code></td><td>CRUD for items, serial tracking, condition management</td></tr>
+      <tr><td>Ramadan</td><td><code>/api/ramadan</code></td><td>Distributions CRUD, token assignment, collection marking</td></tr>
+      <tr><td>Admin</td><td><code>/api/admin</code></td><td>User CRUD, online status, block/unblock, permissions, force-logout</td></tr>
+      <tr><td>Statistics</td><td><code>/api/stats</code></td><td>Dashboard KPIs, financial summary, transaction list</td></tr>
+      <tr><td>Logs</td><td><code>/api/logs</code></td><td>System log query, stats, login events</td></tr>
+      <tr><td>Front Desk</td><td><code>/api/frontdesk</code></td><td>Gallery, site content, team, partners, timeline CRUD + image uploads</td></tr>
+      <tr><td>Documents</td><td><code>/api/documents</code></td><td>Upload/download/delete documents (max 200 MB)</td></tr>
+      <tr><td>Settings</td><td><code>/api/settings</code></td><td>Get/set maintenance mode, upload logo/favicon</td></tr>
+      <tr><td>Forms</td><td><code>/api/forms</code></td><td>Form template CRUD (dynamic fields for program applications)</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 7 — ADMIN DASHBOARD MODULE GUIDE
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <h2>Admin Dashboard — Module Guide</h2>
+  </div>
+  <p>The admin dashboard is accessible at <code>http://localhost:5001/dashboard</code> after logging in. It is a Single Page Application (SPA) — all modules load within the same page without navigation. Click a sidebar item to switch modules.</p>
+
+  <div class="callout callout-info">
+    <strong>Theme Toggle:</strong> The dashboard supports both Light and Dark themes. Click the theme icon in the top bar to switch. The preference is stored in <code>localStorage</code>.
+  </div>
+</div>
+
+<div class="section">
+  <h3>7.1 — Overview Dashboard</h3>
+  <p>The first page shown after login. Displays real-time KPIs and summary statistics fetched from <code>GET /api/stats/stats</code>.</p>
+  <h4>What you see:</h4>
+  <ul class="bullets">
+    <li><strong>KPI Cards</strong> — Total members, beneficiaries, volunteers, programs, total donations collected, expenses.</li>
+    <li><strong>Active Users Panel</strong> — Shows staff currently online (last seen within 90 seconds) with their name, role, and avatar.</li>
+    <li><strong>Recent Transactions</strong> — Last 10 financial events (income and expenses).</li>
+    <li><strong>Ramadan Stats</strong> — Current year's token distribution progress.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.2 — Member Management</h3>
+  <p>Manage all foundation members. Accessible via the <strong>Members</strong> sidebar link. Requires <code>members</code> permission for write operations.</p>
+
+  <h4>Listing Members</h4>
+  <ul class="bullets">
+    <li>Search by name, email, NIC, or phone using the search bar.</li>
+    <li>Filter by member type (Executive / Founder) and status (Active / Deactivated) using dropdowns.</li>
+    <li>Members are displayed in a table with: Name, Member Type, Phone, Monthly Subscription, Join Date, Status.</li>
+  </ul>
+
+  <h4>Adding a New Member</h4>
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body">Click the <strong>+ Add Member</strong> button (top right of the members table).</div></li>
+    <li><div class="step-num">2</div><div class="step-body">Fill in the required fields: Full Name, Member Type, Phone, Join Date, Monthly Subscription amount.</div></li>
+    <li><div class="step-num">3</div><div class="step-body">Optionally fill in: Email, NIC, Address, City, Gender, Age, Income, Marital Status, Blood Group, Occupation, Bank Details, Previous Balance.</div></li>
+    <li><div class="step-num">4</div><div class="step-body">Click <strong>Save Member</strong>. The system validates NIC uniqueness across all members.</div></li>
+  </ul>
+
+  <h4>Editing / Deleting a Member</h4>
+  <ul class="bullets">
+    <li>Click the <strong>Edit (pencil)</strong> icon in the member row to open the edit form.</li>
+    <li>Click the <strong>Delete (trash)</strong> icon to delete. A confirmation prompt appears before deletion.</li>
+    <li>Member status can be changed between Active and Deactivated using the status dropdown in the edit form.</li>
+  </ul>
+
+  <h4>Member Relatives</h4>
+  <ul class="bullets">
+    <li>Expand a member row by clicking it to reveal the Relatives section.</li>
+    <li>Add relatives (wife, son, daughter, other) with their name, age, NIC, occupation.</li>
+    <li>Relatives are stored in <code>member_relatives</code> and are shown only within the context of their parent member.</li>
+  </ul>
+
+  <h4>Payment History Modal (CRUD)</h4>
+  <p>Click the <strong>history icon</strong> on any member row to open the Member History Modal. This modal has two tabs:</p>
+  <ul class="bullets">
+    <li><strong>View History</strong> — Read-only table of all subscription months. Supports search by month, filter by year, sort by date/amount, and CSV export.</li>
+    <li><strong>Manage Payments</strong> — Full CRUD interface for subscription records:</li>
+  </ul>
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body"><strong>Add Month</strong> — Click <em>+ Add Month</em> to expand the new-month form. Enter: Month, Expected Amount, Payment Date, Payment Method, Notes. The system prevents duplicate months for the same member.</div></li>
+    <li><div class="step-num">2</div><div class="step-body"><strong>Expand a Month Row</strong> — Click any accordion row to expand. The expanded view shows two sections: the Month Record (expected amount, method, notes) and Installments (individual payments).</div></li>
+    <li><div class="step-num">3</div><div class="step-body"><strong>Edit Month Record</strong> — Click <em>Edit</em> in the Month Record section to make fields editable. Change values and click <em>Save</em>.</div></li>
+    <li><div class="step-num">4</div><div class="step-body"><strong>Delete Month</strong> — Click <em>Delete Month</em> button. An inline confirm strip appears (row turns red). Click <em>Yes, Delete</em> to confirm or <em>No</em> to cancel.</div></li>
+    <li><div class="step-num">5</div><div class="step-body"><strong>Add Installment</strong> — Click <em>+ Add Installment</em> to append a blank input row. Enter Amount, Date, Method, Notes and click ✓ to save.</div></li>
+    <li><div class="step-num">6</div><div class="step-body"><strong>Edit/Delete Installment</strong> — Each installment row has ✏ (edit inline) and ✕ (delete with confirm) buttons. Deleting recalculates the month's <code>paid_amount</code> automatically.</div></li>
+  </ul>
+  <div class="callout callout-warn">
+    <strong>Validation:</strong> You cannot delete the last installment on a month. Delete the whole month instead.
+  </div>
+</div>
+
+<div class="section page-break">
+  <h3>7.3 — Family Registry</h3>
+  <p>Track families receiving welfare aid. Each family has a head, address, member count, and poverty level classification.</p>
+  <ul class="bullets">
+    <li><strong>Add Family</strong> — Click + Add Family. Fill in: Head Name, Address, Phone, Member Count, Poverty Level (Low / Medium / High).</li>
+    <li><strong>Family Donations</strong> — Each family has a Donations sub-section. Add donations with: Amount, Donation Type (Cash / Dry Ration / Zakat), Description, and Date.</li>
+    <li><strong>Filter</strong> by poverty level or search by head name.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.4 — Beneficiaries</h3>
+  <p>The most complex module. Manages aid applicants/recipients with detailed household data. Requires <code>beneficiaries</code> permission.</p>
+
+  <h4>Sub-sections in the Sidebar:</h4>
+  <ul class="bullets">
+    <li><strong>All Records</strong> — Table of all beneficiary records with search, filter by status and category, and bulk import/export via Excel (XLSX).</li>
+    <li><strong>Register New</strong> — Multi-field registration form with both male and female head details, income data, children data, and photo upload.</li>
+    <li><strong>Categories</strong> — Manage beneficiary category labels (create/edit/delete).</li>
+  </ul>
+
+  <h4>Beneficiary Form Fields Include:</h4>
+  <ul class="bullets">
+    <li>Application Number (auto or manual), Male Head full details (name, DOB, occupation, address, NIC, special qualifications)</li>
+    <li>Female Head details, Monthly income, Contact number, NIC</li>
+    <li>Children records: studying, dropped out, at university, abroad, other — each with name, DOB, grade/year, gender</li>
+    <li>Special needs, family problems, prior assistance history, photo</li>
+    <li>Status: pending → Active or rejected (with rejection reason)</li>
+    <li>Assessment notes for internal review</li>
+  </ul>
+
+  <h4>Status Workflow:</h4>
+  <div class="flex-row">
+    <span class="badge badge-amber">pending</span>
+    <span>→</span>
+    <span class="badge badge-green">Active</span>
+    <span>or</span>
+    <span class="badge badge-red">rejected</span>
+    <span>or</span>
+    <span class="badge badge-purple">deactivate</span>
+  </div>
+
+  <div class="callout callout-info mt-2">
+    <strong>Bulk Import:</strong> Use the <em>Import XLSX</em> button to upload an Excel file of beneficiary records. The system maps columns to the schema automatically. Export the current list with <em>Export XLSX</em>.
+  </div>
+</div>
+
+<div class="section page-break">
+  <h3>7.5 — Subscriptions &amp; Payments</h3>
+  <p>View and manage monthly subscription records across all members. This is a global view (not per-member). For per-member history, use the Member History Modal in the Members module.</p>
+  <ul class="bullets">
+    <li>Filter by member name, month, payment status (Paid / Partial / Unpaid).</li>
+    <li>Add a subscription: select member, enter month, expected amount, payment method, date.</li>
+    <li>Mark partial payments by entering the <em>Paid Amount</em> separately from the expected amount.</li>
+    <li>Advance payments can be flagged with the <em>Is Advance</em> toggle.</li>
+    <li>Export filtered list to CSV.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.6 — Donations</h3>
+  <p>Track all incoming donations. Two sub-types: <strong>External Donations</strong> (individual donors) and <strong>Family Donations</strong> (aid given to registered families).</p>
+
+  <h4>External Donations:</h4>
+  <ul class="bullets">
+    <li>Add donor: Name, Phone, Amount, Donation Type (Zakat / Sadaqah / Fitrana / Lillah / Other), Payment Method, Description, Date.</li>
+    <li>All records appear in the transactions ledger with type = <code>income</code>.</li>
+  </ul>
+
+  <h4>Family Donations:</h4>
+  <ul class="bullets">
+    <li>Select a registered family and log aid: Amount, Type (Cash / Dry Ration / Zakat), Description, Date.</li>
+    <li>Tracked per family in <code>family_donations</code> table.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.7 — Programs &amp; Courses</h3>
+  <p>Manage educational programs run by EDF. Requires <code>courses</code> permission for write operations.</p>
+
+  <h4>Programs (Courses):</h4>
+  <ul class="bullets">
+    <li>Create program: Title, Category (Quran / Skills / Bayan), Target Audience (Men / Women / Children), Max Capacity, Fee, Location, Duration, Description.</li>
+    <li>Assign a <strong>Form Template</strong> to collect custom application fields.</li>
+    <li>View enrolled applications count per program.</li>
+  </ul>
+
+  <h4>Batches:</h4>
+  <ul class="bullets">
+    <li>Each program can have multiple batches (e.g., Morning Batch, Evening Batch).</li>
+    <li>Batch fields: Name, Start Date, End Date, Instructor Name, Max Seats, Location, Status.</li>
+  </ul>
+
+  <h4>Applications:</h4>
+  <ul class="bullets">
+    <li>View all applications for a program. Filter by batch and status (Pending / Approved).</li>
+    <li>Approve or reject applications individually.</li>
+    <li>Custom form fields (from the form template) appear alongside standard applicant info.</li>
+  </ul>
+
+  <h4>App Customizer:</h4>
+  <ul class="bullets">
+    <li>Build custom application form templates using a drag-and-drop field builder.</li>
+    <li>Supported field types: Text, Number, Date, Select, Checkbox, Textarea.</li>
+    <li>Mark a template as default so all new programs use it automatically.</li>
+  </ul>
+</div>
+
+<div class="section page-break">
+  <h3>7.8 — Inventory &amp; Assets</h3>
+  <p>Track physical assets, equipment, and the library book collection.</p>
+  <ul class="bullets">
+    <li><strong>Add Item</strong> — Enter: Name, Category, Tracking Type, Serial Number, Quantity, Min Threshold (alert level), Condition, Purchase Price, Warranty Info, QR Code.</li>
+    <li><strong>Library Items</strong> — Additional fields: Author, Language, Subject, Library Type (public/restricted).</li>
+    <li><strong>Status Alerts</strong> — Items below minimum threshold are highlighted.</li>
+    <li>Search by name or serial number; filter by category and condition.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.9 — Documents &amp; Files</h3>
+  <p>Centralized file storage for organizational documents.</p>
+  <ul class="bullets">
+    <li><strong>Upload</strong> — Click <em>Upload Document</em>, select a file (max 200 MB). Forbidden types: <code>.exe</code>, <code>.sh</code>, <code>.bat</code>.</li>
+    <li><strong>Categories</strong> are auto-detected: PDF, Excel, Word, Presentation, Audio, Video, Image, Other.</li>
+    <li>Add an optional description per document.</li>
+    <li><strong>Download</strong> — Click the download icon on any document to retrieve the file.</li>
+    <li><strong>Delete</strong> — Click the delete icon. File is removed from both the database and the uploads folder.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.10 — Ramadan Token Distribution</h3>
+  <p>Manages Ramadan aid distribution to beneficiaries via numbered tokens. Requires <code>ramadan</code> permission.</p>
+
+  <h4>Workflow:</h4>
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body"><strong>Create a Distribution</strong> — Set Year, Title (e.g., "Ramadan 2026 Package"), Collection Date, Location, Voucher Value per token.</div></li>
+    <li><div class="step-num">2</div><div class="step-body"><strong>Assign Tokens</strong> — Bulk-assign tokens to beneficiaries within the distribution. Each beneficiary gets a unique token number.</div></li>
+    <li><div class="step-num">3</div><div class="step-body"><strong>Mark Collection</strong> — On the collection day, scan or select tokens and mark them as <em>Collected</em>. Uncollected entries can be marked <em>Absent</em>.</div></li>
+    <li><div class="step-num">4</div><div class="step-body"><strong>Review Summary</strong> — See counts: Total tokens, Collected, Pending, Absent.</div></li>
+  </ul>
+
+  <div class="callout callout-success">
+    <strong>Token Status Flow:</strong> <span class="badge badge-amber">pending</span> → <span class="badge badge-green">collected</span> or <span class="badge badge-red">absent</span>
+  </div>
+</div>
+
+<div class="section page-break">
+  <h3>7.11 — Volunteers</h3>
+  <p>Registry of volunteers who support EDF activities.</p>
+  <ul class="bullets">
+    <li><strong>Add Volunteer</strong> — Name, Phone, Email, Skills (Teaching / Distribution / Admin / Events), Status.</li>
+    <li>Search by name; filter by skill or status.</li>
+    <li>Edit or delete volunteer records.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.12 — User Accounts (Admin Only)</h3>
+  <p>Visible only to <strong>admin</strong> role users. Manage staff accounts and their system access.</p>
+
+  <h4>User List:</h4>
+  <ul class="bullets">
+    <li>Shows all users with: Name, Role, Email, Status, and a <strong>live online indicator</strong> (green dot = active in last 90 seconds).</li>
+    <li>Click a user to expand their permissions and details.</li>
+  </ul>
+
+  <h4>Creating a User:</h4>
+  <ul class="steps">
+    <li><div class="step-num">1</div><div class="step-body">Click <strong>+ New User</strong>.</div></li>
+    <li><div class="step-num">2</div><div class="step-body">Fill in: Username, Full Name, Email, Password, Role.</div></li>
+    <li><div class="step-num">3</div><div class="step-body">Assign module permissions using the checkbox grid.</div></li>
+    <li><div class="step-num">4</div><div class="step-body">Click <strong>Create User</strong>. Password is hashed immediately — it is never stored in plain text.</div></li>
+  </ul>
+
+  <h4>Account Actions:</h4>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Action</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Block User</td><td>Sets user status to <code>blocked</code>. User is immediately rejected on next API call and cookie is cleared.</td></tr>
+      <tr><td>Unblock User</td><td>Restores status to <code>active</code>.</td></tr>
+      <tr><td>Force Logout</td><td>Sets <code>force_logout_at</code> timestamp. User's active session becomes invalid immediately, even if their JWT has not expired.</td></tr>
+      <tr><td>Edit Permissions</td><td>Toggle any of the 9 module permissions on or off per user.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="section page-break">
+  <h3>7.13 — Front Desk (Public Website Management)</h3>
+  <p>Visible to admin and designated staff. Control all content displayed on the public-facing website (<code>index.html</code>, <code>gallery.html</code>, <code>about.html</code>).</p>
+
+  <h4>Gallery Images:</h4>
+  <ul class="bullets">
+    <li>Upload images with a caption, category, display year, and sort order.</li>
+    <li>Toggle image visibility (is_active on/off).</li>
+    <li>Reorder images by changing sort_order values.</li>
+  </ul>
+
+  <h4>Site Content (Page Text):</h4>
+  <ul class="bullets">
+    <li>Edit key text blocks on each page (home, about, gallery) using the content editor.</li>
+    <li>Changes are stored in <code>site_content</code> as key-value pairs and rendered by the public pages via the API.</li>
+  </ul>
+
+  <h4>Team Members:</h4>
+  <ul class="bullets">
+    <li>Add team member profiles: Name, Role, Bio. An avatar color and letter are auto-assigned.</li>
+    <li>Reorder team members using sort_order.</li>
+  </ul>
+
+  <h4>Partners &amp; Timeline:</h4>
+  <ul class="bullets">
+    <li><strong>Partners</strong> — List of partner organization names displayed on the about page.</li>
+    <li><strong>Timeline</strong> — Historical milestones (year, label, title, description) shown on the about page in chronological order.</li>
+  </ul>
+
+  <h4>Logo Upload:</h4>
+  <ul class="bullets">
+    <li>Upload a new site logo via <em>Settings → Logo Upload</em>. The logo is stored in <code>/public/uploads/</code> and a cache-busting query string is appended automatically.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.14 — System Logs</h3>
+  <p>Full audit trail of all activity in the system. Accessible from the sidebar.</p>
+  <ul class="bullets">
+    <li><strong>Stats Panel</strong> — Total log entries, today's entries, error count, active users, actions breakdown chart.</li>
+    <li><strong>Log Table</strong> — Filter by: user, entity (Members/Beneficiaries/etc.), action (CREATE/UPDATE/DELETE), date range.</li>
+    <li><strong>Login Events</strong> — Separate tab showing login/logout history with IP addresses and timestamps.</li>
+    <li>Each log entry shows: Who did it, What they did, What was affected (entity + ID), When, and from which IP.</li>
+    <li>Logs can be exported or cleared (admin only).</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>7.15 — Settings</h3>
+  <p>System-wide configuration. Admin access required for most operations.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Setting</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Maintenance Mode</td><td>Toggle ON to redirect all public pages to the maintenance page. Admin dashboard and login remain accessible.</td></tr>
+      <tr><td>Logo Upload</td><td>Replace the site logo (PNG/SVG recommended). Takes effect immediately on all pages.</td></tr>
+      <tr><td>Favicon Upload</td><td>Replace the browser tab icon.</td></tr>
+      <tr><td>Theme (Dark/Light)</td><td>Per-user preference stored in localStorage. No server setting.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 8 — PUBLIC WEBSITE
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <h2>Public Website Pages</h2>
+  </div>
+  <p>The public website (<code>/</code>, <code>/about</code>, <code>/gallery</code>) is a separate experience from the admin dashboard. It uses a completely different visual design with animations.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Page</th><th>URL</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Home</td><td><code>/</code></td><td>Marketing homepage with hero animation (GSAP + Three.js 3D scene), grain overlay effect, smooth scroll, SVG morphing (Snap.svg). Fetches site content from API.</td></tr>
+      <tr><td>About</td><td><code>/about</code></td><td>Foundation history, team members, partners, origin paragraphs, and timeline — all fetched live from <code>/api/frontdesk/*</code> endpoints.</td></tr>
+      <tr><td>Gallery</td><td><code>/gallery</code></td><td>Photo gallery filtered by year. Images served from <code>/uploads/</code> directory.</td></tr>
+      <tr><td>Login</td><td><code>/login</code></td><td>Admin login form. On success, redirects to <code>/dashboard</code>.</td></tr>
+      <tr><td>Maintenance</td><td><code>/maintenance</code></td><td>Static page shown when maintenance mode is active.</td></tr>
+      <tr><td>404</td><td>any unknown path</td><td>Custom not-found page.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Public Site Design System</h3>
+  <ul class="bullets">
+    <li><strong>Fonts:</strong> Playfair Display (headings), Plus Jakarta Sans (body), Bebas Neue (display), Great Vibes (decorative) — all from Google Fonts</li>
+    <li><strong>Colors:</strong> Deep green brand (<code>#295742</code>), cream background (<code>#F9F4EC</code>), amber accents (<code>#E8A020</code>), navy (<code>#0C1A34</code>)</li>
+    <li><strong>Effects:</strong> Procedural grain overlay (SVG), custom cursor (dot + ring), GSAP scroll-triggered animations, Three.js 3D background, smooth cubic-bezier transitions</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 9 — SECURITY & MIDDLEWARE
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <h2>Security &amp; Middleware</h2>
+  </div>
+
+  <h3>Middleware Stack (in order)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Middleware</th><th>Runs On</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>maintenanceGuard</td><td>All requests</td><td>Redirects public pages to maintenance page when maintenance mode is active.</td></tr>
+      <tr><td>express.json()</td><td>All requests</td><td>Parses JSON request bodies.</td></tr>
+      <tr><td>express.urlencoded()</td><td>All requests</td><td>Parses form-encoded request bodies.</td></tr>
+      <tr><td>cookie-parser</td><td>All requests</td><td>Makes cookies available as <code>req.cookies</code>.</td></tr>
+      <tr><td>cors()</td><td>All requests</td><td>Adds CORS headers to allow cross-origin requests.</td></tr>
+      <tr><td>express.static()</td><td>All requests</td><td>Serves files from <code>/public</code> directory.</td></tr>
+      <tr><td>activityLogger</td><td>/api/* only</td><td>Logs all API activity to <code>system_logs</code> table with user, action, entity, and IP.</td></tr>
+      <tr><td>userGuard</td><td>/api/* only</td><td>Verifies JWT; checks block status and force-logout timestamp; updates last_seen.</td></tr>
+      <tr><td>permissionGuard</td><td>/api/* POST/PUT/DELETE</td><td>Checks module-level permission for non-admin roles before any mutation.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Security Measures</h3>
+  <ul class="bullets">
+    <li><strong>Password Hashing</strong> — All passwords stored as bcrypt hashes. Plain text passwords are never persisted.</li>
+    <li><strong>httpOnly JWT Cookies</strong> — Tokens are not accessible to JavaScript, protecting against XSS-based token theft.</li>
+    <li><strong>Role-Based Access Control</strong> — admin and super_user bypass permission checks; all other roles require explicit grants.</li>
+    <li><strong>Account Blocking</strong> — Blocked users are rejected immediately at the middleware level, not just at login.</li>
+    <li><strong>Force Logout</strong> — Remote session invalidation via timestamp comparison, works even on existing valid tokens.</li>
+    <li><strong>IP Logging</strong> — All API calls and login events log the client IP for audit purposes.</li>
+    <li><strong>File Upload Restrictions</strong> — Executable file types (<code>.exe</code>, <code>.sh</code>, <code>.bat</code>) are blocked on document uploads.</li>
+    <li><strong>XSS Protection</strong> — User-controlled strings rendered into <code>innerHTML</code> are sanitized with <code>escapeHtml()</code>.</li>
+    <li><strong>Full Audit Trail</strong> — Every CRUD operation is logged with the user, entity, action, and timestamp via <code>activityLogger</code>.</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SECTION 10 — FILE UPLOADS & STORAGE
+════════════════════════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <h2>File Uploads &amp; Storage</h2>
+  </div>
+
+  <p>All uploaded files are stored locally in the <code>public/uploads/</code> directory, which is served as static content. The <strong>multer</strong> package handles multipart form data.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Upload Type</th><th>Endpoint</th><th>Stored Path</th><th>Max Size</th><th>Restrictions</th></tr></thead>
+    <tbody>
+      <tr><td>Gallery Images</td><td><code>POST /api/frontdesk/gallery-images/upload</code></td><td><code>/public/uploads/gallery/</code></td><td>—</td><td>Image files only</td></tr>
+      <tr><td>Documents</td><td><code>POST /api/documents/upload</code></td><td><code>/public/uploads/documents/</code></td><td>200 MB</td><td>No .exe/.sh/.bat</td></tr>
+      <tr><td>Beneficiary Photo</td><td>Inside beneficiary POST/PUT</td><td><code>/public/uploads/photos/</code></td><td>—</td><td>Image files</td></tr>
+      <tr><td>Site Logo</td><td><code>POST /api/settings/</code></td><td><code>/public/uploads/</code></td><td>—</td><td>Image files</td></tr>
+      <tr><td>Favicon</td><td><code>POST /api/settings/</code></td><td><code>/public/uploads/</code></td><td>—</td><td><code>.ico</code> files</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout callout-warn">
+    <strong>Production Note:</strong> For production deployments with significant traffic, consider moving file storage to an object storage service (e.g., AWS S3, Cloudflare R2). The current local storage approach is suitable for small-scale deployments.
+  </div>
+
+  <h3>File Naming</h3>
+  <p>Uploaded files are renamed using a <strong>timestamp + random suffix</strong> pattern (e.g., <code>1745000000000-123456789.jpg</code>) to prevent filename collisions and to avoid exposing original filenames in the URL. The original filename is stored in the database as <code>original_name</code>.</p>
+</div>
+
+<!-- Footer -->
+<div style="margin-top: 60px; padding: 24px 0; border-top: 2px solid #e5e7eb; text-align: center;">
+  <p style="color: #9ca3af; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin: 0;">
+    EDF Admin System Documentation · Education &amp; Development Foundation · 2026
+  </p>
+  <p style="color: #d1d5db; font-size: 11px; margin: 6px 0 0;">
+    For internal use only. Generated 2026-04-27.
+  </p>
+</div>
+
+</div><!-- /.page-wrap -->
+</body>
+</html>
