@@ -1,1 +1,8 @@
 .worktrees/
+node_modules/
+.env
+src/db/database.sqlite
+public/uploads/gallery/*
+public/uploads/logo/*
+!public/uploads/gallery/.gitkeep
+!public/uploads/logo/.gitkeep

@@ -3,10 +3,21 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { initDb } = require('./src/db/database');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Security headers
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// Rate limiting
+const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, message: { message: 'Too many attempts. Try again in 15 minutes.' } });
+app.use('/api/auth/login', authLimiter);
+app.use('/api', apiLimiter);
 
 // Middleware
 app.use(express.json());
