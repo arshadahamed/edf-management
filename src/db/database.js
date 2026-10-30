@@ -45,6 +45,15 @@ async function initDb() {
     try { await db.run("ALTER TABLE members ADD COLUMN member_type TEXT DEFAULT 'executive'"); } catch (_) {}
     try { await db.run("ALTER TABLE members ADD COLUMN monthly_subscription REAL DEFAULT 0"); } catch (_) {}
     try { await db.run("ALTER TABLE members ADD COLUMN status TEXT DEFAULT 'active'"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN photo_url TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN membership_no TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN dob DATE"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN whatsapp TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN designation TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN account_holder_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN emergency_contact_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN emergency_contact_phone TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE members ADD COLUMN notes TEXT"); } catch (_) {}
 
     // Migrate subscriptions table: support partial payments and payment methods
     try { await db.run("ALTER TABLE subscriptions ADD COLUMN payment_method TEXT DEFAULT 'cash'"); } catch (_) {}
@@ -70,6 +79,56 @@ async function initDb() {
     try { await db.run("ALTER TABLE beneficiary_children_dropout ADD COLUMN gender TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE beneficiary_children_university ADD COLUMN gender TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE beneficiary_children_abroad ADD COLUMN gender TEXT"); } catch (_) {}
+
+    // Migrate families table: add extended household, vulnerability, and demographic columns
+    try { await db.run("ALTER TABLE families ADD COLUMN family_code TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN nic_number TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN head_gender TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN head_dob DATE"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN head_age INTEGER"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN head_occupation TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN marital_status TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN spouse_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN spouse_nic TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN spouse_occupation TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN whatsapp TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN city TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN gn_division TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN adults_count INTEGER DEFAULT 1"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN children_count INTEGER DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN elderly_count INTEGER DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN disabled_count INTEGER DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN dependents_json TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN monthly_income REAL DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN monthly_expenses REAL DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN housing_type TEXT DEFAULT 'own'"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN aid_category TEXT DEFAULT 'general'"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN vulnerability_tags TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN bank_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN bank_branch TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN account_number TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN account_holder_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN priority_score INTEGER DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN verified_by TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN verification_date DATE"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN notes TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE families ADD COLUMN photo_url TEXT"); } catch (_) {}
+
+    // Migrate family_donations table: support payment method, reference no, and distributor
+    try { await db.run("ALTER TABLE family_donations ADD COLUMN payment_method TEXT DEFAULT 'cash'"); } catch (_) {}
+    try { await db.run("ALTER TABLE family_donations ADD COLUMN reference_no TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE family_donations ADD COLUMN distributed_by TEXT"); } catch (_) {}
+
+    // Migrate ramadan_distributions & ramadan_tokens tables: extended campaign & collector fields
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN package_type TEXT DEFAULT 'dry_ration'"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN hijri_year TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN collection_time TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN coordinator_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN coordinator_phone TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN target_quota INTEGER DEFAULT 0"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN package_items TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN collector_name TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN collector_nic TEXT"); } catch (_) {}
 
     await db.exec(`
         CREATE TABLE IF NOT EXISTS users (
@@ -106,6 +165,15 @@ async function initDb() {
             member_type TEXT DEFAULT 'executive', -- 'founder', 'executive'
             monthly_subscription REAL DEFAULT 0,
             status TEXT DEFAULT 'active', -- 'active', 'deactivate'
+            photo_url TEXT,
+            membership_no TEXT,
+            dob DATE,
+            whatsapp TEXT,
+            designation TEXT,
+            account_holder_name TEXT,
+            emergency_contact_name TEXT,
+            emergency_contact_phone TEXT,
+            notes TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (sibling_id) REFERENCES members(id)
         );
@@ -132,6 +200,11 @@ async function initDb() {
             payment_method TEXT DEFAULT 'cash', -- 'cash','cheque','bank_transfer','online','other'
             notes TEXT,
             is_advance INTEGER DEFAULT 0, -- 1 = advance payment
+            reference_number TEXT,
+            bank_name TEXT,
+            bank_code TEXT,
+            cheque_date DATE,
+            cheque_image TEXT,
             payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (member_id) REFERENCES members(id)
         );
@@ -142,6 +215,10 @@ async function initDb() {
             amount REAL NOT NULL,
             payment_method TEXT DEFAULT 'cash',
             reference_number TEXT,    -- Cheque no / transaction ref
+            bank_name TEXT,
+            bank_code TEXT,
+            cheque_date DATE,
+            cheque_image TEXT,
             notes TEXT,
             payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (subscription_id) REFERENCES subscriptions(id) ON DELETE CASCADE
@@ -445,6 +522,26 @@ async function initDb() {
         await db.run('ALTER TABLE courses ADD COLUMN form_template_id INTEGER REFERENCES form_templates(id)');
     } catch (e) {
         // Column probably already exists
+    }
+
+    // Subscriptions payment channel details migrations
+    const subMigrations = [
+        "ALTER TABLE subscriptions ADD COLUMN reference_number TEXT",
+        "ALTER TABLE subscriptions ADD COLUMN bank_name TEXT",
+        "ALTER TABLE subscriptions ADD COLUMN bank_code TEXT",
+        "ALTER TABLE subscriptions ADD COLUMN cheque_date DATE",
+        "ALTER TABLE subscriptions ADD COLUMN cheque_image TEXT",
+        "ALTER TABLE subscription_payments ADD COLUMN bank_name TEXT",
+        "ALTER TABLE subscription_payments ADD COLUMN bank_code TEXT",
+        "ALTER TABLE subscription_payments ADD COLUMN cheque_date DATE",
+        "ALTER TABLE subscription_payments ADD COLUMN cheque_image TEXT"
+    ];
+    for (const sql of subMigrations) {
+        try {
+            await db.run(sql);
+        } catch (_) {
+            // column already exists
+        }
     }
 
     // Ramadan distributions and tokens tables

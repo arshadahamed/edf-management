@@ -8,7 +8,9 @@ const rateLimit = require('express-rate-limit');
 const { initDb } = require('./src/db/database');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3000;
+// Trust the reverse proxy (required when running behind a proxy)
+app.set('trust proxy', 1);
 
 // Security headers
 app.use(helmet({ contentSecurityPolicy: false }));
