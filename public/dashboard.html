@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | EDF Management System</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/customizer.css">
-    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/customizer.css">
+    <link rel="stylesheet" href="/css/settings.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script src="/js/i18n.js"></script>
@@ -350,194 +350,1736 @@
     </style>
 
     <style id="ramadan-tok-css">
-    /* ── Ramadan Token Modal ─────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       RAMADAN TOKEN DISTRIBUTION — PAGE, CAMPAIGN MODAL & TOKENS CONSOLE SUITE
+       ═══════════════════════════════════════════════════════════════════════════ */
+
+    /* ── 1. Ramadan Page Hero Header ───────────────────────────────────────── */
+    .rd-hero-bar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem;
+        margin-bottom: 1.35rem;
+        flex-wrap: wrap;
+    }
+    .rd-hero-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+    }
+    .rd-hero-title {
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+    .rd-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.72rem;
+        border-radius: 99px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        background: rgba(99, 102, 241, 0.12);
+        color: #6366f1;
+        border: 1px solid rgba(99, 102, 241, 0.28);
+    }
+    .rd-hero-sub {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0.25rem 0 0;
+    }
+    .rd-hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+    }
+
+    /* ── 2. 5-Card KPI Analytics Grid (Ramadan Page) ───────────────────────── */
+    .rd-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.9rem;
+        margin-bottom: 1.25rem;
+    }
+    @media (max-width: 1280px) {
+        .rd-kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .rd-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+        .rd-kpi-grid { grid-template-columns: 1fr; }
+    }
+    .rd-kpi-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1rem 1.15rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 0.65rem;
+        transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .rd-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--text-muted);
+        box-shadow: var(--shadow-md);
+    }
+    .rd-kpi-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+    .rd-kpi-label {
+        font-size: 0.71rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+    }
+    .rd-kpi-val {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1.15;
+        font-variant-numeric: tabular-nums;
+    }
+    .rd-kpi-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .rd-kpi-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        padding-top: 0.45rem;
+        border-top: 1px dashed var(--border-color);
+    }
+    .rd-mini-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.12rem 0.48rem;
+        border-radius: 99px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        background: var(--input-bg);
+        color: var(--text-main);
+        border: 1px solid var(--border-color);
+    }
+
+    /* ── 3. Multi-Dimensional Filter & Search Panel (Ramadan Page) ─────────── */
+    .rd-filter-panel {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 0.9rem 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .rd-toolbar-top {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+    }
+    .rd-search-box {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 11px;
+        padding: 0.42rem 0.8rem;
+        flex: 1;
+        min-width: 240px;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .rd-search-box:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--glow-bg);
+    }
+    .rd-search-box input {
+        border: none;
+        background: transparent;
+        color: var(--text-main);
+        font-size: 0.83rem;
+        font-family: inherit;
+        outline: none;
+        width: 100%;
+    }
+    .rd-pill-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 11px;
+        padding: 0.22rem;
+        flex-wrap: wrap;
+    }
+    .rd-pill-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32rem;
+        padding: 0.32rem 0.68rem;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 0.76rem;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.14s ease;
+        white-space: nowrap;
+    }
+    .rd-pill-btn:hover { color: var(--text-main); }
+    .rd-pill-btn.active {
+        background: var(--bg-card);
+        color: var(--text-main);
+        box-shadow: var(--shadow-sm);
+    }
+    .rd-pill-count {
+        font-size: 0.66rem;
+        font-weight: 800;
+        padding: 0.05rem 0.38rem;
+        border-radius: 99px;
+        background: var(--input-bg);
+        color: var(--text-muted);
+    }
+    .rd-pill-btn.active .rd-pill-count {
+        background: var(--primary);
+        color: var(--bg-main);
+    }
+    .rd-toolbar-adv {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+        padding-top: 0.65rem;
+        border-top: 1px dashed var(--border-color);
+    }
+    .rd-filter-select {
+        padding: 0.38rem 0.68rem;
+        border-radius: 9px;
+        border: 1px solid var(--border-color);
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: 0.77rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.15s ease;
+    }
+    .rd-filter-select:focus { border-color: var(--primary); }
+    .rd-filter-select.active-select {
+        border-color: var(--primary);
+        background: var(--glow-bg);
+        font-weight: 700;
+    }
+    .rd-reset-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.36rem 0.68rem;
+        border-radius: 9px;
+        border: 1px solid rgba(239, 68, 68, 0.28);
+        background: rgba(239, 68, 68, 0.08);
+        color: #ef4444;
+        font-size: 0.74rem;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .rd-reset-btn:hover { background: rgba(239, 68, 68, 0.16); }
+
+    /* Bulk Selection Bar */
+    .rd-bulk-bar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.65rem 1rem;
+        margin-bottom: 0.85rem;
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 12px;
+        flex-wrap: wrap;
+    }
+    .rd-bulk-bar.visible { display: flex; }
+
+    /* Package Type Badges */
+    .rd-pkg-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.28rem;
+        padding: 0.16rem 0.55rem;
+        border-radius: 6px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .rd-pkg-dry_ration   { background: rgba(16, 185, 129, 0.11); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .rd-pkg-cash_voucher { background: rgba(59, 130, 246, 0.11); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25); }
+    .rd-pkg-zakat_pack   { background: rgba(245, 158, 11, 0.12); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.28); }
+    .rd-pkg-iftar_kit    { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.28); }
+    .rd-pkg-eid_gift     { background: rgba(236, 72, 153, 0.11); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.25); }
+    .rd-pkg-mixed        { background: rgba(99, 102, 241, 0.11); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.25); }
+
+    /* Campaign Card Grid View */
+    .rd-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 1.05rem;
+    }
+    .rd-dist-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        padding: 1.15rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 0.9rem;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .rd-dist-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--text-muted);
+    }
+
+    /* Distribution Pagination Bar */
+    .rd-dist-pagination-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+    }
+
+    /* ── 4. New / Edit Distribution Modal (#ramadanDistModal) ──────────────── */
+    #ramadanDistModal .rd-dist-modal-shell {
+        max-width: 860px;
+        width: 95%;
+        max-height: 92vh;
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
+        padding: 0;
+    }
+    #ramadanDistModal #ramadanDistForm {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        margin: 0;
+    }
+    .rd-dist-modal-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.15rem 1.5rem;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+    .rd-dist-live-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.85rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, rgba(55, 48, 163, 0.07), rgba(16, 185, 129, 0.06));
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+    .rd-dist-modal-body {
+        padding: 1.25rem 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+    .rd-dist-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.1rem 1.25rem;
+    }
+    .rd-dist-sec-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+        padding-bottom: 0.65rem;
+        border-bottom: 1px dashed var(--border-color);
+        flex-wrap: wrap;
+    }
+    .rd-dist-sec-title {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .rd-dist-sec-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        flex-shrink: 0;
+    }
+    .rd-pkg-type-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.55rem;
+        margin-top: 0.35rem;
+    }
+    @media (max-width: 720px) {
+        .rd-pkg-type-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .rd-pkg-type-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        padding: 0.65rem 0.45rem;
+        border-radius: 12px;
+        border: 1.5px solid var(--border-color);
+        background: var(--input-bg);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-align: center;
+        font-family: inherit;
+    }
+    .rd-pkg-type-card:hover {
+        border-color: var(--text-muted);
+        color: var(--text-main);
+    }
+    .rd-pkg-type-card.active {
+        border-color: #6366f1;
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--text-main);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
+    }
+    .rd-item-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
+    }
+    .rd-item-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.28rem;
+        padding: 0.25rem 0.62rem;
+        border-radius: 99px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        border: 1px solid var(--border-color);
+        background: var(--input-bg);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.14s ease;
+        font-family: inherit;
+    }
+    .rd-item-chip:hover {
+        border-color: var(--primary);
+        color: var(--text-main);
+    }
+    .rd-item-chip.selected {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.35);
+        color: #10b981;
+        font-weight: 700;
+    }
+    .rd-assign-mode-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.65rem;
+    }
+    @media (max-width: 640px) {
+        .rd-assign-mode-grid { grid-template-columns: 1fr; }
+    }
+    .rd-assign-mode-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.75rem 0.9rem;
+        border-radius: 12px;
+        border: 1.5px solid var(--border-color);
+        background: var(--input-bg);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-align: left;
+    }
+    .rd-assign-mode-card:hover { border-color: var(--text-muted); }
+    .rd-assign-mode-card.active {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.08);
+    }
+    .rd-dist-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.95rem 1.5rem;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border-color);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+
+    /* ── 5. Ramadan Tokens Modal (#ramadanTokensModal) ────────────────────── */
     #ramadanTokensModal .modal-content {
-        max-width: 1020px; width: 96%; max-height: 95vh;
-        border-radius: 24px; display: flex; flex-direction: column; overflow: hidden;
+        max-width: 1180px;
+        width: 96%;
+        max-height: 94vh;
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0;
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
     }
 
     /* Header */
     .rd-tok-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border-color);
-        flex-shrink: 0; gap: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
-    .rd-tok-header-left { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+    .rd-tok-header-left {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        min-width: 0;
+    }
     .rd-tok-icon {
-        width: 38px; height: 38px; border-radius: 11px;
-        background: linear-gradient(135deg,#3730a3,#6366f1);
-        display: flex; align-items: center; justify-content: center;
-        color: #fff; flex-shrink: 0;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3730a3, #6366f1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
-    .rd-tok-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin: 0; }
-    .rd-tok-sub   { font-size: 0.76rem; color: var(--text-muted); margin: 0.15rem 0 0; }
-    .rd-tok-header-actions { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+    .rd-tok-title {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--text-main);
+        margin: 0;
+    }
+    .rd-tok-sub {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        margin: 0.2rem 0 0;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+    }
+    .rd-tok-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
     .rd-hdr-btn {
-        display: inline-flex; align-items: center; gap: 0.35rem;
-        padding: 0.42rem 0.85rem; border: 1px solid var(--border-color);
-        border-radius: 9px; background: var(--bg-card); color: var(--text-main);
-        font-size: 0.77rem; font-weight: 600; cursor: pointer; font-family: inherit;
-        white-space: nowrap; transition: background .15s, border-color .15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.42rem 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: 9px;
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: 0.76rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: all 0.15s ease;
     }
-    .rd-hdr-btn:hover { background: var(--input-bg); border-color: var(--text-muted); }
+    .rd-hdr-btn:hover {
+        background: var(--border-color);
+        border-color: var(--text-muted);
+    }
+    .rd-hdr-btn-primary {
+        background: linear-gradient(135deg, #3730a3, #6366f1);
+        color: #fff;
+        border-color: transparent;
+    }
+    .rd-hdr-btn-primary:hover {
+        opacity: 0.92;
+        background: linear-gradient(135deg, #312e81, #4f46e5);
+        color: #fff;
+    }
+    .rd-hdr-btn-emerald {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    .rd-hdr-btn-emerald:hover {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: #10b981;
+    }
 
-    /* Stats bar */
+    /* Stats bar inside Tokens Modal */
     .rd-tok-stats-bar {
-        display: flex; align-items: center; gap: 0.6rem;
-        padding: 0.75rem 1.5rem; background: var(--input-bg);
-        border-bottom: 1px solid var(--border-color); flex-shrink: 0; flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(120px, 1fr)) 1.6fr;
+        gap: 0.65rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--input-bg);
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        align-items: stretch;
+    }
+    @media (max-width: 900px) {
+        .rd-tok-stats-bar { grid-template-columns: repeat(2, 1fr); }
     }
     .rd-stat-pill {
-        display: flex; flex-direction: column; align-items: center;
-        padding: 0.35rem 0.9rem; border-radius: 10px;
-        border: 1px solid var(--border-color); background: var(--bg-card); min-width: 66px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0.5rem 0.85rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-card);
+        cursor: pointer;
+        transition: transform 0.14s ease, border-color 0.14s ease;
     }
-    .rd-stat-num { font-size: 1.2rem; font-weight: 800; line-height: 1; }
-    .rd-stat-lbl { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-top: 2px; }
-    .rd-stat-total    .rd-stat-num { color: var(--text-main); }
-    .rd-stat-total    .rd-stat-lbl { color: var(--text-muted); }
-    .rd-stat-collected{ border-color:rgba(16,185,129,.25); background:rgba(16,185,129,.05); }
-    .rd-stat-collected .rd-stat-num,.rd-stat-collected .rd-stat-lbl { color:#10b981; }
-    .rd-stat-pending  { border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.05); }
-    .rd-stat-pending  .rd-stat-num,.rd-stat-pending  .rd-stat-lbl { color:#f59e0b; }
-    .rd-stat-absent   { border-color:rgba(239,68,68,.25);  background:rgba(239,68,68,.05); }
-    .rd-stat-absent   .rd-stat-num,.rd-stat-absent   .rd-stat-lbl { color:#ef4444; }
-    .rd-progress-wrap { flex:1; display:flex; align-items:center; gap:.625rem; min-width:130px; }
-    .rd-progress-track { flex:1; height:7px; background:var(--border-color); border-radius:4px; overflow:hidden; }
-    .rd-progress-fill  { height:100%; background:#10b981; border-radius:4px; transition:width .4s ease; width:0%; }
-    .rd-progress-pct   { font-size:.78rem; font-weight:700; color:#10b981; white-space:nowrap; min-width:34px; text-align:right; }
+    .rd-stat-pill:hover {
+        transform: translateY(-1px);
+        border-color: var(--text-muted);
+    }
+    .rd-stat-num { font-size: 1.25rem; font-weight: 800; line-height: 1.1; }
+    .rd-stat-lbl { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .rd-stat-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; font-weight: 600; }
+    .rd-stat-total .rd-stat-num { color: var(--text-main); }
+    .rd-stat-total .rd-stat-lbl { color: var(--text-muted); }
+    .rd-stat-collected { border-color: rgba(16, 185, 129, .28); background: rgba(16, 185, 129, .05); }
+    .rd-stat-collected .rd-stat-num, .rd-stat-collected .rd-stat-lbl { color: #10b981; }
+    .rd-stat-pending { border-color: rgba(245, 158, 11, .28); background: rgba(245, 158, 11, .05); }
+    .rd-stat-pending .rd-stat-num, .rd-stat-pending .rd-stat-lbl { color: #f59e0b; }
+    .rd-stat-absent { border-color: rgba(239, 68, 68, .28); background: rgba(239, 68, 68, .05); }
+    .rd-stat-absent .rd-stat-num, .rd-stat-absent .rd-stat-lbl { color: #ef4444; }
+    .rd-progress-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.35rem;
+        padding: 0.5rem 0.9rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-card);
+    }
+    .rd-progress-track {
+        width: 100%;
+        height: 8px;
+        background: var(--border-color);
+        border-radius: 99px;
+        overflow: hidden;
+        display: flex;
+    }
+    .rd-progress-fill {
+        height: 100%;
+        background: #10b981;
+        transition: width .4s ease;
+        width: 0%;
+    }
+    .rd-progress-absent-fill {
+        height: 100%;
+        background: #ef4444;
+        transition: width .4s ease;
+        width: 0%;
+    }
+    .rd-progress-pct {
+        font-size: .82rem;
+        font-weight: 800;
+        color: #10b981;
+        white-space: nowrap;
+    }
+
+    /* Collapsible Assign Beneficiaries Drawer inside Tokens Modal */
+    .rd-assign-drawer {
+        display: none;
+        flex-direction: column;
+        gap: 0.65rem;
+        padding: 0.85rem 1.5rem;
+        background: rgba(99, 102, 241, 0.05);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.25);
+        flex-shrink: 0;
+        max-height: 250px;
+    }
+    .rd-assign-drawer.open { display: flex; }
+    .rd-assign-list {
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 0.5rem;
+        max-height: 155px;
+        padding-right: 0.25rem;
+    }
+    .rd-unassigned-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.45rem 0.7rem;
+        border-radius: 10px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        font-size: 0.78rem;
+    }
 
     /* Verify panel */
     .rd-verify-panel {
-        display: flex; align-items: center; gap: .625rem;
-        padding: .75rem 1.5rem; border-bottom: 1px solid var(--border-color);
-        background: var(--bg-card); flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: .625rem;
+        padding: .65rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-card);
+        flex-shrink: 0;
+        flex-wrap: wrap;
     }
     .rd-verify-icon {
-        width:34px; height:34px; border-radius:9px;
-        background:linear-gradient(135deg,#3730a3,#6366f1);
-        display:flex; align-items:center; justify-content:center;
-        color:#fff; flex-shrink:0;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #3730a3, #6366f1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        flex-shrink: 0;
     }
-    .rd-verify-field { flex:1; }
+    .rd-verify-field {
+        flex: 1;
+        min-width: 220px;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
     .rd-verify-input {
-        width:100%; padding:.55rem .875rem;
-        border:1.5px solid var(--border-color); border-radius:9px;
-        background:var(--input-bg); color:var(--text-main);
-        font-size:.875rem; font-family:inherit; outline:none;
-        transition:border-color .2s, box-shadow .2s;
+        width: 100%;
+        padding: .5rem 2rem .5rem .875rem;
+        border: 1.5px solid var(--border-color);
+        border-radius: 9px;
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: .84rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
     }
-    .rd-verify-input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.1); }
+    .rd-verify-input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, .1);
+    }
     .rd-verify-btn {
-        display:inline-flex; align-items:center; gap:.4rem;
-        padding:.55rem 1.1rem;
-        background:linear-gradient(135deg,#3730a3,#6366f1);
-        color:#fff; border:none; border-radius:9px;
-        font-size:.83rem; font-weight:600; cursor:pointer; font-family:inherit;
-        white-space:nowrap; transition:opacity .15s;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .5rem 1.05rem;
+        background: linear-gradient(135deg, #3730a3, #6366f1);
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        font-size: .8rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: opacity .15s;
     }
-    .rd-verify-btn:hover { opacity:.88; }
+    .rd-verify-btn:hover { opacity: .9; }
+
+    .rd-hdr-btn-camera {
+        background: rgba(14, 165, 233, 0.12);
+        color: #0284c7;
+        border-color: rgba(14, 165, 233, 0.35);
+    }
+    .rd-hdr-btn-camera:hover {
+        background: rgba(14, 165, 233, 0.22);
+        border-color: #0284c7;
+    }
+    .rd-hdr-btn-camera.active {
+        background: #0284c7;
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 0 10px rgba(14, 165, 233, 0.4);
+    }
+
+    /* Scanner switches */
+    .rd-scanner-switches {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+    .rd-toggle-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.36rem 0.65rem;
+        border: 1px solid var(--border-color);
+        border-radius: 99px;
+        background: var(--input-bg);
+        color: var(--text-muted);
+        font-size: 0.73rem;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.15s ease;
+    }
+    .rd-toggle-chip input[type="checkbox"] {
+        width: 12px;
+        height: 12px;
+        accent-color: #6366f1;
+        cursor: pointer;
+        margin: 0;
+    }
+    .rd-toggle-chip:hover {
+        border-color: var(--text-muted);
+        color: var(--text-main);
+    }
+    .rd-toggle-chip.active {
+        background: rgba(99, 102, 241, 0.12);
+        border-color: rgba(99, 102, 241, 0.4);
+        color: #4f46e5;
+    }
+    .rd-gun-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #10b981;
+        display: none;
+    }
+    .rd-toggle-chip.active .rd-gun-dot {
+        display: inline-block;
+        animation: rdPulseLed 1.4s infinite;
+    }
+
+    /* Camera Drawer */
+    .rd-camera-drawer {
+        background: #090d16;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.25);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .rd-camera-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.6rem 1.25rem;
+        background: rgba(15, 23, 42, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+    .rd-camera-status-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .rd-cam-pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        display: inline-block;
+        animation: rdPulseLed 1.8s infinite;
+    }
+    .rd-cam-pulse-dot.paused { background: #f59e0b; animation: none; }
+    .rd-cam-pulse-dot.stopped { background: #ef4444; animation: none; }
+    .rd-cam-title {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: #f1f5f9;
+        letter-spacing: 0.02em;
+    }
+    .rd-cam-badge {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.12rem 0.5rem;
+        border-radius: 99px;
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .rd-camera-device-select-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+    .rd-cam-dev-icon { display: flex; align-items: center; }
+    .rd-cam-sel {
+        padding: 0.3rem 0.6rem;
+        border-radius: 7px;
+        background: #1e293b;
+        color: #e2e8f0;
+        border: 1px solid #334155;
+        font-size: 0.74rem;
+        outline: none;
+        max-width: 240px;
+        font-family: inherit;
+    }
+    .rd-cam-sel:focus { border-color: #6366f1; }
+    .rd-cam-action-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        background: #1e293b;
+        color: #cbd5e1;
+        border: 1px solid #334155;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .rd-cam-action-btn:hover {
+        background: #334155;
+        color: #fff;
+    }
+    .rd-cam-action-btn.active {
+        background: #f59e0b;
+        color: #0f172a;
+        border-color: #f59e0b;
+    }
+    .rd-cam-close-btn:hover {
+        background: #ef4444;
+        color: #fff;
+        border-color: #ef4444;
+    }
+
+    /* Viewfinder stage */
+    .rd-viewfinder-stage {
+        position: relative;
+        width: 100%;
+        max-width: 620px;
+        height: 330px;
+        margin: 0 auto;
+        background: #000;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .rd-viewfinder-box {
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .rd-viewfinder-box video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+        transition: transform 0.2s ease;
+    }
+    .rd-viewfinder-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 10;
+    }
+    .rd-reticle-box {
+        position: relative;
+        width: 320px;
+        height: 210px;
+        max-width: 88%;
+        max-height: 80%;
+        border-radius: 14px;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.32);
+    }
+    .rd-reticle-corner {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border: 3.5px solid #10b981;
+        filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.8));
+    }
+    .rd-reticle-corner.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; border-top-left-radius: 10px; }
+    .rd-reticle-corner.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; border-top-right-radius: 10px; }
+    .rd-reticle-corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; border-bottom-left-radius: 10px; }
+    .rd-reticle-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; border-bottom-right-radius: 10px; }
+
+    @keyframes rdLaserSweep {
+        0%   { top: 5%; opacity: 0.95; }
+        50%  { top: 92%; opacity: 0.95; }
+        100% { top: 5%; opacity: 0.95; }
+    }
+    .rd-laser-line {
+        position: absolute;
+        left: 4%;
+        right: 4%;
+        height: 2.5px;
+        background: linear-gradient(90deg, transparent, #10b981 15%, #34d399 50%, #10b981 85%, transparent);
+        box-shadow: 0 0 10px #10b981, 0 0 4px #34d399;
+        border-radius: 99px;
+        animation: rdLaserSweep 2.2s ease-in-out infinite;
+    }
+    .rd-cam-guide-bar {
+        padding: 0.4rem 1.25rem;
+        background: rgba(15, 23, 42, 0.98);
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        font-size: 0.68rem;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .rd-cam-guide-bar strong { color: #f1f5f9; }
+        box-shadow: 0 0 10px #10b981, 0 0 4px #34d399;
+        border-radius: 99px;
+        animation: rdLaserSweep 2.2s ease-in-out infinite;
+    }
+    .rd-viewfinder-hint {
+        margin-top: 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        background: rgba(15, 23, 42, 0.75);
+        padding: 0.2rem 0.65rem;
+        border-radius: 99px;
+        backdrop-filter: blur(4px);
+        letter-spacing: 0.02em;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .rd-scan-flash {
+        position: absolute;
+        inset: 0;
+        background: rgba(16, 185, 129, 0.4);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.12s ease-out;
+        z-index: 20;
+    }
+    .rd-scan-flash.flash {
+        opacity: 1;
+        transition: none;
+    }
+    .rd-camera-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.45rem 1.25rem;
+        background: rgba(15, 23, 42, 0.9);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .rd-cam-formats {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.68rem;
+        color: #94a3b8;
+    }
+    .rd-fmt-pill {
+        padding: 0.08rem 0.4rem;
+        border-radius: 4px;
+        background: #1e293b;
+        color: #cbd5e1;
+        font-weight: 700;
+        font-size: 0.65rem;
+    }
+    .rd-last-scan-badge {
+        font-size: 0.72rem;
+        font-family: monospace;
+        font-weight: 700;
+        padding: 0.15rem 0.6rem;
+        border-radius: 6px;
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Auto-Collect celebratory banner */
+    .rd-auto-collect-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        padding: 0.85rem 1.15rem;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.08));
+        border: 1.5px solid rgba(16, 185, 129, 0.45);
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+        animation: rdSlideDown 0.25s ease-out;
+    }
+    @keyframes rdSlideDown {
+        from { transform: translateY(-8px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .rd-ac-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: #10b981;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    }
+    .rd-ac-content { flex: 1; }
+    .rd-ac-title {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: #065f46;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .rd-ac-name {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #047857;
+        margin: 0.1rem 0;
+    }
+    .rd-ac-meta {
+        font-size: 0.76rem;
+        color: #065f46;
+        font-weight: 600;
+    }
 
     /* Verify result strip */
-    .rd-verify-result-wrap { padding:0 1.5rem .5rem; flex-shrink:0; }
+    .rd-verify-result-wrap {
+        padding: 0.5rem 1.5rem 0.65rem;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
 
-    /* Toolbar */
+    /* Multi-Row Toolbar inside Tokens Modal */
     .rd-tok-toolbar {
-        display:flex; align-items:center; gap:.5rem;
-        padding:.625rem 1.5rem; border-bottom:1px solid var(--border-color);
-        background:var(--bg-card); flex-shrink:0; flex-wrap:wrap;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        padding: .65rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-card);
+        flex-shrink: 0;
+    }
+    .rd-tok-toolbar-row {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        flex-wrap: wrap;
     }
     .rd-search-wrap {
-        display:flex; align-items:center; gap:.4rem;
-        padding:.38rem .75rem; border:1px solid var(--border-color);
-        border-radius:9px; background:var(--input-bg); flex:1; min-width:150px;
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .36rem .75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 9px;
+        background: var(--input-bg);
+        flex: 1;
+        min-width: 200px;
+    }
+    .rd-search-wrap:focus-within {
+        border-color: var(--primary);
     }
     .rd-search-input {
-        border:none; background:transparent; color:var(--text-main);
-        font-size:.82rem; font-family:inherit; outline:none; width:100%;
+        border: none;
+        background: transparent;
+        color: var(--text-main);
+        font-size: .81rem;
+        font-family: inherit;
+        outline: none;
+        width: 100%;
     }
     .rd-sel {
-        padding:.38rem .6rem; border:1px solid var(--border-color);
-        border-radius:9px; background:var(--input-bg); color:var(--text-main);
-        font-size:.78rem; font-family:inherit; cursor:pointer; outline:none;
+        padding: .36rem .62rem;
+        border: 1px solid var(--border-color);
+        border-radius: 9px;
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: .76rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        outline: none;
     }
-    .rd-filter-group { display:flex; border:1px solid var(--border-color); border-radius:9px; overflow:hidden; }
+    .rd-sel.active-sel {
+        border-color: var(--primary);
+        background: var(--glow-bg);
+        font-weight: 700;
+    }
+    .rd-filter-group {
+        display: flex;
+        border: 1px solid var(--border-color);
+        border-radius: 9px;
+        overflow: hidden;
+        background: var(--input-bg);
+        padding: 2px;
+        gap: 2px;
+    }
     .rd-filter-btn {
-        padding:.38rem .7rem; border:none; background:var(--input-bg);
-        color:var(--text-muted); font-size:.77rem; font-weight:600;
-        cursor:pointer; font-family:inherit; white-space:nowrap;
-        transition:background .12s, color .12s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: .32rem .68rem;
+        border: none;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: .75rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background .12s, color .12s;
     }
-    .rd-filter-btn + .rd-filter-btn { border-left:1px solid var(--border-color); }
-    .rd-filter-btn:hover  { background:var(--border-color); color:var(--text-main); }
-    .rd-filter-btn.active { background:var(--text-main); color:var(--bg-main); }
+    .rd-filter-btn:hover { color: var(--text-main); }
+    .rd-filter-btn.active {
+        background: var(--bg-card);
+        color: var(--text-main);
+        box-shadow: var(--shadow-sm);
+    }
+    .rd-filter-cnt {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 0.04rem 0.36rem;
+        border-radius: 99px;
+        background: var(--border-color);
+        color: var(--text-main);
+    }
+    .rd-filter-btn.active .rd-filter-cnt {
+        background: var(--primary);
+        color: var(--bg-main);
+    }
+
+    /* Bulk Token Action Bar inside Modal */
+    .rd-tok-bulk-bar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        padding: 0.5rem 1.5rem;
+        background: rgba(99, 102, 241, 0.09);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.28);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+    .rd-tok-bulk-bar.visible { display: flex; }
 
     /* Table */
-    .rd-table-wrap { overflow-y:auto; flex:1; }
-    .rd-table { width:100%; border-collapse:collapse; }
+    .rd-table-wrap {
+        overflow-y: auto;
+        flex: 1;
+        background: var(--bg-card);
+    }
+    .rd-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
     .rd-table thead th {
-        padding:.6rem 1rem; text-align:left;
-        font-size:.7rem; font-weight:700; color:var(--text-muted);
-        text-transform:uppercase; letter-spacing:.055em;
-        border-bottom:1px solid var(--border-color);
-        background:var(--bg-card); position:sticky; top:0; z-index:2;
-        white-space:nowrap;
+        padding: .6rem .9rem;
+        text-align: left;
+        font-size: .69rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: .055em;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-card);
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        white-space: nowrap;
     }
-    .rd-th-sort { cursor:pointer; user-select:none; }
-    .rd-th-sort:hover { color:var(--text-main); }
-    .rd-sort-arrow { opacity:.45; font-size:.65rem; margin-left:2px; }
-    .rd-sort-arrow.on { opacity:1; color:var(--text-main); }
-    .rd-table tbody tr { border-bottom:1px solid var(--border-color); transition:background .1s; }
-    .rd-table tbody tr:last-child { border-bottom:none; }
-    .rd-table tbody tr:hover { background:var(--input-bg); }
-    .rd-table tbody td { padding:.6rem 1rem; font-size:.84rem; }
-    .rd-td-mono { font-family:'Courier New',monospace; font-size:.82rem; font-weight:700; color:var(--text-main); }
-    .rd-td-sub  { font-size:.73rem; color:var(--text-muted); margin-top:1px; }
-    .rd-td-actions { text-align:right; white-space:nowrap; }
+    .rd-th-sort { cursor: pointer; user-select: none; }
+    .rd-th-sort:hover { color: var(--text-main); }
+    .rd-sort-arrow { opacity: .45; font-size: .65rem; margin-left: 2px; }
+    .rd-sort-arrow.on { opacity: 1; color: var(--primary); }
+    .rd-table tbody tr {
+        border-bottom: 1px solid var(--border-color);
+        transition: background .1s;
+    }
+    .rd-table tbody tr:last-child { border-bottom: none; }
+    .rd-table tbody tr:hover { background: var(--input-bg); }
+    .rd-table tbody tr.rd-row-selected { background: rgba(99, 102, 241, 0.06); }
+    .rd-table tbody td { padding: .58rem .9rem; font-size: .83rem; vertical-align: middle; }
+    .rd-td-mono {
+        font-family: 'Courier New', monospace;
+        font-size: .8rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+    .rd-td-sub {
+        font-size: .72rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+    .rd-td-actions { text-align: right; white-space: nowrap; }
     .rd-act-btn {
-        display:inline-flex; align-items:center; justify-content:center;
-        width:27px; height:27px; border:1px solid var(--border-color);
-        border-radius:7px; background:var(--input-bg); color:var(--text-muted);
-        cursor:pointer; transition:all .12s; margin-left:3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border-color);
+        border-radius: 7px;
+        background: var(--input-bg);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all .12s;
+        margin-left: 3px;
     }
-    .rd-act-btn:hover         { background:var(--border-color); color:var(--text-main); border-color:var(--text-muted); }
-    .rd-act-collect           { border-color:rgba(16,185,129,.3); background:rgba(16,185,129,.07); color:#10b981; }
-    .rd-act-collect:hover     { background:rgba(16,185,129,.15); }
-    .rd-act-reset             { border-color:rgba(99,102,241,.25); background:rgba(99,102,241,.06); color:#6366f1; }
-    .rd-act-reset:hover       { background:rgba(99,102,241,.14); }
-    .rd-act-absent            { border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.06); color:#f59e0b; }
-    .rd-act-absent:hover      { background:rgba(245,158,11,.14); }
-    .rd-act-print             { border-color:rgba(99,102,241,.2); background:rgba(99,102,241,.05); color:#6366f1; }
-    .rd-act-print:hover       { background:rgba(99,102,241,.12); }
-    .rd-act-danger            { border-color:rgba(239,68,68,.2); background:rgba(239,68,68,.06); color:#ef4444; }
-    .rd-act-danger:hover      { background:rgba(239,68,68,.12); }
+    .rd-act-btn:hover     { background: var(--border-color); color: var(--text-main); border-color: var(--text-muted); }
+    .rd-act-collect       { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.08); color: #10b981; }
+    .rd-act-collect:hover { background: rgba(16,185,129,.18); }
+    .rd-act-reset         { border-color: rgba(99,102,241,.25); background: rgba(99,102,241,.07); color: #6366f1; }
+    .rd-act-reset:hover   { background: rgba(99,102,241,.16); }
+    .rd-act-absent        { border-color: rgba(245,158,11,.25); background: rgba(245,158,11,.07); color: #f59e0b; }
+    .rd-act-absent:hover  { background: rgba(245,158,11,.16); }
+    .rd-act-print         { border-color: rgba(99,102,241,.2); background: rgba(99,102,241,.06); color: #6366f1; }
+    .rd-act-print:hover   { background: rgba(99,102,241,.14); }
+    .rd-act-danger        { border-color: rgba(239,68,68,.2); background: rgba(239,68,68,.06); color: #ef4444; }
+    .rd-act-danger:hover  { background: rgba(239,68,68,.14); }
 
     /* Pagination */
     .rd-pagination {
-        display:flex; align-items:center; justify-content:space-between;
-        padding:.65rem 1.5rem; border-top:1px solid var(--border-color);
-        background:var(--bg-card); flex-shrink:0; flex-wrap:wrap; gap:.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .65rem 1.5rem;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-card);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        gap: .5rem;
     }
-    .rd-page-info { font-size:.77rem; color:var(--text-muted); }
-    .rd-page-btns { display:flex; gap:.25rem; align-items:center; }
+    .rd-page-info { font-size: .77rem; color: var(--text-muted); font-weight: 600; }
+    .rd-page-btns { display: flex; gap: .25rem; align-items: center; }
     .rd-page-btn {
-        min-width:30px; height:30px; padding:0 .4rem;
-        display:inline-flex; align-items:center; justify-content:center;
-        border:1px solid var(--border-color); border-radius:8px;
-        background:var(--input-bg); color:var(--text-muted);
-        font-size:.77rem; font-weight:600; cursor:pointer; font-family:inherit;
-        transition:all .12s;
+        min-width: 30px;
+        height: 30px;
+        padding: 0 .45rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--input-bg);
+        color: var(--text-muted);
+        font-size: .76rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all .12s;
     }
-    .rd-page-btn:hover:not(:disabled) { background:var(--border-color); color:var(--text-main); }
-    .rd-page-btn.active { background:var(--text-main); color:var(--bg-main); border-color:var(--text-main); }
-    .rd-page-btn:disabled { opacity:.3; cursor:default; }
-    .rd-page-ellipsis { color:var(--text-muted); font-size:.8rem; padding:0 .2rem; }
+    .rd-page-btn:hover:not(:disabled) {
+        background: var(--glow-bg);
+        color: var(--text-main);
+        border-color: var(--primary);
+    }
+    .rd-page-btn.active {
+        background: var(--primary);
+        color: var(--bg-main);
+        border-color: var(--primary);
+    }
+    .rd-page-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .rd-page-ellipsis { color: var(--text-muted); font-size: .8rem; padding: 0 .2rem; }
 
     /* Empty state */
     .rd-empty {
-        text-align:center; padding:3rem 1rem; color:var(--text-muted);
+        text-align: center;
+        padding: 2.75rem 1rem;
+        color: var(--text-muted);
     }
-    .rd-empty-icon { font-size:2.5rem; margin-bottom:.75rem; opacity:.3; }
+    .rd-empty-icon { font-size: 2.25rem; margin-bottom: .6rem; opacity: .45; }
+    </style>
+    <style id="subscriptions-css">
+    /* ── Subscriptions Module Styles ────────────────────────────── */
+    .sub-pill-btn {
+        padding: 0.35rem 0.85rem;
+        border-radius: 50px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .sub-pill-btn:hover {
+        background: var(--input-bg);
+        color: var(--text-main);
+    }
+    .sub-pill-btn.active {
+        background: var(--text-main) !important;
+        color: var(--bg-main) !important;
+        border-color: var(--text-main) !important;
+        font-weight: 600;
+    }
+
+    /* Member Details in Table */
+    .sub-member-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .sub-member-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .sub-member-name {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--text-main);
+        cursor: pointer;
+        transition: color 0.15s ease;
+    }
+    .sub-member-name:hover {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+    .sub-member-meta {
+        font-size: 0.73rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 0.35rem;
+        align-items: center;
+        margin-top: 2px;
+    }
+
+    /* Type Badges */
+    .sub-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.22rem 0.55rem;
+        border-radius: 6px;
+        font-size: 0.74rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+    .sub-type-founder {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid rgba(217, 119, 6, 0.25);
+    }
+    .sub-type-executive {
+        background: #e0e7ff;
+        color: #3730a3;
+        border: 1px solid rgba(79, 70, 229, 0.25);
+    }
+    [data-theme="dark"] .sub-type-founder {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        border-color: rgba(245, 158, 11, 0.35);
+    }
+    [data-theme="dark"] .sub-type-executive {
+        background: rgba(99, 102, 241, 0.15);
+        color: #a5b4fc;
+        border-color: rgba(99, 102, 241, 0.35);
+    }
+
+    /* Status Pills */
+    .sub-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .sub-pulse-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: currentColor;
+        display: inline-block;
+        animation: subPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes subPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .sub-status-paid {
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .sub-status-partial {
+        background: rgba(245, 158, 11, 0.12);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    .sub-status-pending {
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+        border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .sub-status-exempt {
+        background: rgba(107, 114, 128, 0.12);
+        color: #4b5563;
+        border: 1px solid rgba(107, 114, 128, 0.25);
+    }
+    [data-theme="dark"] .sub-status-paid {
+        background: rgba(16, 185, 129, 0.18);
+        color: #34d399;
+        border-color: rgba(16, 185, 129, 0.35);
+    }
+    [data-theme="dark"] .sub-status-partial {
+        background: rgba(245, 158, 11, 0.18);
+        color: #fbbf24;
+        border-color: rgba(245, 158, 11, 0.35);
+    }
+    [data-theme="dark"] .sub-status-pending {
+        background: rgba(239, 68, 68, 0.18);
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.35);
+    }
+    [data-theme="dark"] .sub-status-exempt {
+        background: rgba(156, 163, 175, 0.15);
+        color: #9ca3af;
+        border-color: rgba(156, 163, 175, 0.25);
+    }
+
+    /* Actions */
+    .sub-action-group {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.35rem;
+    }
+    .sub-act-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-card);
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        padding: 0;
+    }
+    .sub-act-btn:hover {
+        background: var(--input-bg);
+        color: var(--text-main);
+        border-color: var(--text-muted);
+        transform: translateY(-1px);
+    }
+    .sub-act-receipt:hover {
+        color: #2563eb;
+        border-color: rgba(37, 99, 235, 0.4);
+        background: rgba(37, 99, 235, 0.08);
+    }
+    .sub-act-history:hover {
+        color: #7c3aed;
+        border-color: rgba(124, 58, 237, 0.4);
+        background: rgba(124, 58, 237, 0.08);
+    }
+    .sub-act-add-inst:hover {
+        color: #059669;
+        border-color: rgba(5, 150, 105, 0.4);
+        background: rgba(5, 150, 105, 0.08);
+    }
+    .sub-act-delete:hover {
+        color: #dc2626;
+        border-color: rgba(220, 38, 38, 0.4);
+        background: rgba(220, 38, 38, 0.08);
+    }
+    .sub-quick-pay-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-family: inherit;
+    }
+    .sub-quick-pay-btn:hover {
+        background: #10b981;
+        color: #ffffff;
+        border-color: #10b981;
+        transform: translateY(-1px);
+    }
+
+    /* Method Chip & Cheque Button */
+    .sub-method-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.55rem;
+        border-radius: 6px;
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+    .sub-table-cheque-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        font-size: 0.7rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 3px;
+        transition: background 0.15s ease;
+    }
+    .sub-table-cheque-btn:hover {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    /* Annual Matrix (12-Month Pills) */
+    .sub-matrix-wrap {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    .sub-matrix-pill {
+        width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.68rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.1s ease, filter 0.15s ease;
+        user-select: none;
+    }
+    .sub-matrix-pill:hover {
+        transform: scale(1.15);
+        z-index: 2;
+    }
+    .sub-matrix-pill.paid {
+        background: #10b981;
+        color: #ffffff;
+    }
+    .sub-matrix-pill.partial {
+        background: #f59e0b;
+        color: #ffffff;
+    }
+    .sub-matrix-pill.pending {
+        background: rgba(239, 68, 68, 0.12);
+        color: #ef4444;
+        border: 1px dashed #ef4444;
+    }
+    .sub-matrix-pill.exempt {
+        background: rgba(156, 163, 175, 0.2);
+        color: var(--text-muted);
+    }
+    .sub-matrix-pill.future {
+        background: var(--input-bg);
+        color: var(--text-muted);
+        opacity: 0.5;
+    }
     </style>
 </head>
 
@@ -1143,15 +2685,52 @@
                 <div id="subscriptionsTab" class="tab-content">
                     <div class="tab-header-premium">
                         <div class="header-left">
-                            <h2 style="font-size:1.5rem; color:var(--text-main);">Subscriptions Management</h2>
-                            <p style="color:var(--text-muted); font-size:0.875rem;">Track monthly subscription payments for Founders &amp; Members.</p>
-                        </div>
-                        <div class="header-actions">
-                            <div class="search-mini">
-                                <i data-lucide="search" style="width:16px; color:var(--text-muted);"></i>
-                                <input type="text" placeholder="Search member..." id="subSearchInput" oninput="filterSubscriptions()">
+                            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                                <h2 style="font-size:1.5rem; color:var(--text-main); margin:0;">Subscriptions Management</h2>
+                                <span id="subPeriodBadge" class="filter-pill" style="font-size:0.75rem; font-weight:600; padding:0.25rem 0.65rem; background:var(--input-bg); border-color:var(--border-color); color:var(--text-main); display:inline-flex; align-items:center; gap:0.35rem;">
+                                    <i data-lucide="shield-check" style="width:13px;height:13px;"></i> Monthly Dues
+                                </span>
                             </div>
-                            <input type="month" id="subMonthPicker" class="form-input" style="width:auto; padding:0.45rem 0.75rem;" onchange="fetchSubscriptions()">
+                            <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.25rem;">Track monthly subscription payments &amp; annual contribution ledger for Founders &amp; Members.</p>
+                        </div>
+                        <div class="header-actions" style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <!-- View Mode Toggle: Monthly / Yearly -->
+                            <div class="sub-pill-group" style="display:inline-flex; background:var(--bg-card); border:1px solid var(--border-color); border-radius:9999px; padding:0.2rem;">
+                                <button type="button" id="subViewMonthlyBtn" class="sub-pill-btn active" onclick="setSubViewMode('monthly')">
+                                    <i data-lucide="calendar" style="width:14px;height:14px;"></i> Monthly
+                                </button>
+                                <button type="button" id="subViewYearlyBtn" class="sub-pill-btn" onclick="setSubViewMode('yearly')">
+                                    <i data-lucide="calendar-range" style="width:14px;height:14px;"></i> Annual Matrix
+                                </button>
+                            </div>
+
+                            <!-- Month Navigator (Monthly view) -->
+                            <div id="subMonthNavContainer" style="display:inline-flex; align-items:center; gap:0.25rem;">
+                                <button type="button" class="btn btn-outline" style="padding:0.4rem 0.55rem;" onclick="subPrevMonth()" title="Previous Month"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+                                <input type="month" id="subMonthPicker" class="form-input" style="width:auto; padding:0.4rem 0.65rem; font-size:0.82rem;" onchange="fetchSubscriptions()">
+                                <button type="button" class="btn btn-outline" style="padding:0.4rem 0.55rem;" onclick="subNextMonth()" title="Next Month"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+                                <button type="button" class="btn btn-outline" style="padding:0.4rem 0.65rem; font-size:0.75rem;" onclick="subThisMonth()">Today</button>
+                            </div>
+
+                            <!-- Year Navigator (Yearly view) -->
+                            <div id="subYearNavContainer" style="display:none; align-items:center; gap:0.25rem;">
+                                <button type="button" class="btn btn-outline" style="padding:0.4rem 0.55rem;" onclick="subPrevYear()" title="Previous Year"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+                                <select id="subYearSelect" class="form-select" style="width:auto; padding:0.4rem 0.65rem; font-size:0.82rem;" onchange="onSubYearSelectChange(this)">
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                                <button type="button" class="btn btn-outline" style="padding:0.4rem 0.55rem;" onclick="subNextYear()" title="Next Year"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+                                <button type="button" class="btn btn-outline" style="padding:0.4rem 0.65rem; font-size:0.75rem;" onclick="subThisYear()">This Year</button>
+                            </div>
+
+                            <!-- Export XLS Button -->
+                            <button type="button" class="btn btn-outline" onclick="exportSubscriptionsExcel()" title="Export Subscriptions">
+                                <i data-lucide="download" style="width:14px;height:14px;"></i>
+                                <span id="subExportBtnText">Export XLS</span>
+                            </button>
+
+                            <!-- Add Payment -->
                             <button class="btn btn-primary" onclick="openSubModal('add')">
                                 <i data-lucide="plus-circle"></i> Record Payment
                             </button>
@@ -1162,18 +2741,13 @@
                     <div class="stats-grid" style="margin-bottom:1.5rem;">
                         <div class="card stat-card">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Total Subscribers</div>
-                                    <div class="stat-value" id="sStatTotal">—</div>
-                                </div>
-                                <div class="stat-icon-wrapper" style="background:var(--glow-bg);"><i data-lucide="users" style="width:22px;"></i></div>
-                            </div>
-                        </div>
-                        <div class="card stat-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Collected This Month</div>
+                                <div style="flex:1;">
+                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;" id="sStatCardTitle">Monthly Collection</div>
                                     <div class="stat-value" id="sStatCollected">—</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.35rem;" id="sStatContribSummary">—</div>
+                                    <div style="width:100%; height:4px; background:var(--input-bg); border-radius:99px; overflow:hidden; margin-top:0.5rem;">
+                                        <div id="sStatProgressBar" style="height:100%; width:0%; background:#10b981; border-radius:99px; transition:width .3s;"></div>
+                                    </div>
                                 </div>
                                 <div class="stat-icon-wrapper" style="background:rgba(16,185,129,0.1); color:#10b981;"><i data-lucide="trending-up" style="width:22px;"></i></div>
                             </div>
@@ -1181,35 +2755,55 @@
                         <div class="card stat-card">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Pending</div>
-                                    <div class="stat-value" id="sStatPending">—</div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Total Subscribers</div>
+                                    <div class="stat-value" id="sStatTotal">—</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.35rem; display:flex; gap:0.4rem;">
+                                        <span id="sStatFoundersBadge">Founders: —</span> · <span id="sStatExecBadge">Executives: —</span>
+                                    </div>
                                 </div>
-                                <div class="stat-icon-wrapper" style="background:rgba(245,158,11,0.1); color:#f59e0b;"><i data-lucide="clock" style="width:22px;"></i></div>
+                                <div class="stat-icon-wrapper" style="background:var(--glow-bg);"><i data-lucide="users" style="width:22px;"></i></div>
                             </div>
                         </div>
                         <div class="card stat-card">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Exempt Members</div>
-                                    <div class="stat-value" id="sStatExempt">—</div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;" id="sStatPaidTitle">Paid Status</div>
+                                    <div class="stat-value" id="sStatPaidCount" style="color:#10b981;">—</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.35rem;">
+                                        <span id="sStatPaidSummary">—</span><span id="sStatPartialSummary"></span>
+                                    </div>
                                 </div>
-                                <div class="stat-icon-wrapper" style="background:rgba(107,114,128,0.1); color:#6b7280;"><i data-lucide="shield-off" style="width:22px;"></i></div>
+                                <div class="stat-icon-wrapper" style="background:rgba(16,185,129,0.1); color:#10b981;"><i data-lucide="check-circle" style="width:22px;"></i></div>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;" id="sStatPendingTitle">Pending Dues</div>
+                                    <div class="stat-value" id="sStatPending" style="color:#ef4444;">—</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.35rem;" id="sStatPendingAmount">—</div>
+                                </div>
+                                <div class="stat-icon-wrapper" style="background:rgba(239,68,68,0.1); color:#ef4444;"><i data-lucide="clock" style="width:22px;"></i></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Filters + Sort -->
                     <div style="display:flex; gap:0.625rem; flex-wrap:wrap; margin-bottom:1.25rem; align-items:center;">
-                        <div style="display:flex; gap:0.25rem; background:var(--bg-card); border:1px solid var(--border-color); border-radius:9999px; padding:0.25rem;">
-                            <button class="filter-pill active" data-sstatus="all" onclick="setSubStatusFilter('all',this)">All</button>
-                            <button class="filter-pill" data-sstatus="paid" onclick="setSubStatusFilter('paid',this)">Paid</button>
-                            <button class="filter-pill" data-sstatus="pending" onclick="setSubStatusFilter('pending',this)">Pending</button>
-                            <button class="filter-pill" data-sstatus="exempt" onclick="setSubStatusFilter('exempt',this)">Exempt</button>
+                        <div class="sub-pill-group" style="display:flex; gap:0.25rem; background:var(--bg-card); border:1px solid var(--border-color); border-radius:9999px; padding:0.25rem;">
+                            <button class="sub-pill-btn active" data-sstatus="all" onclick="setSubStatusFilter('all',this)">All (<span id="subCountAll">—</span>)</button>
+                            <button class="sub-pill-btn" data-sstatus="paid" onclick="setSubStatusFilter('paid',this)"><span id="subStatusPaidPillText">Paid</span> (<span id="subCountPaid">—</span>)</button>
+                            <button class="sub-pill-btn" data-sstatus="pending" onclick="setSubStatusFilter('pending',this)"><span id="subStatusPendingPillText">Pending</span> (<span id="subCountPending">—</span>)</button>
+                            <button class="sub-pill-btn" data-sstatus="exempt" onclick="setSubStatusFilter('exempt',this)">Exempt (<span id="subCountExempt">—</span>)</button>
                         </div>
-                        <div style="display:flex; gap:0.25rem; background:var(--bg-card); border:1px solid var(--border-color); border-radius:9999px; padding:0.25rem;">
-                            <button class="filter-pill active" data-smtype="all" onclick="setSubTypeFilter('all',this)">All Types</button>
-                            <button class="filter-pill" data-smtype="founder" onclick="setSubTypeFilter('founder',this)">Founders</button>
-                            <button class="filter-pill" data-smtype="executive" onclick="setSubTypeFilter('executive',this)">Executives</button>
+                        <div class="sub-pill-group" style="display:flex; gap:0.25rem; background:var(--bg-card); border:1px solid var(--border-color); border-radius:9999px; padding:0.25rem;">
+                            <button class="sub-pill-btn active" data-smtype="all" onclick="setSubTypeFilter('all',this)">All Types</button>
+                            <button class="sub-pill-btn" data-smtype="founder" onclick="setSubTypeFilter('founder',this)">Founders</button>
+                            <button class="sub-pill-btn" data-smtype="executive" onclick="setSubTypeFilter('executive',this)">Executives</button>
+                        </div>
+                        <div class="search-mini" style="margin-left:auto;">
+                            <i data-lucide="search" style="width:16px; color:var(--text-muted);"></i>
+                            <input type="text" placeholder="Search member, phone, NIC..." id="subSearchInput" oninput="filterSubscriptions()">
                         </div>
                         <select id="subSortSelect" class="form-select" style="width:auto; padding:0.35rem 0.75rem; font-size:0.8rem;" onchange="filterSubscriptions()">
                             <option value="name">Sort: Name</option>
@@ -1217,19 +2811,28 @@
                             <option value="amount_asc">Sort: Amount ↑</option>
                             <option value="date_desc">Sort: Date ↓</option>
                         </select>
-                        <span id="subFilterCount" style="margin-left:auto; color:var(--text-muted); font-size:0.8rem;"></span>
+                        <span id="subFilterCount" style="color:var(--text-muted); font-size:0.8rem;"></span>
+                    </div>
+
+                    <!-- Yearly Legend (shown in Annual Matrix view) -->
+                    <div id="subYearlyLegend" style="display:none; align-items:center; gap:1.25rem; margin-bottom:1rem; padding:0.6rem 1rem; background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; font-size:0.75rem; color:var(--text-muted); flex-wrap:wrap;">
+                        <span style="font-weight:700; color:var(--text-main); display:inline-flex; align-items:center; gap:0.35rem;"><i data-lucide="info" style="width:13px;height:13px;"></i> Matrix Key:</span>
+                        <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="sub-matrix-pill paid" style="cursor:default;width:18px;height:18px;">J</span> Paid in Full</span>
+                        <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="sub-matrix-pill partial" style="cursor:default;width:18px;height:18px;">F</span> Partial Paid</span>
+                        <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="sub-matrix-pill pending" style="cursor:default;width:18px;height:18px;">M</span> Overdue (Click to pay)</span>
+                        <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="sub-matrix-pill exempt" style="cursor:default;width:18px;height:18px;">—</span> Exempt</span>
                     </div>
 
                     <div class="card">
                         <div class="table-container">
                             <table>
-                                <thead>
+                                <thead id="subTableHead">
                                     <tr>
-                                        <th>Member</th>
+                                        <th>Member Details</th>
                                         <th>Type</th>
                                         <th>Monthly Due</th>
-                                        <th>Paid Amount</th>
-                                        <th>Method</th>
+                                        <th>Paid This Month</th>
+                                        <th>Payment Method</th>
                                         <th>Status</th>
                                         <th>Payment Date</th>
                                         <th style="text-align:right;">Actions</th>
@@ -2060,75 +3663,274 @@
                 </div><!-- /documentsTab -->
 
                 <div id="ramadanTab" class="tab-content">
-                    <div class="tab-header-premium">
-                        <div class="header-left">
-                            <h2 style="font-size:1.5rem; color:var(--text-main);">Ramadan Token Distribution</h2>
-                            <p style="color:var(--text-muted); font-size:0.875rem;">Manage dry ration vouchers for low-income beneficiaries each Ramadan.</p>
-                        </div>
-                        <div class="header-actions">
-                            <div class="search-mini">
-                                <i data-lucide="search" style="width:16px; color:var(--text-muted);"></i>
-                                <input type="text" placeholder="Search distributions..." id="ramadanSearchInput" oninput="filterRamadanDistributions()">
+                    <!-- 1. Executive Hero Header -->
+                    <div class="rd-hero-bar">
+                        <div>
+                            <div class="rd-hero-title-wrap">
+                                <h2 class="rd-hero-title">Ramadan Token Distribution</h2>
+                                <span class="rd-hero-badge">
+                                    <i data-lucide="moon" style="width:13px;height:13px;"></i>
+                                    <span>Seasonal Ration &amp; Voucher Relief</span>
+                                </span>
                             </div>
-                            <button class="btn btn-primary" onclick="openRamadanDistModal('add')">
-                                <i data-lucide="plus"></i> New Distribution
+                            <p class="rd-hero-sub">Plan annual Ramadan &amp; Eid relief campaigns, issue beneficiary ration tokens, and monitor real-time collection &amp; budget disbursement.</p>
+                        </div>
+                        <div class="rd-hero-actions">
+                            <!-- View Mode Switcher: Table vs Campaign Cards -->
+                            <div class="sub-view-switcher" title="Switch between Table and Campaign Card Grid">
+                                <button type="button" class="sub-view-btn active" id="rdViewTableBtn" onclick="setRamadanDistViewMode('table')">
+                                    <i data-lucide="table-2" style="width:14px;height:14px;"></i> Table
+                                </button>
+                                <button type="button" class="sub-view-btn" id="rdViewGridBtn" onclick="setRamadanDistViewMode('grid')">
+                                    <i data-lucide="layout-grid" style="width:14px;height:14px;"></i> Cards
+                                </button>
+                            </div>
+
+                            <!-- Export CSV / Excel -->
+                            <button type="button" class="btn btn-outline" onclick="exportRamadanDistributions('csv')" title="Export distributions to CSV" style="font-size:0.81rem; padding:0.45rem 0.8rem;">
+                                <i data-lucide="download" style="width:15px;height:15px;"></i> Export CSV
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="exportRamadanDistributions('xlsx')" title="Export distributions to Excel" style="font-size:0.81rem; padding:0.45rem 0.8rem;">
+                                <i data-lucide="sheet" style="width:15px;height:15px;color:#10b981;"></i> Export Excel
+                            </button>
+
+                            <!-- Primary CTA -->
+                            <button type="button" class="btn btn-primary" onclick="openRamadanDistModal('add')" style="font-size:0.83rem; padding:0.48rem 1.05rem;">
+                                <i data-lucide="plus-circle" style="width:16px;height:16px;"></i> New Distribution
                             </button>
                         </div>
                     </div>
 
-                    <!-- Stats -->
-                    <div class="stats-grid" style="margin-bottom:1.5rem;">
-                        <div class="card stat-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <!-- 2. Interactive 5-Card KPI & Analytics Grid -->
+                    <div class="rd-kpi-grid">
+                        <!-- Card 1: Total Distributions -->
+                        <div class="rd-kpi-card" onclick="resetRamadanDistFilters()" title="Click to show all distribution campaigns">
+                            <div class="rd-kpi-top">
                                 <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Total Distributions</div>
-                                    <div class="stat-value" id="rdStatTotal">—</div>
+                                    <div class="rd-kpi-label">Total Distributions</div>
+                                    <div class="rd-kpi-val" id="rdStatTotal">—</div>
                                 </div>
-                                <div class="stat-icon-wrapper" style="background:var(--glow-bg); color:var(--primary);"><i data-lucide="moon" style="width:22px;"></i></div>
+                                <div class="rd-kpi-icon" style="background:var(--glow-bg); color:var(--primary);">
+                                    <i data-lucide="moon" style="width:20px;height:20px;"></i>
+                                </div>
+                            </div>
+                            <div class="rd-kpi-foot">
+                                <span style="color:#10b981; font-weight:700;" id="rdStatActiveSub">0 Active</span>
+                                <span id="rdStatCompletedSub">0 Completed</span>
                             </div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+
+                        <!-- Card 2: Total Tokens Issued -->
+                        <div class="rd-kpi-card" onclick="onRamadanDistSortChange('total_tokens:desc')" title="Click to sort by highest tokens issued">
+                            <div class="rd-kpi-top">
                                 <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Total Tokens Issued</div>
-                                    <div class="stat-value" id="rdStatTokens">—</div>
+                                    <div class="rd-kpi-label">Total Tokens Issued</div>
+                                    <div class="rd-kpi-val" id="rdStatTokens">—</div>
                                 </div>
-                                <div class="stat-icon-wrapper" style="background:rgba(99,102,241,0.1); color:#6366f1;"><i data-lucide="ticket" style="width:22px;"></i></div>
+                                <div class="rd-kpi-icon" style="background:rgba(99,102,241,0.12); color:#6366f1;">
+                                    <i data-lucide="ticket" style="width:20px;height:20px;"></i>
+                                </div>
+                            </div>
+                            <div class="rd-kpi-foot">
+                                <span class="rd-mini-chip" id="rdStatAvgTokensSub">Avg: 0 / dist</span>
+                                <span id="rdStatEligibleSub">0 Eligible Active</span>
                             </div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+
+                        <!-- Card 3: Collected Vouchers -->
+                        <div class="rd-kpi-card" onclick="setRamadanDistAdvFilter('progress', 'in_progress')" title="Click to filter campaigns with collections">
+                            <div class="rd-kpi-top">
                                 <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Collected</div>
-                                    <div class="stat-value" id="rdStatCollected" style="color:#10b981;">—</div>
+                                    <div class="rd-kpi-label">Collected Vouchers</div>
+                                    <div class="rd-kpi-val" id="rdStatCollected" style="color:#10b981;">—</div>
                                 </div>
-                                <div class="stat-icon-wrapper" style="background:rgba(16,185,129,0.1); color:#10b981;"><i data-lucide="check-circle" style="width:22px;"></i></div>
+                                <div class="rd-kpi-icon" style="background:rgba(16,185,129,0.12); color:#10b981;">
+                                    <i data-lucide="check-circle-2" style="width:20px;height:20px;"></i>
+                                </div>
+                            </div>
+                            <div style="margin-top:-0.15rem;">
+                                <div style="height:5px; background:var(--border-color); border-radius:99px; overflow:hidden;">
+                                    <div id="rdStatMiniProgress" style="height:100%; width:0%; background:#10b981; border-radius:99px; transition:width 0.35s ease;"></div>
+                                </div>
+                            </div>
+                            <div class="rd-kpi-foot">
+                                <span class="rd-mini-chip" style="color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.08);" id="rdStatRateChip">0% Rate</span>
+                                <span id="rdStatDisbursedSub">LKR 0 Disbursed</span>
                             </div>
                         </div>
-                        <div class="card stat-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+
+                        <!-- Card 4: Pending Collection -->
+                        <div class="rd-kpi-card" onclick="setRamadanDistAdvFilter('progress', 'has_pending')" title="Click to filter campaigns with pending tokens">
+                            <div class="rd-kpi-top">
                                 <div>
-                                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Pending</div>
-                                    <div class="stat-value" id="rdStatPending" style="color:#f59e0b;">—</div>
+                                    <div class="rd-kpi-label">Pending Collection</div>
+                                    <div class="rd-kpi-val" id="rdStatPending" style="color:#f59e0b;">—</div>
                                 </div>
-                                <div class="stat-icon-wrapper" style="background:rgba(245,158,11,0.1); color:#f59e0b;"><i data-lucide="clock" style="width:22px;"></i></div>
+                                <div class="rd-kpi-icon" style="background:rgba(245,158,11,0.12); color:#f59e0b;">
+                                    <i data-lucide="clock" style="width:20px;height:20px;"></i>
+                                </div>
+                            </div>
+                            <div class="rd-kpi-foot">
+                                <span style="color:#ef4444; font-weight:700;" id="rdStatAbsentSub">0 Absent</span>
+                                <span id="rdStatPendingValSub">LKR 0 Pending</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: Total Voucher Budget -->
+                        <div class="rd-kpi-card" onclick="onRamadanDistSortChange('budget:desc')" title="Click to sort by total campaign budget">
+                            <div class="rd-kpi-top">
+                                <div>
+                                    <div class="rd-kpi-label">Total Voucher Budget</div>
+                                    <div class="rd-kpi-val" id="rdStatBudget" style="color:var(--primary); font-size:1.3rem;">—</div>
+                                </div>
+                                <div class="rd-kpi-icon" style="background:var(--glow-bg); color:var(--primary);">
+                                    <i data-lucide="wallet" style="width:20px;height:20px;"></i>
+                                </div>
+                            </div>
+                            <div class="rd-kpi-foot">
+                                <span class="rd-mini-chip" id="rdStatAvgVoucherSub">Avg Pack: LKR 0</span>
+                                <span id="rdStatLocationsSub">0 Venues</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Distributions Table -->
-                    <div class="card" style="padding:0;">
+                    <!-- 3. Multi-Dimensional Filter & Search Panel -->
+                    <div class="rd-filter-panel">
+                        <!-- Top Row: Instant Search + Status Pills + Package Type Pills -->
+                        <div class="rd-toolbar-top">
+                            <div class="rd-search-box">
+                                <i data-lucide="search" style="width:16px;height:16px;color:var(--text-muted);flex-shrink:0;"></i>
+                                <input type="text" placeholder="Search by campaign title, year (e.g. 2026 / 1447 AH), venue, coordinator, or ration items..." id="ramadanSearchInput" oninput="_rdDistPage=1; filterRamadanDistributions()">
+                                <button type="button" id="rdDistSearchClearBtn" onclick="document.getElementById('ramadanSearchInput').value=''; _rdDistPage=1; filterRamadanDistributions();" style="display:none; border:none; background:none; color:var(--text-muted); cursor:pointer; padding:0 2px;" title="Clear search">
+                                    <i data-lucide="x" style="width:14px;height:14px;"></i>
+                                </button>
+                            </div>
+
+                            <!-- Status Filter Pills -->
+                            <div class="rd-pill-group" role="group" aria-label="Filter by Status">
+                                <button type="button" class="rd-pill-btn active" id="rdDistStat-all" onclick="setRamadanDistStatusFilter('all')">
+                                    All Status <span class="rd-pill-count" id="rdDistCountAll">0</span>
+                                </button>
+                                <button type="button" class="rd-pill-btn" id="rdDistStat-active" onclick="setRamadanDistStatusFilter('active')">
+                                    <span style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;"></span> Active <span class="rd-pill-count" id="rdDistCountActive">0</span>
+                                </button>
+                                <button type="button" class="rd-pill-btn" id="rdDistStat-completed" onclick="setRamadanDistStatusFilter('completed')">
+                                    <span style="width:7px;height:7px;border-radius:50%;background:#0284c7;display:inline-block;"></span> Completed <span class="rd-pill-count" id="rdDistCountCompleted">0</span>
+                                </button>
+                                <button type="button" class="rd-pill-btn" id="rdDistStat-cancelled" onclick="setRamadanDistStatusFilter('cancelled')">
+                                    <span style="width:7px;height:7px;border-radius:50%;background:#ef4444;display:inline-block;"></span> Cancelled <span class="rd-pill-count" id="rdDistCountCancelled">0</span>
+                                </button>
+                            </div>
+
+                            <!-- Package Type Filter Pills -->
+                            <div class="rd-pill-group" role="group" aria-label="Filter by Package Type">
+                                <button type="button" class="rd-pill-btn active" id="rdDistType-all" onclick="setRamadanDistTypeFilter('all')">All Types</button>
+                                <button type="button" class="rd-pill-btn" id="rdDistType-dry_ration" onclick="setRamadanDistTypeFilter('dry_ration')">Dry Ration</button>
+                                <button type="button" class="rd-pill-btn" id="rdDistType-cash_voucher" onclick="setRamadanDistTypeFilter('cash_voucher')">Cash Voucher</button>
+                                <button type="button" class="rd-pill-btn" id="rdDistType-zakat_pack" onclick="setRamadanDistTypeFilter('zakat_pack')">Zakat Pack</button>
+                                <button type="button" class="rd-pill-btn" id="rdDistType-other" onclick="setRamadanDistTypeFilter('other')">Iftar / Eid</button>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Row: Advanced Dropdown Filters + Sort + Reset + Live Counter -->
+                        <div class="rd-toolbar-adv">
+                            <span style="font-size:0.73rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; display:inline-flex; align-items:center; gap:0.3rem;">
+                                <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i> Filters:
+                            </span>
+
+                            <!-- Year Filter -->
+                            <select id="rdDistYearFilter" class="rd-filter-select" onchange="setRamadanDistAdvFilter('year', this.value)" title="Filter by Campaign Year">
+                                <option value="all">All Years</option>
+                            </select>
+
+                            <!-- Location / Venue Filter -->
+                            <select id="rdDistLocationFilter" class="rd-filter-select" onchange="setRamadanDistAdvFilter('location', this.value)" title="Filter by Collection Venue">
+                                <option value="all">All Venues / Locations</option>
+                            </select>
+
+                            <!-- Collection Progress Filter -->
+                            <select id="rdDistProgressFilter" class="rd-filter-select" onchange="setRamadanDistAdvFilter('progress', this.value)" title="Filter by Collection Progress">
+                                <option value="all">All Progress Levels</option>
+                                <option value="completed_100">100% Collected</option>
+                                <option value="in_progress">In Progress (1%–99%)</option>
+                                <option value="not_started">Not Started (0%)</option>
+                                <option value="has_pending">Has Pending Tokens</option>
+                                <option value="no_tokens">No Tokens Issued Yet</option>
+                            </select>
+
+                            <!-- Schedule / Date Filter -->
+                            <select id="rdDistScheduleFilter" class="rd-filter-select" onchange="setRamadanDistAdvFilter('schedule', this.value)" title="Filter by Collection Date Schedule">
+                                <option value="all">All Schedules</option>
+                                <option value="upcoming">Upcoming Collection</option>
+                                <option value="today">Scheduled Today</option>
+                                <option value="past">Past Collection Date</option>
+                                <option value="unscheduled">Unscheduled (No Date)</option>
+                            </select>
+
+                            <!-- Sort By Dropdown -->
+                            <select id="rdDistSortSelect" class="rd-filter-select" onchange="onRamadanDistSortChange(this.value)" title="Sort distribution campaigns">
+                                <option value="year:desc">Sort: Year / Newest First</option>
+                                <option value="year:asc">Sort: Year / Oldest First</option>
+                                <option value="collection_date:asc">Sort: Collection Date (Soonest)</option>
+                                <option value="total_tokens:desc">Sort: Tokens Issued (High → Low)</option>
+                                <option value="progress:desc">Sort: Progress % (High → Low)</option>
+                                <option value="progress:asc">Sort: Progress % (Low → High)</option>
+                                <option value="voucher_value:desc">Sort: Voucher Value (High → Low)</option>
+                                <option value="budget:desc">Sort: Total Budget (High → Low)</option>
+                                <option value="title:asc">Sort: Title (A–Z)</option>
+                            </select>
+
+                            <!-- Reset Filters Button -->
+                            <button type="button" id="rdDistResetBtn" class="rd-reset-btn" style="display:none;" onclick="resetRamadanDistFilters()">
+                                <i data-lucide="rotate-ccw" style="width:12px;height:12px;"></i> Reset
+                            </button>
+
+                            <!-- Showing Count Summary -->
+                            <span id="rdDistFilterCount" style="margin-left:auto; color:var(--text-muted); font-size:0.78rem; font-weight:600; white-space:nowrap;"></span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Bulk Selection Action Bar -->
+                    <div id="rdDistBulkBar" class="rd-bulk-bar">
+                        <div style="display:flex; align-items:center; gap:0.6rem; font-size:0.82rem; font-weight:700; color:var(--text-main);">
+                            <i data-lucide="check-square" style="width:16px;height:16px;color:#6366f1;"></i>
+                            <span><span id="rdDistBulkCount">0</span> campaign(s) selected</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-outline" style="padding:0.32rem 0.7rem; font-size:0.76rem;" onclick="executeRamadanDistBulkAction('status', 'active')">
+                                <i data-lucide="check-circle" style="width:13px;height:13px;color:#10b981;"></i> Set Active
+                            </button>
+                            <button type="button" class="btn btn-outline" style="padding:0.32rem 0.7rem; font-size:0.76rem;" onclick="executeRamadanDistBulkAction('status', 'completed')">
+                                <i data-lucide="award" style="width:13px;height:13px;color:#0284c7;"></i> Mark Completed
+                            </button>
+                            <button type="button" class="btn btn-outline" style="padding:0.32rem 0.7rem; font-size:0.76rem;" onclick="exportSelectedRamadanDistCSV()">
+                                <i data-lucide="download" style="width:13px;height:13px;"></i> Export Selected
+                            </button>
+                            <button type="button" class="btn btn-outline" style="padding:0.32rem 0.7rem; font-size:0.76rem; color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="executeRamadanDistBulkAction('delete')">
+                                <i data-lucide="trash-2" style="width:13px;height:13px;"></i> Delete
+                            </button>
+                            <button type="button" class="btn btn-outline" style="padding:0.32rem 0.6rem; font-size:0.75rem;" onclick="clearRamadanDistSelection()">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5A. Distributions Table View -->
+                    <div id="rdDistTableViewWrap" class="card" style="padding:0;">
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Year</th>
-                                        <th>Collection Date</th>
-                                        <th>Location</th>
-                                        <th>Voucher Value</th>
-                                        <th>Tokens</th>
-                                        <th>Progress</th>
+                                        <th style="width:38px; text-align:center;">
+                                            <input type="checkbox" id="rdDistSelectAllCb" onchange="toggleSelectAllRamadanDists(this.checked)" style="cursor:pointer;" title="Select all on this page">
+                                        </th>
+                                        <th style="width:42px; text-align:center; color:var(--text-muted);">#</th>
+                                        <th onclick="sortRamadanDists('title')" style="cursor:pointer;">Campaign &amp; Package <i data-lucide="chevrons-up-down" style="width:13px; vertical-align:middle;"></i></th>
+                                        <th onclick="sortRamadanDists('year')" style="cursor:pointer;">Year &amp; Schedule <i data-lucide="chevrons-up-down" style="width:13px; vertical-align:middle;"></i></th>
+                                        <th onclick="sortRamadanDists('collection_location')" style="cursor:pointer;">Venue &amp; Coordinator <i data-lucide="chevrons-up-down" style="width:13px; vertical-align:middle;"></i></th>
+                                        <th onclick="sortRamadanDists('voucher_value')" style="cursor:pointer;">Voucher &amp; Budget <i data-lucide="chevrons-up-down" style="width:13px; vertical-align:middle;"></i></th>
+                                        <th onclick="sortRamadanDists('total_tokens')" style="cursor:pointer;">Tokens Breakdown <i data-lucide="chevrons-up-down" style="width:13px; vertical-align:middle;"></i></th>
+                                        <th onclick="sortRamadanDists('progress')" style="cursor:pointer;">Collection Progress <i data-lucide="chevrons-up-down" style="width:13px; vertical-align:middle;"></i></th>
                                         <th>Status</th>
                                         <th style="text-align:right;">Actions</th>
                                     </tr>
@@ -2137,9 +3939,14 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- 5B. Distributions Card Grid View -->
+                    <div id="rdDistGridViewWrap" class="rd-cards-grid" style="display:none;"></div>
+
+                    <!-- 6. Full Pagination Controls Bar -->
+                    <div id="rdDistPaginationBar" class="rd-dist-pagination-bar"></div>
                 </div>
 
-                <!-- TAB: VOLUNTEERS -->
                 <div id="volunteersTab" class="tab-content">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -5252,174 +7059,691 @@
         </div>
     </div>
 
-    <!-- Ramadan Distribution Modal (Create/Edit) -->
+    <!-- Ramadan Distribution Modal (Create/Edit Campaign Suite) -->
     <div id="ramadanDistModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i data-lucide="moon" style="color:var(--primary);"></i> <span id="ramadanDistModalTitle">New Distribution</span></h3>
-                <button class="btn-close" onclick="closeModal('ramadanDistModal')"><i data-lucide="x" style="width:20px;"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="ramadanDistForm" onsubmit="saveRamadanDist(event)">
-                    <input type="hidden" id="ramadanDistId">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Title</label>
-                            <input type="text" id="ramadanDistTitle" class="form-input" placeholder="e.g. Ramadan 2026 – Dry Rations" required>
+        <div class="modal-content rd-dist-modal-shell">
+            <form id="ramadanDistForm" onsubmit="saveRamadanDist(event, false)">
+                <input type="hidden" id="ramadanDistId">
+                <input type="hidden" id="ramadanDistPkgType" value="dry_ration">
+                <input type="hidden" id="ramadanDistAssignMode" value="all_active">
+
+                <!-- 1. Executive Header -->
+                <div class="rd-dist-modal-hdr">
+                    <div style="display:flex; align-items:center; gap:0.85rem;">
+                        <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#3730a3,#6366f1); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(99,102,241,0.25);">
+                            <i data-lucide="moon" style="width:20px;height:20px;"></i>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Year</label>
-                            <input type="number" id="ramadanDistYear" class="form-input" placeholder="2026" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Collection Date</label>
-                            <input type="date" id="ramadanDistDate" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Collection Location</label>
-                            <input type="text" id="ramadanDistLocation" class="form-input" placeholder="e.g. Galgamuwa Town Hall">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Voucher Value (LKR)</label>
-                            <input type="number" id="ramadanDistVoucher" class="form-input" placeholder="0" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Status</label>
-                            <select id="ramadanDistStatus" class="form-select">
-                                <option value="active">Active</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column:1/-1;">
-                            <label class="form-label">Notes</label>
-                            <input type="text" id="ramadanDistNotes" class="form-input" placeholder="Optional notes">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:0.55rem; flex-wrap:wrap;">
+                                <h3 id="ramadanDistModalTitle" style="margin:0; font-size:1.12rem; font-weight:800; color:var(--text-main);">New Distribution Campaign</h3>
+                                <span id="rdModalModeBadge" class="rd-hero-badge" style="font-size:0.66rem; padding:0.15rem 0.55rem;">Create Campaign</span>
+                            </div>
+                            <p id="rdModalSubDesc" style="margin:2px 0 0; font-size:0.76rem; color:var(--text-muted);">Configure seasonal ration packs, voucher valuation, collection venue, and token issuance.</p>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline" onclick="closeModal('ramadanDistModal')"><i data-lucide="x-circle"></i> Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="ramadanDistSubmitBtn"><i data-lucide="save"></i> Save Distribution</button>
+                    <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                        <span style="font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Presets:</span>
+                        <button type="button" class="rd-item-chip" onclick="applyRamadanCampaignPreset('dry_ration')" title="Quick-fill Dry Ration Campaign">Dry Ration</button>
+                        <button type="button" class="rd-item-chip" onclick="applyRamadanCampaignPreset('zakat_pack')" title="Quick-fill Zakat Relief Campaign">Zakat Pack</button>
+                        <button type="button" class="rd-item-chip" onclick="applyRamadanCampaignPreset('cash_voucher')" title="Quick-fill Cash / Supermarket Voucher">Cash Voucher</button>
+                        <button type="button" class="rd-item-chip" onclick="applyRamadanCampaignPreset('eid_gift')" title="Quick-fill Eid Family Pack">Eid Pack</button>
+                        <button type="button" class="btn-close" onclick="closeModal('ramadanDistModal')" style="margin-left:0.25rem;"><i data-lucide="x" style="width:20px;"></i></button>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                <!-- 2. Live Campaign Summary Strip -->
+                <div class="rd-dist-live-strip">
+                    <div style="display:flex; align-items:center; gap:0.7rem; min-width:0;">
+                        <div style="width:36px; height:36px; border-radius:10px; background:var(--bg-card); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; color:#6366f1; flex-shrink:0;" id="rdPreviewYearBox">2026</div>
+                        <div style="min-width:0;">
+                            <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
+                                <span id="rdPreviewTitle" style="font-weight:800; font-size:0.88rem; color:var(--text-main);">Untitled Distribution</span>
+                                <span id="rdPreviewPkgBadge" class="rd-pkg-badge rd-pkg-dry_ration">Dry Ration Pack</span>
+                                <span id="rdPreviewStatusBadge" class="status-badge" style="background:#d1fae5; color:#065f46; font-size:0.66rem; padding:0.1rem 0.48rem;">Active</span>
+                            </div>
+                            <div id="rdPreviewSubMeta" style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">1447 AH • Venue TBD • Schedule TBD</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.9rem; flex-wrap:wrap;">
+                        <div style="text-align:right;">
+                            <div style="font-size:0.64rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Voucher Value</div>
+                            <div id="rdPreviewVoucherVal" style="font-size:0.92rem; font-weight:800; color:var(--text-main);">LKR 0</div>
+                        </div>
+                        <div style="width:1px; height:26px; background:var(--border-color);"></div>
+                        <div style="text-align:right;">
+                            <div style="font-size:0.64rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Est. Total Budget</div>
+                            <div id="rdPreviewTotalBudget" style="font-size:0.92rem; font-weight:800; color:#10b981;">LKR 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Scrollable Modal Body -->
+                <div class="rd-dist-modal-body">
+
+                    <!-- Section A: Campaign Identity & Package Type -->
+                    <div class="rd-dist-section">
+                        <div class="rd-dist-sec-hdr">
+                            <div class="rd-dist-sec-title">
+                                <div class="rd-dist-sec-icon"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></div>
+                                <div>
+                                    <h4 style="margin:0; font-size:0.88rem; font-weight:800; color:var(--text-main);">Campaign Identity &amp; Season</h4>
+                                    <p style="margin:1px 0 0; font-size:0.72rem; color:var(--text-muted);">Define the distribution title, Gregorian &amp; Hijri year, and aid package type</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:0.85rem; margin-bottom:0.9rem;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span>Campaign Title *</span>
+                                    <button type="button" onclick="autoFillRamadanTitle()" style="border:none; background:none; color:#6366f1; font-size:0.68rem; font-weight:700; cursor:pointer; padding:0;">Auto-Generate</button>
+                                </label>
+                                <input type="text" id="ramadanDistTitle" class="form-input" placeholder="e.g. Ramadan 2026 – Dry Ration Relief" required oninput="updateRamadanModalPreview()">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Year *</label>
+                                <input type="number" id="ramadanDistYear" class="form-input" placeholder="2026" min="2020" max="2050" required oninput="onRamadanYearInput(this.value)">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Hijri Year</label>
+                                <input type="text" id="ramadanDistHijri" class="form-input" placeholder="e.g. 1447 AH" oninput="updateRamadanModalPreview()">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Campaign Status</label>
+                                <select id="ramadanDistStatus" class="form-select" onchange="updateRamadanModalPreview()">
+                                    <option value="active">Active</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Package Type Selector Cards -->
+                        <div>
+                            <label class="form-label" style="margin-bottom:0.35rem;">Package / Aid Category</label>
+                            <div class="rd-pkg-type-grid">
+                                <button type="button" class="rd-pkg-type-card active" data-pkg="dry_ration" onclick="selectRamadanPkgType('dry_ration')">
+                                    <i data-lucide="package" style="width:17px;height:17px;color:#10b981;"></i>
+                                    <span style="font-size:0.75rem; font-weight:800;">Dry Ration Pack</span>
+                                    <span style="font-size:0.64rem; color:var(--text-muted);">Essential food items</span>
+                                </button>
+                                <button type="button" class="rd-pkg-type-card" data-pkg="cash_voucher" onclick="selectRamadanPkgType('cash_voucher')">
+                                    <i data-lucide="banknote" style="width:17px;height:17px;color:#3b82f6;"></i>
+                                    <span style="font-size:0.75rem; font-weight:800;">Cash / Voucher</span>
+                                    <span style="font-size:0.64rem; color:var(--text-muted);">Supermarket / Cash</span>
+                                </button>
+                                <button type="button" class="rd-pkg-type-card" data-pkg="zakat_pack" onclick="selectRamadanPkgType('zakat_pack')">
+                                    <i data-lucide="coins" style="width:17px;height:17px;color:#f59e0b;"></i>
+                                    <span style="font-size:0.75rem; font-weight:800;">Zakat Relief Pack</span>
+                                    <span style="font-size:0.64rem; color:var(--text-muted);">Zakat-funded grant</span>
+                                </button>
+                                <button type="button" class="rd-pkg-type-card" data-pkg="iftar_kit" onclick="selectRamadanPkgType('iftar_kit')">
+                                    <i data-lucide="utensils" style="width:17px;height:17px;color:#8b5cf6;"></i>
+                                    <span style="font-size:0.75rem; font-weight:800;">Iftar &amp; Suhoor Kit</span>
+                                    <span style="font-size:0.64rem; color:var(--text-muted);">Dates, drinks &amp; meals</span>
+                                </button>
+                                <button type="button" class="rd-pkg-type-card" data-pkg="eid_gift" onclick="selectRamadanPkgType('eid_gift')">
+                                    <i data-lucide="gift" style="width:17px;height:17px;color:#ec4899;"></i>
+                                    <span style="font-size:0.75rem; font-weight:800;">Eid Family Pack</span>
+                                    <span style="font-size:0.64rem; color:var(--text-muted);">Festive ration &amp; gifts</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section B: Valuation, Quota & Ration Pack Contents -->
+                    <div class="rd-dist-section">
+                        <div class="rd-dist-sec-hdr">
+                            <div class="rd-dist-sec-title">
+                                <div class="rd-dist-sec-icon" style="background:rgba(16,185,129,0.12); color:#10b981;"><i data-lucide="shopping-bag" style="width:16px;height:16px;"></i></div>
+                                <div>
+                                    <h4 style="margin:0; font-size:0.88rem; font-weight:800; color:var(--text-main);">Voucher Valuation &amp; Ration Contents</h4>
+                                    <p style="margin:1px 0 0; font-size:0.72rem; color:var(--text-muted);">Set monetary value per token, target family quota, and itemized pack contents</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:0.85rem; margin-bottom:0.85rem;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Voucher / Pack Value (LKR)</label>
+                                <input type="number" id="ramadanDistVoucher" class="form-input" placeholder="e.g. 10000" min="0" oninput="updateRamadanModalPreview()">
+                                <div style="display:flex; align-items:center; gap:0.35rem; flex-wrap:wrap; margin-top:0.4rem;">
+                                    <span style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">Quick LKR:</span>
+                                    <button type="button" class="mem-sub-preset-btn" onclick="setRamadanVoucherPreset(2500)">2,500</button>
+                                    <button type="button" class="mem-sub-preset-btn" onclick="setRamadanVoucherPreset(5000)">5,000</button>
+                                    <button type="button" class="mem-sub-preset-btn" onclick="setRamadanVoucherPreset(7500)">7,500</button>
+                                    <button type="button" class="mem-sub-preset-btn" onclick="setRamadanVoucherPreset(10000)">10,000</button>
+                                    <button type="button" class="mem-sub-preset-btn" onclick="setRamadanVoucherPreset(15000)">15,000</button>
+                                    <button type="button" class="mem-sub-preset-btn" onclick="setRamadanVoucherPreset(25000)">25,000</button>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" style="display:flex; justify-content:space-between;">
+                                    <span>Target Quota (Packs)</span>
+                                    <span style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">0 = Unlimited</span>
+                                </label>
+                                <input type="number" id="ramadanDistQuota" class="form-input" placeholder="e.g. 150 families" min="0" oninput="updateRamadanModalPreview()">
+                                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem;" id="rdModalQuotaHint">
+                                    Active eligible beneficiaries: <strong id="rdModalActiveBenCount" style="color:var(--text-main);">—</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                                <span>Ration Pack Items / Voucher Contents (Printed on Tokens)</span>
+                                <button type="button" onclick="clearRamadanPackItems()" style="border:none; background:none; color:var(--text-muted); font-size:0.68rem; cursor:pointer; padding:0;">Clear Items</button>
+                            </label>
+                            <input type="text" id="ramadanDistItems" class="form-input" placeholder="e.g. Samba Rice 10kg, Wheat Flour 5kg, Sugar 3kg, Red Dhal 2kg, Dates 1kg, Cooking Oil 2L..." oninput="syncRamadanItemChipsFromInput()">
+                            <div class="rd-item-chips" id="rdPackItemChips">
+                                <button type="button" class="rd-item-chip" data-ritem="Rice 10kg" onclick="toggleRamadanPackItem('Rice 10kg')">+ Rice 10kg</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Wheat Flour 5kg" onclick="toggleRamadanPackItem('Wheat Flour 5kg')">+ Wheat Flour 5kg</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Sugar 3kg" onclick="toggleRamadanPackItem('Sugar 3kg')">+ Sugar 3kg</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Red Dhal 2kg" onclick="toggleRamadanPackItem('Red Dhal 2kg')">+ Red Dhal 2kg</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Cooking Oil 2L" onclick="toggleRamadanPackItem('Cooking Oil 2L')">+ Cooking Oil 2L</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Dates 1kg" onclick="toggleRamadanPackItem('Dates 1kg')">+ Dates 1kg</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Tea 500g" onclick="toggleRamadanPackItem('Tea 500g')">+ Tea 500g</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Milk Powder 400g" onclick="toggleRamadanPackItem('Milk Powder 400g')">+ Milk Powder 400g</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Chickpeas 1kg" onclick="toggleRamadanPackItem('Chickpeas 1kg')">+ Chickpeas 1kg</button>
+                                <button type="button" class="rd-item-chip" data-ritem="Vermicelli & Spices" onclick="toggleRamadanPackItem('Vermicelli & Spices')">+ Vermicelli &amp; Spices</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section C: Collection Schedule, Venue & Field Coordinator -->
+                    <div class="rd-dist-section">
+                        <div class="rd-dist-sec-hdr">
+                            <div class="rd-dist-sec-title">
+                                <div class="rd-dist-sec-icon" style="background:rgba(2,132,199,0.12); color:#0284c7;"><i data-lucide="map-pin" style="width:16px;height:16px;"></i></div>
+                                <div>
+                                    <h4 style="margin:0; font-size:0.88rem; font-weight:800; color:var(--text-main);">Collection Venue, Schedule &amp; Coordinator</h4>
+                                    <p style="margin:1px 0 0; font-size:0.72rem; color:var(--text-muted);">Specify where and when beneficiaries should present their tokens</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span>Collection Date</span>
+                                    <span style="display:inline-flex; gap:0.35rem;">
+                                        <button type="button" onclick="setRamadanQuickDate(0)" style="border:none; background:none; color:#6366f1; font-size:0.68rem; font-weight:700; cursor:pointer; padding:0;">Today</button>
+                                        <button type="button" onclick="setRamadanQuickDate(1)" style="border:none; background:none; color:#6366f1; font-size:0.68rem; font-weight:700; cursor:pointer; padding:0;">Tomorrow</button>
+                                        <button type="button" onclick="setRamadanQuickDate(7)" style="border:none; background:none; color:#6366f1; font-size:0.68rem; font-weight:700; cursor:pointer; padding:0;">+7 Days</button>
+                                    </span>
+                                </label>
+                                <input type="date" id="ramadanDistDate" class="form-input" onchange="updateRamadanModalPreview()">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Collection Time Window</label>
+                                <input type="text" id="ramadanDistTime" class="form-input" list="rdTimeWindowList" placeholder="e.g. 09:00 AM – 04:00 PM" oninput="updateRamadanModalPreview()">
+                                <datalist id="rdTimeWindowList">
+                                    <option value="08:30 AM – 12:30 PM (Morning Session)">
+                                    <option value="09:00 AM – 04:00 PM (Full Day)">
+                                    <option value="01:30 PM – 05:30 PM (After Jummah / Afternoon)">
+                                    <option value="09:00 AM – 01:00 PM">
+                                </datalist>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label">Collection Location / Venue</label>
+                                <input type="text" id="ramadanDistLocation" class="form-input" list="rdLocationDatalist" placeholder="e.g. EDF Community Center, Galgamuwa" oninput="updateRamadanModalPreview()">
+                                <datalist id="rdLocationDatalist">
+                                    <option value="EDF Head Office, Galgamuwa">
+                                    <option value="Galgamuwa Town Hall">
+                                    <option value="Grand Jummah Masjid Premises, Galgamuwa">
+                                    <option value="EDF Vocational Training Centre">
+                                    <option value="Home Delivery (Field Volunteers)">
+                                </datalist>
+                            </div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">Coordinator Name</label>
+                                    <input type="text" id="ramadanDistCoordName" class="form-input" placeholder="In-Charge Name">
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">Coordinator Phone</label>
+                                    <input type="text" id="ramadanDistCoordPhone" class="form-input" placeholder="07X XXXXXXX">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section D: Initial Token Assignment (Shown on Create) & Notes -->
+                    <div class="rd-dist-section">
+                        <div id="rdModalAssignSection" style="margin-bottom:0.9rem; padding-bottom:0.9rem; border-bottom:1px dashed var(--border-color);">
+                            <label class="form-label" style="margin-bottom:0.45rem;">Initial Beneficiary Token Issuance (Upon Creation)</label>
+                            <div class="rd-assign-mode-grid">
+                                <div class="rd-assign-mode-card active" data-amode="all_active" onclick="selectRamadanAssignMode('all_active')">
+                                    <i data-lucide="users" style="width:18px;height:18px;color:#10b981;flex-shrink:0;margin-top:2px;"></i>
+                                    <div>
+                                        <div style="font-size:0.78rem; font-weight:800; color:var(--text-main);">Assign All Active</div>
+                                        <div style="font-size:0.68rem; color:var(--text-muted); margin-top:1px;">Issue tokens to all <span id="rdAssignCardCount">active</span> approved families immediately</div>
+                                    </div>
+                                </div>
+                                <div class="rd-assign-mode-card" data-amode="filtered" onclick="selectRamadanAssignMode('filtered')">
+                                    <i data-lucide="filter" style="width:18px;height:18px;color:#6366f1;flex-shrink:0;margin-top:2px;"></i>
+                                    <div>
+                                        <div style="font-size:0.78rem; font-weight:800; color:var(--text-main);">Filter by Town / Category</div>
+                                        <div style="font-size:0.68rem; color:var(--text-muted); margin-top:1px;">Issue tokens only to a specific town or beneficiary category</div>
+                                    </div>
+                                </div>
+                                <div class="rd-assign-mode-card" data-amode="none" onclick="selectRamadanAssignMode('none')">
+                                    <i data-lucide="clock" style="width:18px;height:18px;color:#f59e0b;flex-shrink:0;margin-top:2px;"></i>
+                                    <div>
+                                        <div style="font-size:0.78rem; font-weight:800; color:var(--text-main);">Assign Later Manually</div>
+                                        <div style="font-size:0.68rem; color:var(--text-muted); margin-top:1px;">Create campaign now and assign beneficiaries later</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filtered Auto-Assign Options -->
+                            <div id="rdModalAssignFilterWrap" style="display:none; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:0.75rem; padding:0.75rem; background:var(--input-bg); border:1px solid var(--border-color); border-radius:11px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">Filter by Home Town</label>
+                                    <select id="ramadanDistAssignTown" class="form-select">
+                                        <option value="all">All Towns</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">Filter by Beneficiary Category</label>
+                                    <select id="ramadanDistAssignCategory" class="form-select">
+                                        <option value="all">All Categories</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">Special Instructions / Notes</label>
+                            <input type="text" id="ramadanDistNotes" class="form-input" placeholder="e.g. Please bring original NIC and this token card for verification at the counter.">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 4. Sticky Footer -->
+                <div class="rd-dist-modal-footer">
+                    <div style="font-size:0.75rem; color:var(--text-muted);">
+                        <i data-lucide="shield-check" style="width:14px;height:14px;vertical-align:middle;color:#10b981;"></i>
+                        Tokens are uniquely numbered (<code style="font-family:monospace;">RMD-YYYY-0001</code>)
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.55rem; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('ramadanDistModal')">
+                            <i data-lucide="x-circle"></i> Cancel
+                        </button>
+                        <button type="button" class="btn btn-outline" id="ramadanDistSaveAndOpenBtn" onclick="saveRamadanDist(null, true)" style="border-color:#6366f1; color:#6366f1; font-weight:700;">
+                            <i data-lucide="ticket"></i> Save &amp; Manage Tokens
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="ramadanDistSubmitBtn">
+                            <i data-lucide="save"></i> Save Distribution
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Ramadan Tokens Modal -->
+    <!-- Ramadan Tokens Modal (Field Verification & Token Management Console) -->
     <div id="ramadanTokensModal" class="modal">
         <div class="modal-content">
 
-            <!-- Header -->
+            <!-- 1. Executive Header -->
             <div class="rd-tok-header">
                 <div class="rd-tok-header-left">
-                    <div class="rd-tok-icon"><i data-lucide="ticket" style="width:18px;"></i></div>
+                    <div class="rd-tok-icon"><i data-lucide="ticket" style="width:20px;height:20px;"></i></div>
                     <div>
-                        <h3 class="rd-tok-title" id="rdTokModalTitle">Distribution Tokens</h3>
-                        <p  class="rd-tok-sub"   id="rdTokModalSub"></p>
+                        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                            <h3 class="rd-tok-title" id="rdTokModalTitle">Distribution Tokens</h3>
+                            <span id="rdTokModalPkgBadge" class="rd-pkg-badge rd-pkg-dry_ration">Dry Ration</span>
+                            <span id="rdTokModalStatusBadge" class="status-badge" style="background:#d1fae5; color:#065f46; font-size:0.66rem; padding:0.1rem 0.45rem;">Active</span>
+                        </div>
+                        <div class="rd-tok-sub" id="rdTokModalSub"></div>
                     </div>
                 </div>
                 <div class="rd-tok-header-actions">
-                    <button class="rd-hdr-btn" onclick="assignAllBeneficiaries()">
+                    <button type="button" class="rd-hdr-btn rd-hdr-btn-emerald" id="rdToggleAssignDrawerBtn" onclick="toggleRdAssignDrawer()">
+                        <i data-lucide="user-plus" style="width:14px;"></i> <span id="rdToggleAssignBtnText">Assign Beneficiary</span>
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="assignAllBeneficiaries()" title="Assign tokens to all remaining Active beneficiaries">
                         <i data-lucide="users" style="width:14px;"></i> Assign All Active
                     </button>
-                    <button class="rd-hdr-btn" onclick="printRamadanTokens()">
+                    <button type="button" class="rd-hdr-btn" onclick="exportRdTokens('csv')" title="Export current tokens list to CSV">
+                        <i data-lucide="download" style="width:14px;"></i> CSV
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="exportRdTokens('xlsx')" title="Export current tokens list to Excel">
+                        <i data-lucide="sheet" style="width:14px;color:#10b981;"></i> Excel
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="printRamadanChecklist()" title="Print Field Attendance & Signature Checklist">
+                        <i data-lucide="clipboard-list" style="width:14px;"></i> Checklist
+                    </button>
+                    <button type="button" class="rd-hdr-btn rd-hdr-btn-primary" onclick="printRamadanTokens()" title="Print Official Beneficiary Token Cards">
                         <i data-lucide="printer" style="width:14px;"></i> Print Tokens
                     </button>
-                    <button class="btn-close" onclick="closeModal('ramadanTokensModal')">
+                    <button type="button" class="btn-close" onclick="closeRamadanTokensModal()">
                         <i data-lucide="x" style="width:18px;"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Stats bar -->
+            <!-- 2. Interactive 5-Block KPI & Progress Bar -->
             <div class="rd-tok-stats-bar">
-                <div class="rd-stat-pill rd-stat-total">
+                <div class="rd-stat-pill rd-stat-total" onclick="setRdTokFilter('all')" title="Click to show all tokens">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="rd-stat-lbl">Total Issued</span>
+                        <i data-lucide="ticket" style="width:13px; color:var(--text-muted);"></i>
+                    </div>
                     <span class="rd-stat-num" id="rdTokTotal">—</span>
-                    <span class="rd-stat-lbl">Total</span>
+                    <span class="rd-stat-sub" id="rdTokTotalValSub">Value: LKR 0</span>
                 </div>
-                <div class="rd-stat-pill rd-stat-collected">
+                <div class="rd-stat-pill rd-stat-collected" onclick="setRdTokFilter('collected')" title="Click to filter Collected tokens">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="rd-stat-lbl">Collected</span>
+                        <i data-lucide="check-circle-2" style="width:13px; color:#10b981;"></i>
+                    </div>
                     <span class="rd-stat-num" id="rdTokCollected">—</span>
-                    <span class="rd-stat-lbl">Collected</span>
+                    <span class="rd-stat-sub" id="rdTokCollectedValSub" style="color:#10b981;">Disbursed: LKR 0</span>
                 </div>
-                <div class="rd-stat-pill rd-stat-pending">
+                <div class="rd-stat-pill rd-stat-pending" onclick="setRdTokFilter('pending')" title="Click to filter Pending tokens">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="rd-stat-lbl">Pending</span>
+                        <i data-lucide="clock" style="width:13px; color:#f59e0b;"></i>
+                    </div>
                     <span class="rd-stat-num" id="rdTokPending">—</span>
-                    <span class="rd-stat-lbl">Pending</span>
+                    <span class="rd-stat-sub" id="rdTokPendingValSub" style="color:#d97706;">Remaining: LKR 0</span>
                 </div>
-                <div class="rd-stat-pill rd-stat-absent">
+                <div class="rd-stat-pill rd-stat-absent" onclick="setRdTokFilter('absent')" title="Click to filter Absent tokens">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="rd-stat-lbl">Absent</span>
+                        <i data-lucide="user-x" style="width:13px; color:#ef4444;"></i>
+                    </div>
                     <span class="rd-stat-num" id="rdTokAbsent">—</span>
-                    <span class="rd-stat-lbl">Absent</span>
+                    <span class="rd-stat-sub" id="rdTokAbsentSub">Unclaimed</span>
                 </div>
-                <div class="rd-progress-wrap">
+                <div class="rd-progress-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Collection Progress</span>
+                        <span class="rd-progress-pct" id="rdProgressPct">0%</span>
+                    </div>
                     <div class="rd-progress-track">
                         <div class="rd-progress-fill" id="rdProgressBar"></div>
+                        <div class="rd-progress-absent-fill" id="rdProgressAbsentBar"></div>
                     </div>
-                    <span class="rd-progress-pct" id="rdProgressPct">0%</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.68rem; color:var(--text-muted);">
+                        <span id="rdProgressFractionText">0 of 0 collected</span>
+                        <span id="rdUnassignedEligibleHint" style="color:#6366f1; font-weight:700; cursor:pointer;" onclick="toggleRdAssignDrawer(true)"></span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Verify panel -->
+            <!-- 3. Collapsible "Assign Beneficiaries" Drawer -->
+            <div id="rdAssignDrawer" class="rd-assign-drawer">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:0.6rem; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span style="font-size:0.8rem; font-weight:800; color:var(--text-main);">
+                            <i data-lucide="user-plus" style="width:14px;height:14px;vertical-align:middle;color:#6366f1;"></i>
+                            Assign Unassigned Active Beneficiaries
+                        </span>
+                        <span id="rdUnassignedCountBadge" class="rd-mini-chip">0 Unassigned</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap; flex:1; justify-content:flex-end;">
+                        <input type="text" id="rdAssignSearchInput" class="rd-sel" style="min-width:190px; cursor:text;" placeholder="Search unassigned by name, NIC, app#..." oninput="renderRdUnassignedList()">
+                        <select id="rdAssignTownFilter" class="rd-sel" onchange="renderRdUnassignedList()">
+                            <option value="all">All Towns</option>
+                        </select>
+                        <select id="rdAssignCatFilter" class="rd-sel" onchange="renderRdUnassignedList()">
+                            <option value="all">All Categories</option>
+                        </select>
+                        <button type="button" class="rd-hdr-btn rd-hdr-btn-primary" onclick="assignFilteredUnassignedBeneficiaries()">
+                            <i data-lucide="check-circle" style="width:13px;"></i> Assign Filtered (<span id="rdAssignFilteredCount">0</span>)
+                        </button>
+                        <button type="button" class="rd-hdr-btn" onclick="toggleRdAssignDrawer(false)">Close</button>
+                    </div>
+                </div>
+                <div id="rdUnassignedListContainer" class="rd-assign-list"></div>
+            </div>
+
+            <!-- 4. Fast Verify & Optical/Hardware Scanner Panel -->
             <div class="rd-verify-panel">
-                <div class="rd-verify-icon"><i data-lucide="scan-line" style="width:16px;"></i></div>
+                <div class="rd-verify-icon" title="Optical &amp; Hardware Scanner Station"><i data-lucide="scan-line" style="width:16px;"></i></div>
                 <div class="rd-verify-field">
                     <input type="text" id="rdVerifyNic" class="rd-verify-input"
-                        placeholder="Scan QR or enter NIC / Beneficiary ID / Application # / Family Name…"
+                        placeholder="Fast Verify: Scan QR/Barcode or enter Token # (e.g. RMD-2026-0001 or 0001), NIC, App #, Phone, Name…"
                         onkeydown="if(event.key==='Enter'){event.preventDefault();verifyBeneficiaryNic();}">
+                    <button type="button" onclick="clearRdVerifyStrip()" style="position:absolute; right:8px; border:none; background:none; color:var(--text-muted); cursor:pointer; padding:2px;" title="Clear verification input">
+                        <i data-lucide="x" style="width:14px;height:14px;"></i>
+                    </button>
                 </div>
-                <button class="rd-verify-btn" onclick="verifyBeneficiaryNic()">
+                <button type="button" class="rd-verify-btn" onclick="verifyBeneficiaryNic()">
                     <i data-lucide="check-circle" style="width:15px;"></i> Verify &amp; Collect
                 </button>
+                <button type="button" class="rd-hdr-btn rd-hdr-btn-camera" id="rdCameraToggleBtn" onclick="toggleRdCameraDrawer()" title="Scan QR / Barcode with Webcam or External Camera">
+                    <i data-lucide="camera" style="width:14px;"></i> <span id="rdCameraBtnText">Scan Camera</span>
+                </button>
+
+                <!-- Scanner Mode Toggles -->
+                <div class="rd-scanner-switches">
+                    <label class="rd-toggle-chip" title="Automatically mark token as collected immediately when a valid pending token is scanned">
+                        <input type="checkbox" id="rdAutoCollectCheck" onchange="rdToggleAutoCollect(this.checked)">
+                        <i data-lucide="zap" style="width:12px;color:#10b981;"></i>
+                        <span>Auto-Collect</span>
+                    </label>
+                    <label class="rd-toggle-chip" id="rdGunModeChip" title="Keep input focused for external USB or Bluetooth handheld barcode/QR scanner guns">
+                        <input type="checkbox" id="rdGunModeCheck" onchange="rdToggleGunMode(this.checked)">
+                        <i data-lucide="barcode" style="width:12px;color:#6366f1;"></i>
+                        <span>Handheld Gun</span>
+                        <span class="rd-gun-dot" id="rdGunDot"></span>
+                    </label>
+                    <label class="rd-toggle-chip" title="Play audio confirmation upon scanning">
+                        <input type="checkbox" id="rdAudioBeepCheck" checked onchange="rdToggleAudioBeep(this.checked)">
+                        <i data-lucide="volume-2" style="width:12px;color:#0ea5e9;"></i>
+                        <span>Beep</span>
+                    </label>
+                </div>
             </div>
+
+            <!-- 4b. Collapsible Live Optical Camera Scanner Drawer -->
+            <div id="rdCameraDrawer" class="rd-camera-drawer" style="display:none;">
+                <div class="rd-camera-topbar">
+                    <div class="rd-camera-status-wrap">
+                        <span class="rd-cam-pulse-dot" id="rdCamPulseDot"></span>
+                        <span class="rd-cam-title">Live Optical Camera Scanner</span>
+                        <span class="rd-cam-badge" id="rdCamStatusBadge">Ready</span>
+                    </div>
+                    <div class="rd-camera-device-select-wrap">
+                        <div class="rd-cam-dev-icon"><i data-lucide="video" style="width:13px;color:#94a3b8;"></i></div>
+                        <select id="rdCameraDeviceSelect" class="rd-cam-sel" onchange="rdSwitchCameraDevice(this.value)">
+                            <option value="">Detecting cameras...</option>
+                        </select>
+                        <button type="button" class="rd-cam-action-btn" id="rdMirrorBtn" onclick="rdToggleMirror()" title="Flip / Un-mirror Camera View">
+                            <i data-lucide="flip-horizontal-2" style="width:13px;"></i>
+                        </button>
+                        <button type="button" class="rd-cam-action-btn" onclick="document.getElementById('rdScanFileInput').click()" title="Scan QR / Barcode from Photo or Image File">
+                            <i data-lucide="image" style="width:13px;"></i>
+                        </button>
+                        <input type="file" id="rdScanFileInput" accept="image/*" style="display:none;" onchange="rdScanFile(this)">
+                        <button type="button" class="rd-cam-action-btn" id="rdTorchBtn" onclick="rdToggleTorch()" title="Toggle Flashlight / Torch" style="display:none;">
+                            <i data-lucide="zap" style="width:13px;"></i>
+                        </button>
+                        <button type="button" class="rd-cam-action-btn" id="rdPauseScanBtn" onclick="rdTogglePauseScan()" title="Pause or Resume Scanner">
+                            <i data-lucide="pause" style="width:13px;"></i>
+                        </button>
+                        <button type="button" class="rd-cam-action-btn rd-cam-close-btn" onclick="toggleRdCameraDrawer(false)" title="Close Camera">
+                            <i data-lucide="x" style="width:14px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Viewfinder Area with HUD Overlay -->
+                <div class="rd-viewfinder-stage">
+                    <div id="rdCameraViewfinder" class="rd-viewfinder-box"></div>
+                    <div class="rd-viewfinder-overlay" id="rdViewfinderOverlay">
+                        <div class="rd-reticle-box">
+                            <div class="rd-reticle-corner tl"></div>
+                            <div class="rd-reticle-corner tr"></div>
+                            <div class="rd-reticle-corner bl"></div>
+                            <div class="rd-reticle-corner br"></div>
+                            <div class="rd-laser-line"></div>
+                        </div>
+                        <div class="rd-viewfinder-hint">
+                            Position printed QR Code or Barcode anywhere inside the frame
+                        </div>
+                    </div>
+                    <div class="rd-scan-flash" id="rdScanFlash"></div>
+                </div>
+
+                <!-- Camera Drawer Footer -->
+                <div class="rd-camera-footer">
+                    <div class="rd-cam-formats">
+                        <span>Formats:</span>
+                        <span class="rd-fmt-pill">QR</span>
+                        <span class="rd-fmt-pill">Code-128</span>
+                        <span class="rd-fmt-pill">EAN</span>
+                        <span class="rd-fmt-pill">UPC</span>
+                        <span id="rdCamResBadge" class="rd-fmt-pill" style="font-family:monospace;color:#38bdf8;">Camera Active</span>
+                    </div>
+                    <div id="rdLastScannedCodeBadge" class="rd-last-scan-badge" style="display:none;"></div>
+                </div>
+
+                <!-- Guidance Bar for Webcam Troubleshooting -->
+                <div class="rd-cam-guide-bar">
+                    <span><i data-lucide="info" style="width:12px;vertical-align:middle;color:#38bdf8;"></i> <strong>Distance:</strong> Hold code 25–40 cm (10–15 in) away (too close causes webcam blur)</span>
+                    <span>&bull; <strong>Lighting:</strong> Ensure even light &bull; If using phone screen, reduce screen brightness</span>
+                    <span>&bull; <strong>Mirrored?</strong> Click Flip button <i data-lucide="flip-horizontal-2" style="width:11px;vertical-align:middle;"></i></span>
+                </div>
+            </div>
+
+            <!-- Verification & Collection Result Area -->
             <div id="rdVerifyResult" class="rd-verify-result-wrap" style="display:none;"></div>
 
-            <!-- Toolbar -->
+            <!-- 5. Multi-Dimensional Filter, Search & Sort Toolbar -->
             <div class="rd-tok-toolbar">
-                <div class="rd-search-wrap">
-                    <i data-lucide="search" style="width:13px; color:var(--text-muted); flex-shrink:0;"></i>
-                    <input type="text" id="rdTokSearch" class="rd-search-input"
-                        placeholder="Search name, NIC, token #, app #…" oninput="rdTokSearchChange()">
+                <!-- Row 1: Search + Status Filter Pills -->
+                <div class="rd-tok-toolbar-row">
+                    <div class="rd-search-wrap">
+                        <i data-lucide="search" style="width:14px; color:var(--text-muted); flex-shrink:0;"></i>
+                        <input type="text" id="rdTokSearch" class="rd-search-input"
+                            placeholder="Filter tokens by name, NIC, token #, app #, phone, town, category, or notes…" oninput="rdTokSearchChange()">
+                        <button type="button" id="rdTokSearchClearBtn" onclick="document.getElementById('rdTokSearch').value=''; rdTokSearchChange();" style="display:none; border:none; background:none; color:var(--text-muted); cursor:pointer; padding:0 2px;">
+                            <i data-lucide="x" style="width:13px;height:13px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="rd-filter-group">
+                        <button type="button" class="rd-filter-btn active" id="rdTokFilter-all" onclick="setRdTokFilter('all')">
+                            All <span class="rd-filter-cnt" id="rdTokCnt-all">0</span>
+                        </button>
+                        <button type="button" class="rd-filter-btn" id="rdTokFilter-pending" onclick="setRdTokFilter('pending')">
+                            <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
+                            Pending <span class="rd-filter-cnt" id="rdTokCnt-pending">0</span>
+                        </button>
+                        <button type="button" class="rd-filter-btn" id="rdTokFilter-collected" onclick="setRdTokFilter('collected')">
+                            <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+                            Collected <span class="rd-filter-cnt" id="rdTokCnt-collected">0</span>
+                        </button>
+                        <button type="button" class="rd-filter-btn" id="rdTokFilter-absent" onclick="setRdTokFilter('absent')">
+                            <span style="width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
+                            Absent <span class="rd-filter-cnt" id="rdTokCnt-absent">0</span>
+                        </button>
+                    </div>
                 </div>
-                <select id="rdTokSortSel" class="rd-sel" onchange="rdTokSortChange()">
-                    <option value="token_number|asc">Token # ↑</option>
-                    <option value="token_number|desc">Token # ↓</option>
-                    <option value="beneficiary_name|asc">Name A–Z</option>
-                    <option value="beneficiary_name|desc">Name Z–A</option>
-                    <option value="status|asc">Status A–Z</option>
-                    <option value="status|desc">Status Z–A</option>
-                    <option value="collected_at|desc">Collected (Newest)</option>
-                    <option value="collected_at|asc">Collected (Oldest)</option>
-                </select>
-                <select id="rdTokPageSizeSel" class="rd-sel" onchange="rdTokPageSizeChange()">
-                    <option value="10">10 / page</option>
-                    <option value="20" selected>20 / page</option>
-                    <option value="50">50 / page</option>
-                    <option value="100">100 / page</option>
-                </select>
-                <div class="rd-filter-group">
-                    <button class="rd-filter-btn active" id="rdTokFilter-all"       onclick="setRdTokFilter('all')">All</button>
-                    <button class="rd-filter-btn"        id="rdTokFilter-pending"   onclick="setRdTokFilter('pending')">Pending</button>
-                    <button class="rd-filter-btn"        id="rdTokFilter-collected" onclick="setRdTokFilter('collected')">Collected</button>
-                    <button class="rd-filter-btn"        id="rdTokFilter-absent"    onclick="setRdTokFilter('absent')">Absent</button>
+
+                <!-- Row 2: Town Filter + Category Filter + Extra Filter + Sort + Page Size + Reset + Count -->
+                <div class="rd-tok-toolbar-row" style="padding-top:0.35rem; border-top:1px dashed var(--border-color);">
+                    <span style="font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; display:inline-flex; align-items:center; gap:0.25rem;">
+                        <i data-lucide="filter" style="width:12px;height:12px;"></i> Filters:
+                    </span>
+
+                    <select id="rdTokTownFilter" class="rd-sel" onchange="onRdTokAdvFilterChange()" title="Filter by Beneficiary Home Town">
+                        <option value="all">All Towns / Areas</option>
+                    </select>
+
+                    <select id="rdTokCategoryFilter" class="rd-sel" onchange="onRdTokAdvFilterChange()" title="Filter by Beneficiary Category">
+                        <option value="all">All Categories</option>
+                    </select>
+
+                    <select id="rdTokExtraFilter" class="rd-sel" onchange="onRdTokAdvFilterChange()" title="Special Token Filters">
+                        <option value="all">All Records</option>
+                        <option value="with_notes">Has Notes / Remarks</option>
+                        <option value="collected_today">Collected Today</option>
+                        <option value="has_phone">Has Contact Phone</option>
+                    </select>
+
+                    <select id="rdTokSortSel" class="rd-sel" onchange="rdTokSortChange()" title="Sort tokens">
+                        <option value="token_number|asc">Sort: Token # ↑</option>
+                        <option value="token_number|desc">Sort: Token # ↓</option>
+                        <option value="beneficiary_name|asc">Sort: Name (A–Z)</option>
+                        <option value="beneficiary_name|desc">Sort: Name (Z–A)</option>
+                        <option value="home_town|asc">Sort: Town (A–Z)</option>
+                        <option value="status|asc">Sort: Status (A–Z)</option>
+                        <option value="status|desc">Sort: Status (Z–A)</option>
+                        <option value="collected_at|desc">Sort: Collected (Newest)</option>
+                        <option value="collected_at|asc">Sort: Collected (Oldest)</option>
+                    </select>
+
+                    <select id="rdTokPageSizeSel" class="rd-sel" onchange="rdTokPageSizeChange()" title="Rows per page">
+                        <option value="10">10 / page</option>
+                        <option value="20" selected>20 / page</option>
+                        <option value="50">50 / page</option>
+                        <option value="100">100 / page</option>
+                    </select>
+
+                    <button type="button" id="rdTokResetFiltersBtn" class="rd-reset-btn" style="display:none; padding:0.28rem 0.6rem; font-size:0.72rem;" onclick="resetRdTokFilters()">
+                        <i data-lucide="rotate-ccw" style="width:11px;height:11px;"></i> Reset
+                    </button>
+
+                    <span id="rdTokFilterSummary" style="margin-left:auto; font-size:0.75rem; font-weight:600; color:var(--text-muted); white-space:nowrap;"></span>
                 </div>
             </div>
 
-            <!-- Table -->
+            <!-- 6. Bulk Token Action Bar -->
+            <div id="rdTokBulkBar" class="rd-tok-bulk-bar">
+                <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.78rem; font-weight:700; color:var(--text-main);">
+                    <i data-lucide="check-square" style="width:15px;height:15px;color:#6366f1;"></i>
+                    <span><span id="rdTokBulkCount">0</span> token(s) selected</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                    <button type="button" class="rd-hdr-btn rd-hdr-btn-emerald" onclick="executeRdTokBulkAction('collected')">
+                        <i data-lucide="check" style="width:13px;"></i> Mark Collected
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="executeRdTokBulkAction('pending')">
+                        <i data-lucide="rotate-ccw" style="width:13px;color:#6366f1;"></i> Mark Pending
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="executeRdTokBulkAction('absent')">
+                        <i data-lucide="user-x" style="width:13px;color:#f59e0b;"></i> Mark Absent
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="printSelectedRdTokens()">
+                        <i data-lucide="printer" style="width:13px;color:#6366f1;"></i> Print Selected
+                    </button>
+                    <button type="button" class="rd-hdr-btn" style="color:#ef4444; border-color:rgba(239,68,68,0.3);" onclick="executeRdTokBulkAction('delete')">
+                        <i data-lucide="trash-2" style="width:13px;"></i> Remove
+                    </button>
+                    <button type="button" class="rd-hdr-btn" onclick="clearRdTokSelection()">Clear</button>
+                </div>
+            </div>
+
+            <!-- 7. Tokens Table -->
             <div class="rd-table-wrap">
                 <table class="rd-table">
                     <thead>
                         <tr>
+                            <th style="width:36px; text-align:center;">
+                                <input type="checkbox" id="rdTokSelectAllCb" onchange="toggleSelectAllRdTokens(this.checked)" style="cursor:pointer;" title="Select all on this page">
+                            </th>
                             <th class="rd-th-sort" onclick="rdToggleSort('token_number')">
                                 Token # <span class="rd-sort-arrow" id="rdSort-token_number">↑</span>
                             </th>
                             <th class="rd-th-sort" onclick="rdToggleSort('beneficiary_name')">
-                                Beneficiary <span class="rd-sort-arrow" id="rdSort-beneficiary_name"></span>
+                                Beneficiary &amp; Contact <span class="rd-sort-arrow" id="rdSort-beneficiary_name"></span>
                             </th>
-                            <th>App #</th>
-                            <th>NIC</th>
+                            <th>App # &amp; NIC</th>
+                            <th class="rd-th-sort" onclick="rdToggleSort('home_town')">
+                                Town &amp; Category <span class="rd-sort-arrow" id="rdSort-home_town"></span>
+                            </th>
                             <th class="rd-th-sort" onclick="rdToggleSort('status')">
                                 Status <span class="rd-sort-arrow" id="rdSort-status"></span>
                             </th>
                             <th class="rd-th-sort" onclick="rdToggleSort('collected_at')">
-                                Collected At <span class="rd-sort-arrow" id="rdSort-collected_at"></span>
+                                Collection &amp; Remarks <span class="rd-sort-arrow" id="rdSort-collected_at"></span>
                             </th>
                             <th style="text-align:right;">Actions</th>
                         </tr>
@@ -5428,7 +7752,7 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
+            <!-- 8. Pagination Footer -->
             <div class="rd-pagination" id="rdPagination"></div>
 
         </div>
@@ -6209,10 +8533,11 @@
     </div>
 
 
-    <script src="js/dashboard.js"></script>
-    <script src="js/programs.js?v=2.0"></script>
-    <script src="js/customizer.js"></script>
-    <script src="js/logs.js"></script>
+    <script src="/vendor/html5-qrcode.min.js"></script>
+    <script src="/vendor/qrcode.min.js"></script>
+    <script src="/vendor/jsbarcode.min.js"></script>
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/ramadan.js?v=2.2"></script>
     <script>
         lucide.createIcons();
     </script>
