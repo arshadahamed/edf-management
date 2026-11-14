@@ -119,7 +119,7 @@ async function initDb() {
     try { await db.run("ALTER TABLE family_donations ADD COLUMN reference_no TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE family_donations ADD COLUMN distributed_by TEXT"); } catch (_) {}
 
-    // Migrate ramadan_distributions & ramadan_tokens tables: extended campaign & collector fields
+    // Migrate ramadan_distributions & ramadan_tokens tables: extended campaign, shop allocation & collector fields
     try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN package_type TEXT DEFAULT 'dry_ration'"); } catch (_) {}
     try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN hijri_year TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN collection_time TEXT"); } catch (_) {}
@@ -127,8 +127,14 @@ async function initDb() {
     try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN coordinator_phone TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN target_quota INTEGER DEFAULT 0"); } catch (_) {}
     try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN package_items TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN allocated_shops TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN collector_name TEXT"); } catch (_) {}
     try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN collector_nic TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN allocated_shop TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN redeemed_at DATETIME"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN redeemed_by_shop TEXT"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_at DATETIME"); } catch (_) {}
+    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_by INTEGER"); } catch (_) {}
 
     await db.exec(`
         CREATE TABLE IF NOT EXISTS users (
@@ -544,6 +550,31 @@ async function initDb() {
         }
     }
 
+    const docMigrations = [
+        "ALTER TABLE documents ADD COLUMN folder TEXT DEFAULT 'General'",
+        "ALTER TABLE documents ADD COLUMN visibility TEXT DEFAULT 'internal'",
+        "ALTER TABLE documents ADD COLUMN is_pinned INTEGER DEFAULT 0"
+    ];
+    for (const sql of docMigrations) {
+        try {
+            await db.run(sql);
+        } catch (_) {
+            // column already exists
+        }
+    }
+
+    const invMigrations = [
+        "ALTER TABLE inventory_items ADD COLUMN location TEXT DEFAULT ''",
+        "ALTER TABLE inventory_items ADD COLUMN image_url TEXT DEFAULT ''"
+    ];
+    for (const sql of invMigrations) {
+        try {
+            await db.run(sql);
+        } catch (_) {
+            // column already exists
+        }
+    }
+
     // Ramadan distributions and tokens tables
     await db.exec(`
         CREATE TABLE IF NOT EXISTS ramadan_distributions (
@@ -626,6 +657,55 @@ async function initDb() {
             usage_date DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(item_id) REFERENCES inventory_items(id)
         );
+    `);
+
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS beneficiary_helps (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            beneficiary_id INTEGER NOT NULL,
+            help_category TEXT NOT NULL, -- 'money', 'equipment', 'home_reconstruction', 'building_repair', 'other'
+            title TEXT NOT NULL,
+            status TEXT DEFAULT 'planned', -- 'planned', 'in_progress', 'completed', 'cancelled'
+            priority TEXT DEFAULT 'normal', -- 'urgent', 'high', 'normal'
+            amount REAL DEFAULT 0,
+            quantity TEXT,
+            item_or_scope TEXT,
+            contractor_or_supplier TEXT,
+            payment_method TEXT DEFAULT 'cash',
+            reference_no TEXT,
+            progress_pct INTEGER DEFAULT 0,
+            help_date TEXT,
+            completion_date TEXT,
+            provided_by TEXT,
+            description TEXT,
+            sync_transaction INTEGER DEFAULT 0,
+            transaction_id INTEGER,
+            created_by TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (beneficiary_id) REFERENCES beneficiaries(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS beneficiary_help_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            help_id INTEGER NOT NULL,
+            beneficiary_id INTEGER NOT NULL,
+            action_type TEXT NOT NULL, -- 'created', 'updated', 'status_change', 'field_visit', 'delivery', 'inspection', 'milestone', 'note'
+            status_snapshot TEXT,
+            progress_snapshot INTEGER,
+            amount_snapshot REAL,
+            note TEXT NOT NULL,
+            logged_by TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (help_id) REFERENCES beneficiary_helps(id) ON DELETE CASCADE,
+            FOREIGN KEY (beneficiary_id) REFERENCES beneficiaries(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_ben_helps_ben ON beneficiary_helps(beneficiary_id);
+        CREATE INDEX IF NOT EXISTS idx_ben_helps_cat ON beneficiary_helps(help_category);
+        CREATE INDEX IF NOT EXISTS idx_ben_helps_status ON beneficiary_helps(status);
+        CREATE INDEX IF NOT EXISTS idx_ben_help_logs_help ON beneficiary_help_logs(help_id);
+        CREATE INDEX IF NOT EXISTS idx_ben_help_logs_ben ON beneficiary_help_logs(beneficiary_id);
     `);
 
     // Seed default timeline items if table is empty
@@ -725,6 +805,276 @@ async function initDb() {
         await db.run('INSERT INTO courses (title, category, target_audience) VALUES (?, ?, ?)',
             ['CCTV Installation', 'skills', 'men']);
     }
+
+    // SMS Gateways, Templates & Dispatch Logs (Text.lk & configurable REST providers)
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS sms_gateways (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            provider TEXT DEFAULT 'textlk',
+            api_url TEXT NOT NULL,
+            api_token TEXT NOT NULL,
+            sender_id TEXT NOT NULL,
+            default_country_code TEXT DEFAULT '94',
+            message_type TEXT DEFAULT 'plain',
+            custom_headers TEXT DEFAULT '{}',
+            is_default INTEGER DEFAULT 0,
+            is_active INTEGER DEFAULT 1,
+            last_status TEXT DEFAULT 'Configured',
+            last_tested_at DATETIME,
+            notes TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS sms_templates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            category TEXT DEFAULT 'Reminder',
+            body TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS sms_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            gateway_id INTEGER,
+            gateway_name TEXT,
+            batch_id TEXT,
+            dispatch_mode TEXT DEFAULT 'individual',
+            recipient_type TEXT DEFAULT 'beneficiary',
+            beneficiary_id INTEGER,
+            beneficiary_name TEXT,
+            phone_raw TEXT,
+            phone_normalized TEXT NOT NULL,
+            sender_id TEXT,
+            message TEXT NOT NULL,
+            segments INTEGER DEFAULT 1,
+            status TEXT DEFAULT 'sent',
+            scheduled_for DATETIME,
+            provider_response TEXT,
+            provider_message_id TEXT,
+            error_message TEXT,
+            reminder_tag TEXT DEFAULT '',
+            sent_by TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    `);
+
+    const smsTplCount = await db.get('SELECT COUNT(*) as cnt FROM sms_templates');
+    if (smsTplCount && smsTplCount.cnt === 0) {
+        const starterTemplates = [
+            [
+                'Aid Distribution Reminder',
+                'Reminder',
+                'Assalamu Alaikum {name} ({app_no}), reminder from EDF Galgamuwa: your scheduled assistance package is ready for collection. Please bring your NIC.'
+            ],
+            [
+                'Document Verification Call',
+                'Aid Notice',
+                'Assalamu Alaikum {name}, please bring the required verification documents for application {app_no} to EDF Galgamuwa office ({town}) during office hours.'
+            ],
+            [
+                'Ramadan & Relief Update',
+                'Ramadan',
+                'Assalamu Alaikum {name}, EDF Galgamuwa relief distribution for {category} families will commence soon. Contact our coordination desk for timings.'
+            ]
+        ];
+        for (const tpl of starterTemplates) {
+            await db.run(
+                'INSERT INTO sms_templates (title, category, body) VALUES (?, ?, ?)',
+                tpl
+            );
+        }
+    }
+
+    // Madrasa Class, Muallimah, Student & Attendance Management Tables
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS madrasa_muallimahs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            staff_code TEXT UNIQUE,
+            full_name TEXT NOT NULL,
+            phone TEXT DEFAULT '',
+            email TEXT DEFAULT '',
+            nic_number TEXT DEFAULT '',
+            qualification TEXT DEFAULT '',
+            specialization TEXT DEFAULT 'Quran & Tajweed',
+            monthly_stipend REAL DEFAULT 0,
+            join_date DATE,
+            address TEXT DEFAULT '',
+            status TEXT DEFAULT 'active',
+            notes TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS madrasa_classes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            class_code TEXT UNIQUE,
+            class_name TEXT NOT NULL,
+            level TEXT DEFAULT 'Nazirah',
+            muallimah_id INTEGER REFERENCES madrasa_muallimahs(id) ON DELETE SET NULL,
+            schedule_days TEXT DEFAULT 'Mon - Fri',
+            schedule_time TEXT DEFAULT '02:30 PM - 04:30 PM',
+            room_name TEXT DEFAULT 'Hall A',
+            capacity INTEGER DEFAULT 25,
+            monthly_fee REAL DEFAULT 0,
+            status TEXT DEFAULT 'active',
+            description TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS madrasa_students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            admission_no TEXT UNIQUE,
+            full_name TEXT NOT NULL,
+            gender TEXT DEFAULT 'female',
+            dob DATE,
+            age INTEGER,
+            class_id INTEGER REFERENCES madrasa_classes(id) ON DELETE SET NULL,
+            guardian_name TEXT DEFAULT '',
+            guardian_phone TEXT DEFAULT '',
+            guardian_relation TEXT DEFAULT 'Parent',
+            address TEXT DEFAULT '',
+            enrollment_date DATE,
+            current_juz_or_level TEXT DEFAULT 'Noorani Qaida',
+            fee_status TEXT DEFAULT 'sponsored',
+            status TEXT DEFAULT 'active',
+            notes TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS madrasa_attendance (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            class_id INTEGER NOT NULL REFERENCES madrasa_classes(id) ON DELETE CASCADE,
+            student_id INTEGER NOT NULL REFERENCES madrasa_students(id) ON DELETE CASCADE,
+            attendance_date DATE NOT NULL,
+            status TEXT NOT NULL DEFAULT 'present',
+            lesson_note TEXT DEFAULT '',
+            remarks TEXT DEFAULT '',
+            marked_by TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(class_id, student_id, attendance_date)
+        );
+    `);
+
+    const madrasaSeeded = await db.get("SELECT value FROM global_settings WHERE key = 'madrasa_seeded'");
+    if (!madrasaSeeded) {
+        const mCount = await db.get('SELECT COUNT(*) as cnt FROM madrasa_muallimahs');
+        const cCount = await db.get('SELECT COUNT(*) as cnt FROM madrasa_classes');
+        if (mCount && mCount.cnt === 0 && cCount && cCount.cnt === 0) {
+            const m1 = await db.run(
+                `INSERT INTO madrasa_muallimahs (staff_code, full_name, phone, qualification, specialization, monthly_stipend, join_date, status, notes)
+                 VALUES (?, ?, ?, ?, ?, ?, date('now', '-180 days'), 'active', ?)`,
+                ['MLM-001', 'Ustadha Fathima Nazeera', '+94 77 412 8890', 'Alimah & Hifz Ijazah', 'Hifz-ul-Quran & Tajweed', 25000, 'Lead morning & afternoon Hifz halqah instructor']
+            );
+            const m2 = await db.run(
+                `INSERT INTO madrasa_muallimahs (staff_code, full_name, phone, qualification, specialization, monthly_stipend, join_date, status, notes)
+                 VALUES (?, ?, ?, ?, ?, ?, date('now', '-120 days'), 'active', ?)`,
+                ['MLM-002', 'Ustadha Ayesha Siddiqa', '+94 71 845 3321', 'Qariah & Islamic Studies Diploma', 'Noorani Qaida & Nazirah', 20000, 'Foundation Qaida & Fiqh for beginners']
+            );
+            const cls1 = await db.run(
+                `INSERT INTO madrasa_classes (class_code, class_name, level, muallimah_id, schedule_days, schedule_time, room_name, capacity, monthly_fee, status, description)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)`,
+                ['CLS-001', 'Al-Fajr Hifz Halqah', 'Hifz', m1.lastID, 'Mon - Fri', '02:30 PM - 04:45 PM', 'Sanctuary Hall 1', 20, 0, 'Intensive Quran memorization and daily tajweed murajaah circle']
+            );
+            const cls2 = await db.run(
+                `INSERT INTO madrasa_classes (class_code, class_name, level, muallimah_id, schedule_days, schedule_time, room_name, capacity, monthly_fee, status, description)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)`,
+                ['CLS-002', 'Noorani Qaida & Nazirah', 'Qaida / Beginners', m2.lastID, 'Mon, Wed, Fri', '03:00 PM - 04:30 PM', 'Classroom B', 25, 500, 'Foundational Arabic phonetics, daily dua memorization & adab']
+            );
+            const year = new Date().getFullYear();
+            await db.run(
+                `INSERT INTO madrasa_students (admission_no, full_name, gender, age, class_id, guardian_name, guardian_phone, guardian_relation, enrollment_date, current_juz_or_level, fee_status, status)
+                 VALUES (?, ?, 'female', 12, ?, ?, ?, 'Father', date('now', '-90 days'), 'Juz 06 · Surah An-Nisa', 'sponsored', 'active')`,
+                [`MDR-${year}-001`, 'Zainab Banu', cls1.lastID, 'Mohamed Farook', '+94 77 201 4410']
+            );
+            await db.run(
+                `INSERT INTO madrasa_students (admission_no, full_name, gender, age, class_id, guardian_name, guardian_phone, guardian_relation, enrollment_date, current_juz_or_level, fee_status, status)
+                 VALUES (?, ?, 'female', 11, ?, ?, ?, 'Mother', date('now', '-75 days'), 'Juz 04 · Al-Imran', 'paid', 'active')`,
+                [`MDR-${year}-002`, 'Hafsa Mariyam', cls1.lastID, 'Sakeena Begum', '+94 76 903 1188']
+            );
+            await db.run(
+                `INSERT INTO madrasa_students (admission_no, full_name, gender, age, class_id, guardian_name, guardian_phone, guardian_relation, enrollment_date, current_juz_or_level, fee_status, status)
+                 VALUES (?, ?, 'female', 8, ?, ?, ?, 'Father', date('now', '-45 days'), 'Noorani Qaida Lesson 11', 'exempt', 'active')`,
+                [`MDR-${year}-003`, 'Amina Zahra', cls2.lastID, 'Abdul Rahman', '+94 77 889 2201']
+            );
+        }
+        await db.run("INSERT OR IGNORE INTO global_settings (key, value) VALUES ('madrasa_seeded', '1')");
+    }
+
+    // Server-side Backup Snapshots Vault table
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS backup_snapshots (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uid TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            notes TEXT DEFAULT '',
+            backup_type TEXT DEFAULT 'manual',
+            scope TEXT DEFAULT 'full',
+            filename TEXT NOT NULL,
+            file_size INTEGER DEFAULT 0,
+            checksum TEXT NOT NULL,
+            tables_count INTEGER DEFAULT 0,
+            total_rows INTEGER DEFAULT 0,
+            table_counts_json TEXT DEFAULT '{}',
+            includes_json TEXT DEFAULT '[]',
+            is_locked INTEGER DEFAULT 0,
+            created_by TEXT DEFAULT 'admin',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    `);
+
+    // Volunteer Force Extended Registry & Activity Deployment Logs
+    const volCols = await db.all('PRAGMA table_info(volunteers)');
+    const volColNames = new Set(volCols.map(c => c.name));
+    const volMigrations = [
+        ['volunteer_no', 'TEXT'],
+        ['nic_number', 'TEXT'],
+        ['whatsapp', 'TEXT'],
+        ['address', 'TEXT'],
+        ['city', 'TEXT'],
+        ['gender', 'TEXT'],
+        ['blood_group', 'TEXT'],
+        ['availability', "TEXT DEFAULT 'Weekends'"],
+        ['wing', "TEXT DEFAULT 'Field Relief'"],
+        ['role_tier', "TEXT DEFAULT 'Field Volunteer'"],
+        ['transport_mode', "TEXT DEFAULT 'None'"],
+        ['emergency_contact_name', 'TEXT'],
+        ['emergency_contact_phone', 'TEXT'],
+        ['join_date', 'DATE'],
+        ['verified_id', 'INTEGER DEFAULT 0'],
+        ['total_hours', 'REAL DEFAULT 0'],
+        ['deployments_count', 'INTEGER DEFAULT 0'],
+        ['photo_url', 'TEXT'],
+        ['notes', 'TEXT'],
+        ['updated_at', 'DATETIME']
+    ];
+    for (const [col, def] of volMigrations) {
+        if (!volColNames.has(col)) {
+            await db.exec(`ALTER TABLE volunteers ADD COLUMN ${col} ${def}`);
+        }
+    }
+    await db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_no ON volunteers(volunteer_no) WHERE volunteer_no IS NOT NULL`);
+
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS volunteer_activities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            volunteer_id INTEGER NOT NULL REFERENCES volunteers(id) ON DELETE CASCADE,
+            activity_title TEXT NOT NULL,
+            activity_type TEXT DEFAULT 'Field Relief',
+            activity_date DATE NOT NULL,
+            hours_served REAL DEFAULT 0,
+            location TEXT DEFAULT '',
+            coordinator TEXT DEFAULT '',
+            notes TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    `);
 
     return db;
 }

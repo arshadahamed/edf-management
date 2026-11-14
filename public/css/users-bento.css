@@ -1,0 +1,1348 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *   EDF GALGAMUWA — User Accounts, Access Control & Security Modals Bento CSS
+ *   Sovereign Emerald (#10b981 / #059669) & Sanctuary Gold (#f59e0b / #d97706)
+ *   Scoped to #usersTab, #userModal, #changePasswordModal, #userInspectModal, #umConfirmModal
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. Hero Banner ────────────────────────────────────────────────────────── */
+#usersTab .um-hero-banner {
+    position: relative;
+    overflow: hidden;
+    padding: 1.35rem 1.55rem;
+    margin-bottom: 1.15rem;
+    border-radius: 22px;
+    border: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 92% 16%, rgba(16, 185, 129, 0.16) 0%, transparent 48%),
+        radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.12) 0%, transparent 45%),
+        var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.15rem;
+}
+
+[data-theme="dark"] #usersTab .um-hero-banner {
+    background:
+        radial-gradient(circle at 92% 16%, rgba(16, 185, 129, 0.23) 0%, transparent 50%),
+        radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.15) 0%, transparent 46%),
+        var(--bg-card);
+}
+
+#usersTab .um-hero-pattern {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.26;
+    background-image: radial-gradient(rgba(16, 185, 129, 0.28) 1px, transparent 1px);
+    background-size: 20px 20px;
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.85), transparent 64%);
+    -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.85), transparent 64%);
+}
+
+#usersTab .um-hero-left {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1 1 380px;
+    min-width: 260px;
+}
+
+#usersTab .um-hero-emblem {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.36);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #059669;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.14);
+}
+
+[data-theme="dark"] #usersTab .um-hero-emblem {
+    color: #34d399;
+}
+
+#usersTab .um-hero-emblem .edf-lottie-slot,
+#userModal .um-modal-emblem .edf-lottie-slot,
+#changePasswordModal .um-modal-emblem .edf-lottie-slot,
+#userInspectModal .um-modal-emblem .edf-lottie-slot,
+#umConfirmModal .um-modal-emblem .edf-lottie-slot {
+    width: 30px;
+    height: 30px;
+}
+
+#usersTab .um-hero-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.28rem;
+}
+
+#usersTab .um-hero-title {
+    margin: 0;
+    font-size: 1.48rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+}
+
+#usersTab .um-governance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.24rem 0.68rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.32);
+    color: #047857;
+}
+
+[data-theme="dark"] #usersTab .um-governance-badge {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+#usersTab .um-hero-subtitle {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    max-width: 620px;
+    line-height: 1.45;
+}
+
+#usersTab .um-hero-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+#usersTab .um-btn-outline,
+#usersTab .um-btn-emerald,
+#userModal .um-btn-emerald,
+#userModal .um-btn-outline,
+#changePasswordModal .um-btn-emerald,
+#changePasswordModal .um-btn-outline,
+#userInspectModal .um-btn-emerald,
+#userInspectModal .um-btn-outline,
+#umConfirmModal .um-btn-outline,
+#umConfirmModal .um-btn-emerald,
+#umConfirmModal .um-btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    padding: 0.54rem 0.96rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s ease;
+}
+
+#usersTab .um-btn-outline,
+#userModal .um-btn-outline,
+#changePasswordModal .um-btn-outline,
+#userInspectModal .um-btn-outline,
+#umConfirmModal .um-btn-outline {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+#usersTab .um-btn-outline:hover,
+#userModal .um-btn-outline:hover,
+#changePasswordModal .um-btn-outline:hover,
+#userInspectModal .um-btn-outline:hover,
+#umConfirmModal .um-btn-outline:hover {
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #059669;
+    background: rgba(16, 185, 129, 0.08);
+}
+
+#usersTab .um-btn-emerald,
+#userModal .um-btn-emerald,
+#changePasswordModal .um-btn-emerald,
+#userInspectModal .um-btn-emerald,
+#umConfirmModal .um-btn-emerald {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: 1px solid rgba(5, 150, 105, 0.5);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+}
+
+#usersTab .um-btn-emerald:hover,
+#userModal .um-btn-emerald:hover,
+#changePasswordModal .um-btn-emerald:hover,
+#userInspectModal .um-btn-emerald:hover,
+#umConfirmModal .um-btn-emerald:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(16, 185, 129, 0.34);
+}
+
+#umConfirmModal .um-btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: 1px solid rgba(220, 38, 38, 0.5);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+}
+
+#umConfirmModal .um-btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(239, 68, 68, 0.35);
+}
+
+/* ── 2. Bento KPI Grid ─────────────────────────────────────────────────────── */
+#usersTab .um-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 1.05rem;
+}
+
+@media (max-width: 1120px) {
+    #usersTab .um-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    #usersTab .um-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+#usersTab .um-kpi-card {
+    position: relative;
+    overflow: hidden;
+    padding: 0.95rem 1.08rem;
+    border-radius: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+#usersTab .um-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(16, 185, 129, 0.36);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+}
+
+#usersTab .um-kpi-lbl {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.24rem;
+}
+
+#usersTab .um-kpi-val {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+    line-height: 1.05;
+}
+
+#usersTab .um-kpi-meta {
+    margin-top: 0.24rem;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+#usersTab .um-kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.24);
+    color: #059669;
+}
+
+#usersTab .um-kpi-icon.gold {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: rgba(245, 158, 11, 0.28);
+    color: #d97706;
+}
+
+#usersTab .um-kpi-icon.rose {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.26);
+    color: #ef4444;
+}
+
+#usersTab .um-kpi-icon .edf-lottie-slot {
+    width: 24px;
+    height: 24px;
+}
+
+/* ── 3. Live Online Presence Strip ─────────────────────────────────────────── */
+#usersTab .um-online-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 1.05rem;
+    margin-bottom: 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background:
+        linear-gradient(90deg, rgba(16, 185, 129, 0.08), rgba(245, 158, 11, 0.04) 55%, transparent),
+        var(--bg-card);
+}
+
+#usersTab .um-online-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+#usersTab .um-online-label .edf-lottie-slot {
+    width: 20px;
+    height: 20px;
+}
+
+#usersTab .um-online-chips {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1 1 260px;
+}
+
+#usersTab .um-online-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    padding: 0.26rem 0.68rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    color: #047857;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+
+[data-theme="dark"] #usersTab .um-online-chip {
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.18);
+}
+
+#usersTab .um-online-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(16, 185, 129, 0.22);
+    border-color: rgba(16, 185, 129, 0.45);
+}
+
+#usersTab .um-online-chip .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22);
+    animation: um-pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes um-pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.25); }
+}
+
+#usersTab .um-live-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+#usersTab .um-live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    padding: 0.22rem 0.62rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #059669;
+}
+
+[data-theme="dark"] #usersTab .um-live-pill {
+    color: #34d399;
+}
+
+/* ── 4. Filter Pills & Search Toolbar ──────────────────────────────────────── */
+#usersTab .um-toolbar-card {
+    padding: 0.9rem 1.05rem;
+    margin-bottom: 1rem;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+#usersTab .um-pill-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+#usersTab .um-role-pills {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+}
+
+#usersTab .um-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.36rem;
+    padding: 0.34rem 0.72rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.16s ease;
+}
+
+#usersTab .um-filter-pill:hover {
+    border-color: rgba(16, 185, 129, 0.4);
+    color: var(--text-main);
+}
+
+#usersTab .um-filter-pill.active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(245, 158, 11, 0.1));
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #047857;
+}
+
+[data-theme="dark"] #usersTab .um-filter-pill.active {
+    color: #6ee7b7;
+}
+
+#usersTab .um-filter-pill .pill-cnt {
+    padding: 0.05rem 0.38rem;
+    border-radius: 999px;
+    background: var(--bg-card);
+    font-size: 0.66rem;
+    font-weight: 800;
+}
+
+#usersTab .um-search-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+#usersTab .um-search-wrap {
+    position: relative;
+    flex: 1 1 250px;
+}
+
+#usersTab .um-search-icon {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    width: 15px;
+    height: 15px;
+    pointer-events: none;
+}
+
+#usersTab .um-search-input {
+    width: 100%;
+    padding: 0.56rem 0.9rem 0.56rem 2.25rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.84rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+#usersTab .um-search-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+#usersTab .um-status-seg {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    gap: 2px;
+}
+
+#usersTab .um-status-seg-btn {
+    padding: 0.36rem 0.72rem;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.16s ease;
+}
+
+#usersTab .um-status-seg-btn.active {
+    background: var(--bg-card);
+    color: #059669;
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] #usersTab .um-status-seg-btn.active {
+    color: #34d399;
+}
+
+/* ── 5. Bulk Selection Bar ─────────────────────────────────────────────────── */
+#usersTab .um-bulk-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding: 0.72rem 1rem;
+    margin-bottom: 0.95rem;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(245, 158, 11, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.36);
+}
+
+#usersTab .um-bulk-bar.visible {
+    display: flex;
+}
+
+#usersTab .um-bulk-info {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+#usersTab .um-bulk-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+/* ── 6. Directory Table Card ───────────────────────────────────────────────── */
+#usersTab .um-directory-card {
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+#usersTab .um-table-wrap {
+    overflow-x: auto;
+}
+
+#usersTab .um-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+}
+
+#usersTab .um-table th {
+    padding: 0.78rem 0.9rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: var(--input-bg);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+#usersTab .um-table td {
+    padding: 0.78rem 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+#usersTab .um-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#usersTab .um-table tbody tr:hover td {
+    background: rgba(16, 185, 129, 0.04);
+}
+
+#usersTab .um-table tbody tr.is-selected td {
+    background: rgba(16, 185, 129, 0.08);
+}
+
+#usersTab .um-user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#usersTab .um-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.14);
+}
+
+#usersTab .um-avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    object-fit: cover;
+}
+
+#usersTab .um-online-dot,
+#usersTab .um-offline-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-card);
+}
+
+#usersTab .um-online-dot {
+    background: #10b981;
+}
+
+#usersTab .um-offline-dot {
+    background: #94a3b8;
+}
+
+#usersTab .um-user-name {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.87rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+#usersTab .um-you-pill {
+    font-size: 0.64rem;
+    font-weight: 800;
+    padding: 0.08rem 0.42rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.14);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+#usersTab .um-user-title {
+    font-size: 0.72rem;
+    color: #059669;
+    font-weight: 600;
+}
+
+[data-theme="dark"] #usersTab .um-user-title {
+    color: #34d399;
+}
+
+#usersTab .um-user-sub {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+#usersTab .role-badge,
+#userInspectModal .role-badge,
+#userModal .role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.24rem 0.62rem;
+    border-radius: 999px;
+    font-size: 0.69rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid transparent;
+}
+
+.role-admin      { background: rgba(239, 68, 68, 0.12);   color: #ef4444; border-color: rgba(239, 68, 68, 0.24); }
+.role-super_user { background: rgba(245, 158, 11, 0.14);  color: #d97706; border-color: rgba(245, 158, 11, 0.3); }
+.role-manager    { background: rgba(16, 185, 129, 0.14);  color: #059669; border-color: rgba(16, 185, 129, 0.3); }
+.role-editor     { background: rgba(14, 165, 233, 0.12);  color: #0284c7; border-color: rgba(14, 165, 233, 0.25); }
+.role-viewer     { background: rgba(100, 116, 139, 0.12); color: #64748b; border-color: rgba(100, 116, 139, 0.24); }
+.role-user       { background: rgba(148, 163, 184, 0.12); color: #64748b; border-color: rgba(148, 163, 184, 0.22); }
+
+[data-theme="dark"] .role-manager { color: #34d399; }
+[data-theme="dark"] .role-super_user { color: #fbbf24; }
+[data-theme="dark"] .role-editor { color: #38bdf8; }
+
+#usersTab .um-perm-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.22rem 0.56rem;
+    border-radius: 999px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+#usersTab .um-perm-pill:hover {
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #059669;
+}
+
+#usersTab .um-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.34rem;
+    flex-wrap: nowrap;
+}
+
+#usersTab .um-btn {
+    padding: 0.34rem 0.56rem;
+    border-radius: 9px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    cursor: pointer;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.26rem;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+#usersTab .um-btn:hover {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+#usersTab .um-btn.inspect:hover {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+#usersTab .um-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+#usersTab .um-btn.warn:hover {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border-color: rgba(245, 158, 11, 0.32);
+}
+
+#usersTab .um-btn.success:hover {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.32);
+}
+
+#usersTab .um-btn.warn.um-signout-live {
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.34);
+    animation: um-signout-pulse 2s ease-in-out infinite;
+}
+
+#usersTab .um-empty-box {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+}
+
+/* ── 7. Redesigned Modals (#userModal, #changePasswordModal, #userInspectModal, #umConfirmModal) */
+#userModal,
+#changePasswordModal,
+#userInspectModal,
+#umConfirmModal {
+    z-index: 9150;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+#userModal .um-modal-card,
+#changePasswordModal .um-modal-card,
+#userInspectModal .um-modal-card,
+#umConfirmModal .um-modal-card {
+    width: 720px;
+    max-width: 96vw;
+    max-height: 92vh;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.38);
+}
+
+#changePasswordModal .um-modal-card { width: 490px; }
+#userInspectModal .um-modal-card { width: 680px; }
+#umConfirmModal .um-modal-card { width: 460px; }
+
+.um-modal-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 1.08rem 1.38rem;
+    border-bottom: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 92% 18%, rgba(245, 158, 11, 0.14) 0%, transparent 48%),
+        radial-gradient(circle at 8% 84%, rgba(16, 185, 129, 0.16) 0%, transparent 46%),
+        var(--bg-card);
+}
+
+.um-modal-hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.um-modal-emblem {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.36);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #059669;
+}
+
+[data-theme="dark"] .um-modal-emblem {
+    color: #34d399;
+}
+
+.um-modal-title {
+    margin: 0;
+    font-size: 1.06rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.um-modal-sub {
+    margin: 0.14rem 0 0;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.um-modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.15rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.16s ease;
+}
+
+.um-modal-close:hover {
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.um-modal-body {
+    padding: 1.15rem 1.38rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+}
+
+.um-modal-ftr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 0.92rem 1.38rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--input-bg);
+}
+
+/* Identity preview inside User Modal */
+.um-preview-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 0.82rem 1rem;
+    border-radius: 15px;
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    background:
+        linear-gradient(125deg, rgba(16, 185, 129, 0.1), rgba(245, 158, 11, 0.07)),
+        var(--input-bg);
+}
+
+.um-preview-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.um-preview-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1rem;
+    background: #059669;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.um-preview-name {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.um-preview-meta {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+.um-form-section {
+    padding: 0.95rem 1.05rem;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.um-section-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.um-section-title {
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.um-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+@media (max-width: 580px) {
+    .um-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.um-field label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.um-inline-link {
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: #059669;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.um-inline-link:hover {
+    text-decoration: underline;
+}
+
+/* Role Tier Visual Grid */
+.um-role-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+@media (max-width: 560px) {
+    .um-role-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.um-role-card {
+    text-align: left;
+    padding: 0.58rem 0.68rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.16s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.18rem;
+}
+
+.um-role-card:hover:not(:disabled) {
+    border-color: rgba(16, 185, 129, 0.42);
+    transform: translateY(-1px);
+}
+
+.um-role-card.active {
+    border-color: #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(245, 158, 11, 0.08));
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.um-role-card:disabled {
+    opacity: 0.52;
+    cursor: not-allowed;
+}
+
+.um-role-card-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.um-role-card-desc {
+    font-size: 0.67rem;
+    color: var(--text-muted);
+    line-height: 1.25;
+}
+
+/* Password Strength & Reveal */
+.um-pass-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.um-pass-wrap input {
+    padding-right: 4.5rem !important;
+}
+
+.um-pass-eye {
+    position: absolute;
+    right: 0.45rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 26px;
+    padding: 0 0.45rem;
+    border-radius: 7px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.um-strength-bars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.35rem;
+    margin-top: 0.45rem;
+}
+
+.um-strength-seg {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--border-color);
+    transition: background 0.2s ease;
+}
+
+.um-strength-seg.lvl-1 { background: #ef4444; }
+.um-strength-seg.lvl-2 { background: #f59e0b; }
+.um-strength-seg.lvl-3 { background: #0ea5e9; }
+.um-strength-seg.lvl-4 { background: #10b981; }
+
+.um-strength-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.71rem;
+    color: var(--text-muted);
+    margin-top: 0.28rem;
+}
+
+/* Enhanced Permission Matrix Cards */
+#userModal .perm-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+@media (max-width: 600px) {
+    #userModal .perm-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+#userModal .perm-chip {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 11px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    cursor: pointer;
+    font-size: 0.77rem;
+    color: var(--text-main);
+    transition: all 0.16s ease;
+    user-select: none;
+}
+
+#userModal .perm-chip:hover {
+    border-color: rgba(16, 185, 129, 0.42);
+}
+
+#userModal .perm-chip input[type=checkbox] {
+    accent-color: #10b981;
+    width: 15px;
+    height: 15px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+#userModal .perm-chip:has(input:checked) {
+    background: rgba(16, 185, 129, 0.11);
+    border-color: rgba(16, 185, 129, 0.45);
+}
+
+#userModal .perm-chip-title {
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+#userModal .perm-chip-desc {
+    font-size: 0.66rem;
+    color: var(--text-muted);
+    line-height: 1.25;
+    margin-top: 0.12rem;
+}
+
+/* ── 8. User Inspection Modal Sub-Tabs & Activity Feed ─────────────────────── */
+.um-inspect-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    padding: 0.95rem 1.05rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.13), transparent 52%),
+        var(--input-bg);
+}
+
+.um-inspect-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+@media (max-width: 560px) {
+    .um-inspect-meta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.um-inspect-stat {
+    padding: 0.65rem 0.78rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+}
+
+.um-inspect-stat .k {
+    font-size: 0.67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+.um-inspect-stat .v {
+    margin-top: 0.16rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.um-inspect-tabs {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    gap: 3px;
+    width: fit-content;
+}
+
+.um-inspect-tab {
+    padding: 0.4rem 0.85rem;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.um-inspect-tab.active {
+    background: var(--bg-card);
+    color: #059669;
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .um-inspect-tab.active {
+    color: #34d399;
+}
+
+.um-feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.48rem;
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+.um-feed-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.56rem 0.78rem;
+    border-radius: 11px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    font-size: 0.77rem;
+}
+
+.um-feed-badge {
+    padding: 0.16rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.um-feed-badge.login { background: rgba(16, 185, 129, 0.14); color: #059669; }
+.um-feed-badge.logout { background: rgba(100, 116, 139, 0.14); color: #64748b; }
+.um-feed-badge.force_logout { background: rgba(239, 68, 68, 0.14); color: #ef4444; }
+

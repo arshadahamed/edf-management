@@ -44,8 +44,11 @@ async function startServer() {
         const ramadanRoutes = require('./src/routes/ramadan')(db);
         const adminRoutes     = require('./src/routes/admin')(db);
         const settingsRoutes  = require('./src/routes/settings')(db);
+        const backupsModule   = require('./src/routes/backups')(db);
         const frontdeskRoutes = require('./src/routes/frontdesk')(db);
         const documentsRoutes = require('./src/routes/documents')(db);
+        const smsRoutes       = require('./src/routes/sms')(db);
+        const madrasaRoutes   = require('./src/routes/madrasa')(db);
         const activityLogger    = require('./src/middleware/activityLogger')(db);
         const userGuard         = require('./src/middleware/userGuard')(db);
         const permissionGuard   = require('./src/middleware/permissionGuard')(db);
@@ -70,8 +73,11 @@ async function startServer() {
         app.use('/api/ramadan', ramadanRoutes);
         app.use('/api/admin',  adminRoutes);
         app.use('/api/settings', settingsRoutes);
+        app.use('/api/backups', express.json({ limit: '50mb' }), backupsModule.router);
         app.use('/api/frontdesk', frontdeskRoutes);
         app.use('/api/documents', documentsRoutes);
+        app.use('/api/sms', smsRoutes);
+        app.use('/api/madrasa', madrasaRoutes);
 
         // Serve HTML files
         app.get('/', (req, res) => {

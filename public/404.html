@@ -1,615 +1,821 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 – Page Not Found | EDF Galgamuwa</title>
-    <meta name="robots" content="noindex">
-    <link rel="icon" href="/uploads/favicon" id="faviconEl">
-    <style>
-        /* ── Reset & root ────────────────────────────────────────────── */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | EDF Galgamuwa — Education &amp; Development Foundation</title>
+  <meta name="description"
+    content="The page you requested could not be found. Navigate back to Education & Development Foundation (EDF) Galgamuwa programmes, charter, gallery, or staff portal.">
+  <meta name="theme-color" content="#062c22">
 
-        :root {
-            --crimson : #295742;
-            --amber   : #E8A020;
-            --navy    : #0C1A34;
-            --cream   : #F9F4EC;
-            --linen   : #EDE3D0;
-            --text    : rgba(255,255,255,0.88);
-            --muted   : rgba(255,255,255,0.42);
-            --border  : rgba(255,255,255,0.08);
-        }
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23D4AF37'%3E%3Cpath d='M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z'/%3E%3C/svg%3E">
 
-        html, body {
-            width: 100%; min-height: 100%;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--navy);
-            color: var(--text);
-            overflow-x: hidden;
-        }
+  <!-- Google Fonts (Latin, Arabic Cairo/Amiri, Tamil & Sinhala) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@500;600;700;800&family=Cinzel:wght@600;700;800;900&family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+    rel="stylesheet">
 
-        /* ── Canvas ─────────────────────────────────────────────────── */
-        #bg-canvas {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
+  <!-- Font Awesome 6.5.1 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        /* ── Ambient orbs ───────────────────────────────────────────── */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(90px);
-            pointer-events: none;
-            z-index: 1;
-        }
-        .orb-1 {
-            width: 600px; height: 600px;
-            top: -200px; left: -150px;
-            background: radial-gradient(circle, rgba(41,87,66,0.28) 0%, transparent 70%);
-            animation: orbDrift 12s ease-in-out infinite alternate;
-        }
-        .orb-2 {
-            width: 500px; height: 500px;
-            bottom: -150px; right: -100px;
-            background: radial-gradient(circle, rgba(232,160,32,0.15) 0%, transparent 70%);
-            animation: orbDrift 9s ease-in-out infinite alternate-reverse;
-        }
-        @keyframes orbDrift {
-            from { transform: translate(0, 0); }
-            to   { transform: translate(40px, -50px); }
-        }
+  <!-- Lucide Icons (Shadcn/UI Official Icon Library) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-        /* ── Floating geometric shards ──────────────────────────────── */
-        .shard {
-            position: fixed;
-            border-radius: 4px;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0;
-            animation: shardFloat var(--dur, 6s) ease-in-out infinite alternate var(--delay, 0s);
-        }
-        .shard-1 { width:60px; height:60px; top:12%; left:8%;  background:rgba(41,87,66,0.18);  transform:rotate(25deg);  --dur:7s;  --delay:0s;  }
-        .shard-2 { width:35px; height:35px; top:22%; right:12%; background:rgba(232,160,32,0.14); transform:rotate(-40deg); --dur:9s;  --delay:-2s; }
-        .shard-3 { width:80px; height:18px; top:60%; left:5%;  background:rgba(255,255,255,0.06); transform:rotate(12deg); --dur:11s; --delay:-4s; }
-        .shard-4 { width:45px; height:45px; bottom:20%; right:8%; background:rgba(41,87,66,0.12); transform:rotate(55deg); --dur:8s; --delay:-1s; }
-        .shard-5 { width:25px; height:25px; bottom:35%; left:15%; background:rgba(232,160,32,0.1); transform:rotate(-20deg); --dur:10s; --delay:-3s; }
-        .shard-6 { width:90px; height:14px; top:80%; right:18%; background:rgba(255,255,255,0.04); transform:rotate(-8deg); --dur:13s; --delay:-5s; }
-
-        @keyframes shardFloat {
-            from { transform: translateY(0px) rotate(var(--rot, 25deg)); }
-            to   { transform: translateY(-28px) rotate(calc(var(--rot, 25deg) + 15deg)); }
-        }
-
-        /* ── Main layout ─────────────────────────────────────────────── */
-        .scene {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 2rem 1.5rem;
-            gap: 0;
-        }
-
-        /* ── 404 giant number ────────────────────────────────────────── */
-        .giant-404 {
-            position: relative;
-            font-size: clamp(7rem, 22vw, 16rem);
-            font-weight: 900;
-            line-height: 0.9;
-            letter-spacing: -0.04em;
-            user-select: none;
-            margin-bottom: 0.3rem;
-
-            /* Gradient fill */
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,0.9) 0%,
-                var(--amber) 40%,
-                var(--crimson) 80%,
-                rgba(255,255,255,0.5) 100%
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Glitch layers */
-        .giant-404::before,
-        .giant-404::after {
-            content: '404';
-            position: absolute;
-            inset: 0;
-            background: inherit;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .giant-404::before {
-            left: 3px;
-            background: linear-gradient(135deg, rgba(232,160,32,0.7) 0%, transparent 60%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: glitchA 4.5s infinite;
-        }
-        .giant-404::after {
-            left: -3px;
-            background: linear-gradient(135deg, rgba(41,87,66,0.5) 0%, transparent 60%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: glitchB 4.5s infinite;
-        }
-
-        @keyframes glitchA {
-            0%,  85%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
-            86%            { clip-path: inset(12% 0 68% 0); transform: translate(4px,  2px); }
-            88%            { clip-path: inset(55% 0 20% 0); transform: translate(-3px, -1px); }
-            90%            { clip-path: inset(30% 0 45% 0); transform: translate(5px,  1px); }
-            92%            { clip-path: inset(70% 0 5%  0); transform: translate(-2px, 3px); }
-            94%            { clip-path: inset(0 0 100% 0); transform: translate(0); }
-        }
-        @keyframes glitchB {
-            0%,  85%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
-            87%            { clip-path: inset(40% 0 30% 0); transform: translate(-4px, -2px); }
-            89%            { clip-path: inset(5%  0 80% 0); transform: translate(3px,  1px); }
-            91%            { clip-path: inset(60% 0 15% 0); transform: translate(-5px, 2px); }
-            93%            { clip-path: inset(20% 0 55% 0); transform: translate(2px, -3px); }
-            95%            { clip-path: inset(0 0 100% 0); transform: translate(0); }
-        }
-
-        /* ── Scanline stripe overlaying the 404 ─────────────────────── */
-        .scanline-wrap {
-            position: relative;
-            display: inline-block;
-        }
-        .scanline-wrap::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent 0px,
-                transparent 3px,
-                rgba(0,0,0,0.08) 3px,
-                rgba(0,0,0,0.08) 4px
-            );
-            pointer-events: none;
-        }
-
-        /* ── Content card ────────────────────────────────────────────── */
-        .content-card {
-            position: relative;
-            background: rgba(255,255,255,0.035);
-            backdrop-filter: blur(20px) saturate(1.5);
-            -webkit-backdrop-filter: blur(20px) saturate(1.5);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2.75rem 3rem;
-            max-width: 540px;
-            width: 100%;
-            text-align: center;
-            box-shadow:
-                0 0 0 1px rgba(255,255,255,0.05) inset,
-                0 24px 64px rgba(0,0,0,0.5);
-        }
-
-        /* Thin animated top accent line */
-        .content-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 10%; right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--amber), var(--crimson), transparent);
-            border-radius: 1px;
-            animation: accentShimmer 3s ease-in-out infinite;
-        }
-        @keyframes accentShimmer {
-            0%, 100% { opacity: 0.4; }
-            50%       { opacity: 1; }
-        }
-
-        /* ── Eyebrow tag ─────────────────────────────────────────────── */
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--amber);
-            background: rgba(232,160,32,0.1);
-            border: 1px solid rgba(232,160,32,0.2);
-            border-radius: 50px;
-            padding: 0.3rem 0.85rem;
-            margin-bottom: 1.1rem;
-        }
-        .eyebrow-dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--amber);
-            animation: eyebrowPulse 1.5s ease-in-out infinite;
-        }
-        @keyframes eyebrowPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.4; transform: scale(0.7); }
-        }
-
-        /* ── Typography ──────────────────────────────────────────────── */
-        .page-title {
-            font-size: clamp(1.4rem, 3.5vw, 1.9rem);
-            font-weight: 800;
-            color: #fff;
-            line-height: 1.2;
-            margin-bottom: 0.85rem;
-            letter-spacing: -0.02em;
-        }
-        .page-desc {
-            font-size: 0.9rem;
-            color: var(--muted);
-            line-height: 1.75;
-            max-width: 380px;
-            margin: 0 auto 1.75rem;
-        }
-
-        /* ── Suggestions ─────────────────────────────────────────────── */
-        .suggestions {
-            margin-bottom: 2rem;
-        }
-        .suggestions-label {
-            font-size: 0.72rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 0.75rem;
-        }
-        .sugg-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-        .sugg-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.77rem;
-            color: rgba(255,255,255,0.6);
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 50px;
-            padding: 0.3rem 0.85rem;
-            text-decoration: none;
-            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
-            cursor: pointer;
-        }
-        .sugg-chip:hover {
-            background: rgba(41,87,66,0.2);
-            border-color: rgba(41,87,66,0.4);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-        .sugg-chip:focus-visible {
-            outline: 2px solid var(--amber);
-            outline-offset: 2px;
-        }
-
-        /* ── Divider ─────────────────────────────────────────────────── */
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 0 0 1.75rem;
-        }
-
-        /* ── CTA buttons ─────────────────────────────────────────────── */
-        .cta-row {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 0.7rem 1.5rem;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-            white-space: nowrap;
-        }
-        .cta-btn:focus-visible {
-            outline: 2px solid var(--amber);
-            outline-offset: 3px;
-        }
-
-        .cta-primary {
-            background: linear-gradient(135deg, var(--crimson) 0%, color-mix(in srgb, var(--crimson) 70%, var(--amber)) 100%);
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(41,87,66,0.4);
-        }
-        .cta-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(41,87,66,0.55);
-        }
-        .cta-primary:active { transform: translateY(0); }
-
-        .cta-secondary {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.7);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .cta-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-        .cta-secondary:active { transform: translateY(0); }
-
-        /* Button SVG icons */
-        .cta-btn svg {
-            width: 15px;
-            height: 15px;
-            flex-shrink: 0;
-        }
-
-        /* ── Path label under card ───────────────────────────────────── */
-        .path-hint {
-            margin-top: 1.25rem;
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.2);
-            letter-spacing: 0.05em;
-        }
-        .path-hint code {
-            font-family: 'Consolas', 'Fira Code', monospace;
-            background: rgba(255,255,255,0.06);
-            border-radius: 4px;
-            padding: 0.1em 0.45em;
-            color: rgba(255,255,255,0.35);
-        }
-
-        /* ── Responsive ──────────────────────────────────────────────── */
-        @media (max-width: 600px) {
-            .content-card  { padding: 2rem 1.5rem; }
-            .giant-404     { font-size: clamp(6rem, 28vw, 8rem); }
-            .cta-row       { flex-direction: column; align-items: center; }
-            .cta-btn       { width: 100%; justify-content: center; }
-        }
-
-        /* ── Reduced motion ──────────────────────────────────────────── */
-        @media (prefers-reduced-motion: reduce) {
-            .giant-404::before,
-            .giant-404::after,
-            .orb-1, .orb-2,
-            .shard { animation: none !important; }
-        }
-    </style>
-</head>
-<body>
-
-<!-- Background canvas -->
-<canvas id="bg-canvas" aria-hidden="true"></canvas>
-
-<!-- Ambient light orbs -->
-<div class="orb orb-1" aria-hidden="true"></div>
-<div class="orb orb-2" aria-hidden="true"></div>
-
-<!-- Floating geometric shards -->
-<div class="shard shard-1" aria-hidden="true"></div>
-<div class="shard shard-2" aria-hidden="true"></div>
-<div class="shard shard-3" aria-hidden="true"></div>
-<div class="shard shard-4" aria-hidden="true"></div>
-<div class="shard shard-5" aria-hidden="true"></div>
-<div class="shard shard-6" aria-hidden="true"></div>
-
-<main class="scene" role="main">
-
-    <!-- Giant glitched 404 number -->
-    <div class="scanline-wrap" aria-hidden="true" id="num404">
-        <div class="giant-404">404</div>
-    </div>
-
-    <!-- Content card -->
-    <div class="content-card" id="contentCard" role="region" aria-label="Page not found">
-
-        <!-- Eyebrow tag -->
-        <div class="eyebrow" id="eyebrow">
-            <span class="eyebrow-dot"></span>
-            Record Not Found
-        </div>
-
-        <!-- Headline -->
-        <h1 class="page-title" id="mainTitle">Oops! Page Not Found</h1>
-
-        <!-- Description -->
-        <p class="page-desc" id="mainDesc">
-            The page you're looking for has been moved, deleted, or never existed.
-            It might be a typo in the URL or an expired link.
-        </p>
-
-        <!-- Suggestions -->
-        <div class="suggestions" id="suggestSection">
-            <div class="suggestions-label">You might be looking for</div>
-            <div class="sugg-chips" id="suggChips">
-                <a href="/" class="sugg-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    Home
-                </a>
-                <a href="/about" class="sugg-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    About EDF
-                </a>
-                <a href="/gallery" class="sugg-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                    Gallery
-                </a>
-                <a href="/login" class="sugg-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                    Dashboard Login
-                </a>
-            </div>
-        </div>
-
-        <div class="divider" id="divider"></div>
-
-        <!-- CTA buttons -->
-        <div class="cta-row" id="ctaRow">
-            <a href="/" class="cta-btn cta-primary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                Go Back Home
-            </a>
-            <button class="cta-btn cta-secondary" onclick="history.back()" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-                Go Back
-            </button>
-        </div>
-
-    </div>
-
-    <!-- Path hint -->
-    <p class="path-hint" id="pathHint" aria-live="polite">
-        Requested path: <code id="pathCode"></code>
-    </p>
-
-</main>
-
-<!-- GSAP -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script>
-/* ── Show requested path ─────────────────────────────────── */
-document.getElementById('pathCode').textContent = window.location.pathname;
-
-/* ── Load branding ───────────────────────────────────────── */
-(async () => {
-    try {
-        const r = await fetch('/api/settings');
-        if (r.ok) {
-            const cfg = await r.json();
-            if (cfg.favicon_url) document.getElementById('faviconEl').href = cfg.favicon_url;
-        }
-    } catch (_) {}
-})();
-
-/* ── Canvas particle network ─────────────────────────────── */
-(function () {
-    const canvas = document.getElementById('bg-canvas');
-    const ctx    = canvas.getContext('2d');
-    let W, H, nodes = [];
-
-    function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-        init();
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    function rand(a, b) { return Math.random() * (b - a) + a; }
-
-    function makeNode() {
-        return {
-            x:  rand(0, W), y: rand(0, H),
-            vx: rand(-0.15, 0.15), vy: rand(-0.15, 0.15),
-            r:  rand(1, 2.5),
-            a:  rand(0.04, 0.22),
-        };
-    }
-
-    function init() {
-        const n = Math.floor((W * H) / 11000);
-        nodes = Array.from({ length: n }, makeNode);
-    }
-
-    const LINK_DIST = 120;
-
-    function frame() {
-        ctx.clearRect(0, 0, W, H);
-
-        // Move
-        for (const n of nodes) {
-            n.x += n.vx; n.y += n.vy;
-            if (n.x < 0) n.x = W; if (n.x > W) n.x = 0;
-            if (n.y < 0) n.y = H; if (n.y > H) n.y = 0;
-        }
-
-        // Links
-        for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const dx = nodes[i].x - nodes[j].x;
-                const dy = nodes[i].y - nodes[j].y;
-                const d  = Math.sqrt(dx * dx + dy * dy);
-                if (d < LINK_DIST) {
-                    ctx.beginPath();
-                    ctx.moveTo(nodes[i].x, nodes[i].y);
-                    ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.strokeStyle = `rgba(41,87,66,${0.12 * (1 - d / LINK_DIST)})`;
-                    ctx.lineWidth   = 0.8;
-                    ctx.stroke();
-                }
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              950: '#041c15',
+              900: '#062c22',
+              850: '#083529',
+              800: '#0a3d30',
+              700: '#0f5241',
+              600: '#146b54',
+              500: '#10b981',
+              100: '#e6f7f2',
+              50: '#f0fbf7',
+            },
+            amber: {
+              450: '#d4af37',
+              550: '#b8861c',
+            },
+            parchment: {
+              DEFAULT: '#faf8f5',
+              dark: '#f3eee3',
             }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Cinzel', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            arabic: ['Amiri', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
         }
+      }
+    };
+  </script>
 
-        // Dots
-        for (const n of nodes) {
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(232,160,32,${n.a})`;
-            ctx.fill();
-        }
+  <!-- Bespoke NGO & Shadcn/UI Design System -->
+  <link rel="stylesheet" href="/css/landing-ngo.css">
+</head>
 
-        requestAnimationFrame(frame);
-    }
-    frame();
-})();
+<body class="bg-[#faf8f5] text-[#1a2e26] font-sans antialiased selection:bg-amber-400 selection:text-emerald-950 flex flex-col min-h-screen">
 
-/* ── GSAP entrance timeline ──────────────────────────────── */
-(function () {
-    // Initial states
-    gsap.set('#num404',         { opacity: 0, y: -30, scale: 0.92 });
-    gsap.set('#contentCard',    { opacity: 0, y: 40 });
-    gsap.set('#pathHint',       { opacity: 0 });
-    gsap.set('.shard',          { opacity: 0 });
+  <!-- Top Scroll Progress Thread -->
+  <div id="scroll-progress-bar"></div>
 
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       1. RAZOR-SLIM SOVEREIGN CHARTER & LANGUAGE RIBBON (SHARED ACROSS HOME, LOGIN, 404)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <header class="bg-emerald-950 text-white text-[11px] border-b border-emerald-900/70 relative z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-9 flex items-center justify-between gap-3">
+      
+      <!-- Unified Clickable Charter Notice -->
+      <button type="button" class="open-charter-modal-btn flex items-center gap-2 min-w-0 text-left group">
+        <span class="edf-lottie-slot w-4 h-4 text-amber-300 shrink-0" data-lottie-icon="shield" data-lottie-trigger="loop"></span>
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-bold tracking-wider text-[10px] border border-amber-400/35 shrink-0">
+          <span data-i18n="top.badge">SELF-FUNDED · EST. 2016</span>
+        </span>
+        <span class="hidden sm:inline text-emerald-100/90 group-hover:text-amber-300 font-medium truncate transition-colors" data-i18n="top.notice">
+          100% Member-Sustained Foundation — EDF does not solicit or accept outside monetary donations
+        </span>
+      </button>
 
-    tl.to('#num404',      { opacity: 1, y: 0, scale: 1, duration: 0.9 })
-      .to('#contentCard', { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
-      .to('#pathHint',    { opacity: 1,        duration: 0.4 }, '-=0.15')
-      .to('.shard',       { opacity: 1, stagger: 0.08, duration: 0.6 }, '-=0.5');
+      <!-- Compact Utility Pair: Hijri Date + Language Switcher -->
+      <div class="flex items-center gap-3 text-emerald-200 shrink-0">
+        <div class="hidden lg:inline-flex items-center gap-1.5 text-[11px] text-emerald-100/90 font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span id="hijri-date-badge">1448 AH</span>
+        </div>
 
-    // Floating shard continuous motion (separate from entrance)
-    document.querySelectorAll('.shard').forEach((s, i) => {
-        gsap.to(s, {
-            y:        '-=20',
-            rotation: '+=12',
-            duration: 5 + i * 1.3,
-            ease:     'sine.inOut',
-            yoyo:     true,
-            repeat:   -1,
-            delay:    i * 0.7,
+        <span class="hidden lg:inline-block text-emerald-800">|</span>
+
+        <!-- Shadcn Language Selector (EN / AR / TA / SI) -->
+        <div id="lang-switcher-group" class="inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-emerald-900/95 border border-emerald-800" role="group" aria-label="Language selection">
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-400 text-emerald-950 shadow-xs transition" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold text-emerald-200 hover:text-white transition" data-lang="ar" aria-pressed="false">عربي</button>
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold text-emerald-200 hover:text-white transition" data-lang="ta" aria-pressed="false">தமிழ்</button>
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold text-emerald-200 hover:text-white transition" data-lang="si" aria-pressed="false">සිංහල</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       2. UNIQUE FLOATING PILL-ARCH NAVBAR (FREE LOTTIE ANIMATED ICONS)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <nav id="main-navbar" class="sticky top-2 sm:top-2.5 z-40 px-3 sm:px-6 lg:px-8 py-1.5 pointer-events-none">
+    <div class="nav-shell-frame pointer-events-auto max-w-7xl mx-auto px-3.5 sm:px-5">
+      <div class="flex items-center justify-between h-[64px] gap-3">
+        
+        <!-- Left Zone: Focused Brand Signature -->
+        <a href="/" class="flex items-center gap-2.5 group shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-850 to-emerald-950 p-1.5 border border-amber-400/45 shadow-sm flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-1">
+            <img src="/uploads/logo/logo-1775982368852.svg" alt="EDF Logo" class="brand-logo-img w-full h-full object-contain filter drop-shadow">
+          </div>
+          <div class="leading-tight">
+            <div class="font-serif font-extrabold text-base sm:text-lg tracking-tight text-emerald-950" data-i18n="brand.title">EDF Galgamuwa</div>
+            <div class="hidden sm:block text-[10.5px] text-emerald-800/75 font-semibold tracking-wide" data-i18n="brand.sub">Education &amp; Development Foundation</div>
+          </div>
+        </a>
+
+        <!-- Center Zone: Morphing Glide Rail with Free Lottie Icons -->
+        <div class="hidden lg:flex items-center relative">
+          <div class="nav-pill-group">
+            <span id="nav-hover-indicator" aria-hidden="true"></span>
+
+            <a href="/about" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="landmark" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.about">About</span>
+            </a>
+            <a href="/#initiatives" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="compass" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.initiatives">Initiatives</span>
+            </a>
+            <a href="/#programs" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="book" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.pillars">Pillars</span>
+            </a>
+            <a href="/#charter" class="nav-link-item text-amber-800 font-bold">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="shield" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.charter">Our Charter</span>
+            </a>
+            <a href="/gallery" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="gallery" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.gallery">Gallery</span>
+            </a>
+            <a href="/#membership" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="community" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.membership">Membership</span>
+            </a>
+
+            <!-- Compact Explore Popover Trigger -->
+            <button type="button" id="nav-more-btn" class="nav-link-item" aria-haspopup="true" aria-expanded="false">
+              <span class="edf-lottie-slot w-[17px] h-[17px]" data-lottie-icon="sparkles" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.more">Explore</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 opacity-60"></i>
+            </button>
+          </div>
+
+          <!-- Shadcn Explore Popover Card -->
+          <div id="nav-more-menu" class="nav-more-popover absolute top-full mt-2.5 right-0 w-64 rounded-2xl bg-white shadow-2xl border border-emerald-900/12 p-2 text-xs z-50">
+            <a href="/#life-uplift-journey" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-emerald-950 transition">
+              <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="sparkles" data-lottie-trigger="loop"></span>
+              <span data-i18n="cmd.itemUplift">3D Scroll Story: Sadaqah &amp; Life Uplift</span>
+            </a>
+            <a href="/#transparency" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800 transition">
+              <i data-lucide="scale" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span data-i18n="nav.governance">Governance</span>
+            </a>
+            <a href="/#stories" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800 transition">
+              <i data-lucide="message-square-quote" class="w-4 h-4 text-amber-600 shrink-0"></i>
+              <span data-i18n="nav.stories">Stories</span>
+            </a>
+            <a href="/#get-involved" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800 transition">
+              <i data-lucide="hand-helping" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span data-i18n="mobile.getInvolved">How to Get Involved</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Zone: Clean 3-Control Action Cluster -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <!-- Compact Quick Search ⌘K -->
+          <button type="button" class="open-cmd-palette-btn hidden md:inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold text-emerald-900 bg-emerald-50/80 hover:bg-emerald-100/90 border border-emerald-900/10 transition" title="Quick Navigation (Ctrl+K)" aria-label="Quick Jump">
+            <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="search" data-lottie-trigger="hover"></span>
+            <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-white rounded border border-emerald-900/10 text-emerald-800">⌘K</kbd>
+          </button>
+
+          <!-- Staff Login with Lottie Portal Icon -->
+          <a href="/login" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-emerald-950 hover:bg-emerald-50 border border-emerald-900/10 hover:border-emerald-200 transition">
+            <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="portal" data-lottie-trigger="hover"></span>
+            <span data-i18n="nav.staffPortal">Staff Portal</span>
+          </a>
+
+          <!-- Signature Join CTA with Live Lottie Community Icon -->
+          <button type="button" class="open-inquiry-btn btn-shimmer inline-flex items-center gap-2 px-3.5 sm:px-4.5 py-2 rounded-xl font-bold text-xs sm:text-sm text-emerald-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 gold-pulse-glow" data-tier="Community Membership Application">
+            <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+            <span data-i18n="nav.joinCta">Join EDF</span>
+          </button>
+
+          <!-- Mobile Drawer Trigger -->
+          <button id="mobile-menu-toggle" aria-label="Open mobile navigation menu"
+            class="lg:hidden p-2 rounded-xl text-emerald-950 hover:bg-emerald-50 focus:outline-hidden border border-emerald-900/15 transition">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Integrated Hairline Scroll Progress Track -->
+      <div id="nav-scroll-line" aria-hidden="true">
+        <div id="nav-scroll-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Shadcn Bento-Grid Slide-Over Mobile Sheet Drawer -->
+  <div id="mobile-menu-drawer"
+    class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-emerald-950/75 backdrop-blur-md">
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-emerald-950 text-white p-5 shadow-2xl border-l border-amber-400/20 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-emerald-900">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-lg bg-emerald-900 p-1.5 border border-amber-400/40">
+              <img src="/uploads/logo/logo-1775982368852.svg" alt="EDF Logo" class="brand-logo-img w-full h-full object-contain">
+            </div>
+            <div>
+              <div class="font-serif font-bold text-base text-white" data-i18n="brand.title">EDF Galgamuwa</div>
+              <div class="text-[11px] text-emerald-300" data-i18n="brand.sub">Education &amp; Development Foundation</div>
+            </div>
+          </div>
+          <button id="mobile-menu-close" aria-label="Close menu" class="p-2 rounded-lg text-emerald-300 hover:text-white hover:bg-emerald-900">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Language Selector -->
+        <div class="mt-4 p-2.5 rounded-xl bg-emerald-900/60 border border-emerald-800/80">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-amber-300 mb-2" data-i18n="mobile.langLabel">Language / اللغة / மொழி / භාෂාව</div>
+          <div class="grid grid-cols-4 gap-1">
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-emerald-950 transition" data-lang="en">EN</button>
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white bg-emerald-950/60 transition" data-lang="ar">عربي</button>
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white bg-emerald-950/60 transition" data-lang="ta">தமிழ்</button>
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white bg-emerald-950/60 transition" data-lang="si">සිංහල</button>
+          </div>
+        </div>
+
+        <!-- Compact 2-Column Bento Tile Navigation -->
+        <nav class="mt-4 grid grid-cols-2 gap-2 font-medium text-xs">
+          <a href="/about" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="landmark" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.about">About</span>
+          </a>
+          <a href="/#initiatives" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="compass" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-amber-300" data-i18n="nav.initiatives">Initiatives</span>
+          </a>
+          <a href="/#programs" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="book" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.pillars">Pillars</span>
+          </a>
+          <a href="/#charter" class="mobile-nav-link p-3 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/35 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="shield" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-amber-300" data-i18n="nav.charter">Our Charter</span>
+          </a>
+          <a href="/#transparency" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <i data-lucide="scale" class="w-4 h-4 text-emerald-400"></i>
+            <span class="font-bold text-white" data-i18n="nav.governance">Governance</span>
+          </a>
+          <a href="/#stories" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <i data-lucide="message-square-quote" class="w-4 h-4 text-amber-400"></i>
+            <span class="font-bold text-white" data-i18n="nav.stories">Stories</span>
+          </a>
+          <a href="/gallery" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="gallery" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.gallery">Gallery</span>
+          </a>
+          <a href="/#membership" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.membership">Membership</span>
+          </a>
+        </nav>
+
+        <a href="/login" class="mobile-nav-link mt-2.5 py-2.5 px-3.5 rounded-xl bg-emerald-900/80 hover:bg-emerald-900 border border-emerald-800 flex items-center justify-between text-xs font-bold text-emerald-200">
+          <span class="flex items-center gap-2"><span class="edf-lottie-slot w-4 h-4" data-lottie-icon="portal" data-lottie-trigger="loop"></span> <span data-i18n="mobile.staff">Staff Portal Login</span></span>
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div class="pt-4 mt-4 border-t border-emerald-900 space-y-2.5">
+        <button class="open-inquiry-btn w-full py-3 rounded-xl font-bold text-center text-xs text-emerald-950 bg-amber-400 shadow-lg flex items-center justify-center gap-2" data-tier="Community Membership Application">
+          <span class="edf-lottie-slot w-4 h-4" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+          <span data-i18n="mobile.joinBtn">Join Our Community</span>
+        </button>
+        <a href="https://wa.me/94715358380" target="_blank"
+          class="w-full py-2.5 rounded-xl font-semibold text-center text-white bg-emerald-900 hover:bg-emerald-800 border border-emerald-800 flex items-center justify-center gap-2 text-xs">
+          <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i>
+          <span data-i18n="mobile.whatsapp">Official WhatsApp Desk</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       3. 404 CELESTIAL ASTROLABE SANCTUARY (THREE.JS + GSAP + SHADCN WAYFINDER)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <main class="flex-1 bg-arabesque-stars text-white py-14 lg:py-20 relative overflow-hidden flex items-center justify-center border-b border-amber-400/20">
+    
+    <!-- Three.js Scene 3: Interactive 3D Celestial Astrolabe -->
+    <canvas id="notfound-3d-canvas" class="three-bg-canvas opacity-85"></canvas>
+
+    <!-- Readability Vignette -->
+    <div class="absolute inset-0 bg-gradient-to-br from-emerald-950/85 via-emerald-950/55 to-emerald-950/90 pointer-events-none z-[2]"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        
+        <!-- Left Column: Editorial 404 Display & Safe Route Diagnostic -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="hero-anim arabic-calligraphy text-amber-300/90 text-xl sm:text-2xl font-medium">
+            رَبِّ يَسِّرْ وَلَا تُعَسِّرْ
+          </div>
+
+          <div class="hero-anim inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-900/90 border border-amber-400/35 text-xs font-semibold text-amber-300 shadow-inner">
+            <i data-lucide="compass" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Error 404 · Waypoint Not Found</span>
+          </div>
+
+          <div class="hero-anim">
+            <div class="font-serif font-black text-7xl sm:text-8xl md:text-9xl leading-none tracking-tight text-gold-gradient select-none">
+              404
+            </div>
+            <h1 class="font-serif text-3xl sm:text-4xl font-extrabold text-white mt-2 leading-tight">
+              This Path Has Shifted.<br>
+              <span class="text-emerald-200 font-normal italic">Let Us Guide You Back Home.</span>
+            </h1>
+          </div>
+
+          <p class="hero-anim text-emerald-100/90 text-sm sm:text-base leading-relaxed max-w-xl">
+            The requested address does not match an active page in the EDF Galgamuwa portal. Use our interactive wayfinder, launch quick search (<kbd class="px-1.5 py-0.5 text-[11px] font-mono bg-emerald-900 border border-emerald-700 rounded text-amber-300">⌘K</kbd>), or return directly to our community homepage.
+          </p>
+
+          <!-- Safe Path Diagnostic Pill -->
+          <div class="hero-anim inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-emerald-900/75 border border-emerald-800 text-xs max-w-full overflow-hidden">
+            <i data-lucide="route-off" class="w-4 h-4 text-amber-400 shrink-0"></i>
+            <span class="text-emerald-300 shrink-0">Requested path:</span>
+            <code id="requested-path-display" class="font-mono text-amber-300 truncate">/not-found</code>
+          </div>
+
+          <!-- Action Button Row -->
+          <div class="hero-anim flex flex-wrap items-center gap-3 pt-2">
+            <a href="/"
+              class="btn-shimmer inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-emerald-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-xl transition transform hover:-translate-y-0.5">
+              <i data-lucide="home" class="w-4 h-4"></i>
+              <span>Return to Home</span>
+            </a>
+
+            <button type="button" id="go-back-btn"
+              class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl font-bold text-sm text-white bg-emerald-900/90 hover:bg-emerald-800 border border-emerald-700/80 transition">
+              <i data-lucide="arrow-left" class="w-4 h-4 text-amber-300"></i>
+              <span>Previous Page</span>
+            </button>
+
+            <button type="button"
+              class="open-cmd-palette-btn inline-flex items-center gap-2 px-4 py-3.5 rounded-xl font-semibold text-xs sm:text-sm text-amber-300 bg-emerald-950/75 hover:bg-emerald-900 border border-amber-400/35 transition">
+              <i data-lucide="search" class="w-4 h-4"></i>
+              <span>Search (⌘K)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Shadcn Frosted Quick-Navigation Compass Card -->
+        <div class="lg:col-span-6">
+          <div id="hero-giving-card" class="bg-white/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 text-gray-900 shadow-2xl border border-amber-400/45 max-w-xl mx-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-5">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-900 text-amber-300 flex items-center justify-center shadow-xs">
+                  <i data-lucide="compass" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Shadcn Wayfinder</span>
+                  <h2 class="font-serif font-bold text-xl text-emerald-950">Explore EDF Sanctuaries</h2>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                3D Astrolabe Active
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              <a href="/#initiatives" class="p-3.5 rounded-2xl border border-gray-200 hover:border-amber-400 hover:bg-amber-50/60 transition flex items-start gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="compass" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-emerald-950">Active Initiatives</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">240+ families sustained</div>
+                </div>
+              </a>
+
+              <a href="/#programs" class="p-3.5 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50/60 transition flex items-start gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="layers" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-emerald-950">6 Impact Pillars</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">Education &amp; skills</div>
+                </div>
+              </a>
+
+              <a href="/#charter" class="p-3.5 rounded-2xl border border-gray-200 hover:border-amber-400 hover:bg-amber-50/60 transition flex items-start gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-emerald-950">Self-Funded Charter</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">Zero outsider donations</div>
+                </div>
+              </a>
+
+              <a href="/gallery" class="p-3.5 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50/60 transition flex items-start gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="images" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-emerald-950">Field Gallery</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">Moments on the ground</div>
+                </div>
+              </a>
+
+              <a href="/about" class="p-3.5 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50/60 transition flex items-start gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="landmark" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-emerald-950">About Foundation</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">Mission &amp; governance</div>
+                </div>
+              </a>
+
+              <a href="/login" class="p-3.5 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50/60 transition flex items-start gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="lock-keyhole" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-emerald-950">Staff Portal</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">Trustee sign in</div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Community Charter & Volunteer Shortcut -->
+            <div class="p-4 rounded-2xl bg-emerald-950 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div>
+                <div class="text-[11px] uppercase tracking-wider font-bold text-amber-300">Member-Sustained Since 2016</div>
+                <div class="text-xs text-emerald-100 mt-0.5">No external cash accepted · Volunteers welcome</div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" class="open-charter-modal-btn px-3 py-2 rounded-xl bg-emerald-900 hover:bg-emerald-800 border border-amber-400/35 text-xs font-bold text-amber-300 flex items-center gap-1.5 transition">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                  <span>Policy</span>
+                </button>
+                <button type="button" class="open-inquiry-btn flex-1 sm:flex-none px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 text-xs font-bold transition" data-tier="Community Membership Application">
+                  Join EDF →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       4. MODERNIZED & CREATIVE MEGA FOOTER (SHARED ACROSS HOME, LOGIN, 404)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <footer class="bg-emerald-950 text-white pt-16 pb-12 border-t-2 border-amber-400/40 relative overflow-hidden">
+    <!-- Subtle Top Architectural Gold Accent -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-56 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- Islamic Hadith & Status Banner -->
+      <div class="pb-12 mb-12 border-b border-emerald-900/80 text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/80 border border-amber-400/25 text-[11px] font-semibold text-amber-300 mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span data-i18n="footer.pill">Member-Sustained Since 2016 · Zero External Fundraising</span>
+        </div>
+        <div class="arabic-calligraphy text-amber-300 text-xl sm:text-2xl mb-2">
+          خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ
+        </div>
+        <p class="font-serif italic text-sm text-emerald-100" data-i18n="footer.hadith">
+          “The best of people are those that bring most benefit to the rest of mankind.”
+        </p>
+        <div class="text-[11px] text-amber-400 font-semibold mt-1" data-i18n="footer.hadithSrc">— Prophet Muhammad ﷺ (Al-Mu'jam Al-Awsat)</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-14">
+        
+        <!-- Col 1: Brand & Shadcn Community Bulletin Form -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-emerald-900 p-2 border border-amber-400/40 shadow-sm flex items-center justify-center">
+              <img src="/uploads/logo/logo-1775982368852.svg" alt="EDF Logo" class="brand-logo-img w-full h-full object-contain">
+            </div>
+            <div>
+              <div class="font-serif font-bold text-xl text-white" data-i18n="brand.title">EDF Galgamuwa</div>
+              <div class="text-xs text-amber-300 font-arabic">مؤسسة التعليم والتنمية</div>
+            </div>
+          </div>
+          <p class="text-xs text-emerald-200/90 leading-relaxed" data-i18n="footer.brandDesc">
+            Education &amp; Development Foundation (EDF), Galgamuwa — Sri Lanka's self-funded, member-sustained community foundation serving education, women's livelihoods, healthcare, and family welfare without taking outsider donations.
+          </p>
+
+          <form id="footer-newsletter-form" class="p-4 rounded-2xl bg-emerald-900/50 border border-emerald-800/80">
+            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2" data-i18n="footer.bulletinTitle">Community Field Bulletin</div>
+            <div class="flex gap-2">
+              <input type="email" placeholder="Your email address" data-i18n-placeholder="footer.bulletinPlaceholder" required
+                class="w-full px-3.5 py-2.5 rounded-xl bg-emerald-950/90 border border-emerald-800 text-xs text-white placeholder-emerald-400 focus:outline-hidden focus:ring-2 focus:ring-amber-400">
+              <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-950 bg-amber-400 hover:bg-amber-300 transition shrink-0" data-i18n="footer.bulletinBtn">
+                Join
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Col 2: Core Programs -->
+        <div class="lg:col-span-3 space-y-3">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4" data-i18n="footer.col1">Core Programmes</div>
+          <ul class="text-xs text-emerald-200 space-y-2.5">
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l1">Quran &amp; Academic Classes</a></li>
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l2">Women's Tailoring &amp; Bayans</a></li>
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l3">Youth Mobile &amp; CCTV Repair</a></li>
+            <li><a href="/#initiatives" class="hover:text-amber-300 transition-colors" data-i18n="footer.l4">Ramadan Family Ration Drive</a></li>
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l5">Community Healthcare Camps</a></li>
+            <li><a href="/#charter" class="hover:text-amber-300 transition-colors text-amber-300 font-bold" data-i18n="footer.l6">Self-Funded Charter</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Foundation Directory -->
+        <div class="lg:col-span-2 space-y-3">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4" data-i18n="footer.col2">Foundation</div>
+          <ul class="text-xs text-emerald-200 space-y-2.5">
+            <li><a href="/about" class="hover:text-amber-300 transition-colors" data-i18n="footer.d1">Who We Are</a></li>
+            <li><a href="/about#team" class="hover:text-amber-300 transition-colors" data-i18n="footer.d2">Executive Team</a></li>
+            <li><a href="/#transparency" class="hover:text-amber-300 transition-colors" data-i18n="footer.d3">Governance</a></li>
+            <li><a href="/gallery" class="hover:text-amber-300 transition-colors" data-i18n="footer.d4">Moments Gallery</a></li>
+            <li><a href="/#membership" class="hover:text-amber-300 transition-colors" data-i18n="footer.d5">Membership</a></li>
+            <li><a href="/login" class="hover:text-amber-300 transition-colors" data-i18n="footer.d6">Staff Portal</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Official Contact & Policy Pill -->
+        <div class="lg:col-span-3 space-y-3">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4" data-i18n="footer.col3">Official Contact</div>
+          <div class="text-xs text-emerald-200 space-y-2.5 leading-relaxed">
+            <p class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+              <span data-i18n="footer.address">EDF Center, Galgamuwa, North Western Province, Sri Lanka</span>
+            </p>
+            <p class="flex items-center gap-2">
+              <i data-lucide="mail" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <a href="mailto:info@edfgalgamuwa.org" class="hover:text-amber-300 transition-colors">info@edfgalgamuwa.org</a>
+            </p>
+            <p class="flex items-center gap-2">
+              <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+              <a href="https://wa.me/94715358380" target="_blank" class="hover:text-amber-300 transition-colors">+94 71 535 8380</a>
+            </p>
+          </div>
+
+          <!-- Non-Solicitation Charter Badge in Footer -->
+          <div class="pt-2">
+            <button type="button" class="open-charter-modal-btn w-full px-3 py-2.5 rounded-xl bg-emerald-900/70 hover:bg-emerald-900 border border-amber-400/25 text-[11px] font-semibold text-amber-200 flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-400"></i> <span data-i18n="footer.policyPill">Zero Outsider Donations Policy</span></span>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-400"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2.5 pt-2">
+            <a href="https://www.facebook.com/edf28jan2016/" target="_blank" rel="noopener" aria-label="Facebook"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://wa.me/94715358380" target="_blank" rel="noopener" aria-label="WhatsApp"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-8 border-t border-emerald-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-emerald-300/80">
+        <div data-i18n="footer.rights">
+          © 2026 Education &amp; Development Foundation (EDF), Galgamuwa. All rights reserved.
+        </div>
+        <div>
+          Crafted with devotion &amp; excellence by
+          <a href="https://arshadahamed.com/" target="_blank" rel="noopener"
+            class="text-amber-400 font-semibold hover:underline">
+            Arshad Ahamed
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       5. SHADCN COMMAND PALETTE (⌘K) & INTERACTIVE MODALS
+  ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Shadcn Command Palette (⌘K) -->
+  <div id="cmd-palette-modal" class="modal-backdrop fixed inset-0 z-50 bg-emerald-950/75 backdrop-blur-sm flex items-start justify-center pt-20 p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-amber-400/40 overflow-hidden text-gray-900">
+      <div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100">
+        <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+        <input type="text" id="cmd-search-input" placeholder="Search pillars, charter policy, gallery, membership..." data-i18n-placeholder="cmd.placeholder"
+          class="w-full text-sm font-medium text-gray-900 placeholder-gray-400 focus:outline-hidden bg-transparent">
+        <button type="button" class="close-modal-trigger text-xs font-mono px-2 py-0.5 rounded bg-gray-100 text-gray-500 hover:bg-gray-200">ESC</button>
+      </div>
+      <div class="p-2 max-h-80 overflow-y-auto divide-y divide-gray-50 text-xs">
+        <div class="py-1">
+          <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400" data-i18n="cmd.navGroup">Quick Navigation</div>
+          <a href="/" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="home" class="w-4 h-4 text-emerald-700"></i> Return to Home Page</span>
+            <span class="text-gray-400">Home</span>
+          </a>
+          <a href="/#life-uplift-journey" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i> <span data-i18n="cmd.itemUplift">3D Scroll Story: Sadaqah &amp; Life Uplift</span></span>
+            <span class="text-amber-600 font-bold">3D</span>
+          </a>
+          <a href="/#initiatives" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="compass" class="w-4 h-4 text-amber-600"></i> <span data-i18n="nav.initiatives">Active Community Initiatives</span></span>
+            <span class="text-gray-400">Section</span>
+          </a>
+          <a href="/#programs" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="layers" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.pillars">Our 6 Core Pillars &amp; Programmes</span></span>
+            <span class="text-gray-400">Section</span>
+          </a>
+          <a href="/#charter" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i> <span data-i18n="nav.charter">Self-Funded Zero-Outsider-Money Charter</span></span>
+            <span class="text-gray-400">Charter</span>
+          </a>
+          <a href="/about" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="info" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.about">About EDF Galgamuwa</span></span>
+            <span class="text-gray-400">Page</span>
+          </a>
+          <a href="/gallery" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="images" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.gallery">Groundwork Photo Gallery</span></span>
+            <span class="text-gray-400">Page</span>
+          </a>
+          <a href="/login" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="lock" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.staffPortal">Staff Portal Sign In</span></span>
+            <span class="text-gray-400">Portal</span>
+          </a>
+        </div>
+        <div class="py-1">
+          <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400" data-i18n="cmd.actGroup">Quick Actions</div>
+          <button type="button" class="cmd-item cmd-action-item open-inquiry-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-amber-50 font-semibold text-emerald-950" data-tier="Community Membership Application">
+            <span class="flex items-center gap-2.5"><i data-lucide="users" class="w-4 h-4 text-amber-600"></i> <span data-i18n="cmd.itemApply">Apply for Membership or Volunteer</span></span>
+            <span class="text-amber-700 font-bold">Inquiry</span>
+          </button>
+          <button type="button" class="cmd-item cmd-action-item open-charter-modal-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-emerald-950">
+            <span class="flex items-center gap-2.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cmd.itemPolicy">View Zero-Outsider-Donations Policy</span></span>
+            <span class="text-emerald-700 font-bold">Policy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Non-Solicitation / Member-Sustained Charter Policy Modal -->
+  <div id="charter-modal" class="modal-backdrop fixed inset-0 z-50 bg-emerald-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-2 border-amber-400 relative overflow-y-auto max-h-[90vh] text-gray-900">
+      <button type="button" class="close-modal-trigger absolute top-5 right-5 text-gray-400 hover:text-gray-700 text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-xl bg-emerald-900 text-amber-300 flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider" data-i18n="cModal.eyebrow">Institutional Covenant</span>
+          <h3 class="font-serif font-bold text-xl text-emerald-950" data-i18n="cModal.title">Zero Outsider Donations Policy</h3>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4" data-i18n="cModal.body">
+        Education &amp; Development Foundation (EDF) Galgamuwa operates strictly as an internally financed community organisation. We do not solicit, crowdsource, or accept external monetary contributions from the public.
+      </p>
+
+      <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-950 space-y-2 mb-5">
+        <div class="flex items-center gap-2 font-bold"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cModal.p1">Funded purely by Regular, Life &amp; Patron Members</span></div>
+        <div class="flex items-center gap-2 font-bold"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cModal.p2">Volunteering &amp; In-Kind Partnerships Welcomed</span></div>
+        <div class="flex items-center gap-2 font-bold"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cModal.p3">Complete Community Governance Since 2016</span></div>
+      </div>
+
+      <div class="space-y-3">
+        <a href="/#membership" class="block w-full py-3 rounded-xl font-bold text-center text-xs text-emerald-950 bg-amber-300 hover:bg-amber-400 transition" data-i18n="cModal.cta1">
+          Explore Internal Membership Tiers on Homepage →
+        </a>
+        <a href="https://wa.me/94715358380?text=Assalamu%20Alaikum,%20I%20would%20like%20to%20volunteer%20or%20enquire%20about%20EDF%20membership." target="_blank"
+          class="block w-full py-3 rounded-xl font-bold text-center text-xs text-white bg-emerald-900 hover:bg-emerald-800 transition">
+          <i class="fa-brands fa-whatsapp mr-1"></i> <span data-i18n="cModal.cta2">Connect on WhatsApp Community Desk</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Membership / Volunteer / Institutional Inquiry Modal -->
+  <div id="membership-modal" class="modal-backdrop fixed inset-0 z-50 bg-emerald-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-amber-400 relative overflow-hidden text-gray-900">
+      <button type="button" class="close-modal-trigger absolute top-5 right-5 text-gray-400 hover:text-gray-700 text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-5">
+        <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider" data-i18n="mModal.eyebrow">Community Stewardship · Zero Cash Solicited</span>
+        <h3 class="font-serif font-bold text-xl text-emerald-950 mt-1" id="mem-tier-title">Community Membership Inquiry</h3>
+      </div>
+
+      <div class="space-y-3.5 mb-5">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-name" data-i18n="mModal.nameLbl">Full Name *</label>
+          <input type="text" id="mem-name" placeholder="Your complete legal name" data-i18n-placeholder="mModal.namePh" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-phone" data-i18n="mModal.phoneLbl">WhatsApp / Phone Number *</label>
+          <input type="tel" id="mem-phone" placeholder="e.g. +94 77 123 4567" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-nic" data-i18n="mModal.nicLbl">Skills, Profession or NIC (Optional)</label>
+          <input type="text" id="mem-nic" placeholder="e.g. Teacher, Technician, Pharmacist, or ID" data-i18n-placeholder="mModal.nicPh" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-city" data-i18n="mModal.cityLbl">City / District</label>
+          <input type="text" id="mem-city" placeholder="e.g. Galgamuwa, Kurunegala, etc." data-i18n-placeholder="mModal.cityPh" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+      </div>
+
+      <button type="button" id="mem-submit-btn" class="w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm text-emerald-950 bg-amber-400 hover:bg-amber-300 shadow-md transition flex items-center justify-center gap-2">
+        <i class="fa-brands fa-whatsapp text-lg"></i>
+        <span data-i18n="mModal.submit">Send Inquiry via WhatsApp</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Back to Top Button with Circular SVG Progress Ring -->
+  <button id="backToTop" class="back-to-top relative w-12 h-12 rounded-full bg-emerald-950 text-amber-300 shadow-2xl flex items-center justify-center hover:bg-amber-400 hover:text-emerald-950 transition group" aria-label="Back to top">
+    <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(212,175,55,0.22)" stroke-width="2.5"></circle>
+      <circle id="btt-progress-ring" cx="24" cy="24" r="20" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round"></circle>
+    </svg>
+    <i data-lucide="arrow-up" class="w-4 h-4 relative z-10"></i>
+  </button>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       6. SCRIPTS: GSAP + THREE.JS ASTROLABE + CONFETTI + WAYFINDER
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  <!-- Free Lottie Animated Icons Engine -->
+  <script src="/js/edf-lottie-icons.js"></script>
+  <!-- Multilingual Localization Engine (EN / AR RTL / TA / SI) -->
+  <script src="/js/landing-i18n.js"></script>
+  <!-- WebGL 3D Astrolabe & GSAP Choreography -->
+  <script src="/js/landing-3d-ngo.js"></script>
+  <!-- Shared Client-Side NGO Logic -->
+  <script src="/js/landing-ngo.js"></script>
+
+  <!-- Safe Route Display & History Navigation -->
+  <script>
+    (function () {
+      'use strict';
+      const pathEl = document.getElementById('requested-path-display');
+      if (pathEl) {
+        pathEl.textContent = window.location.pathname || '/';
+      }
+      const goBackBtn = document.getElementById('go-back-btn');
+      if (goBackBtn) {
+        goBackBtn.addEventListener('click', () => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = '/';
+          }
         });
-    });
-
-    // Subtle 404 hover-float loop
-    gsap.to('#num404', {
-        y: -12,
-        duration: 3.5,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        delay: 1,
-    });
-})();
-</script>
+      }
+    })();
+  </script>
 </body>
+
 </html>

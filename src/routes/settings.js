@@ -84,17 +84,26 @@ module.exports = (db) => {
                 toUpdate.favicon_url = '/uploads/' + files.favicon[0].filename;
             }
             
-            // Allow storing a brand text as well if passed
-            if (req.body.brand_text) {
-                toUpdate.brand_text = req.body.brand_text;
-            }
-            if (req.body.brand_subtitle) {
-                toUpdate.brand_subtitle = req.body.brand_subtitle;
+            // Allow storing brand & organization text settings cleanly
+            const allowedTextKeys = [
+                'brand_text',
+                'brand_subtitle',
+                'org_name',
+                'org_reg_no',
+                'org_address',
+                'org_phone',
+                'org_email',
+                'org_desc'
+            ];
+            for (const key of allowedTextKeys) {
+                if (req.body && Object.prototype.hasOwnProperty.call(req.body, key)) {
+                    toUpdate[key] = String(req.body[key] ?? '').trim();
+                }
             }
 
             for (const [key, value] of Object.entries(toUpdate)) {
                 await db.run(
-                    'INSERT INTO global_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+                    'INSERT INTO global_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP',
                     [key, value]
                 );
             }

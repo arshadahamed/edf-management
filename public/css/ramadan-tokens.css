@@ -1,0 +1,907 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RAMADAN TOKENS CONSOLE (#ramadanTokensModal & #rdTokenQuickModal)
+   Sovereign Emerald & Sanctuary Gold Glass-Bento Studio
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#ramadanTokensModal {
+    --rd-modal-max-w: 1180px;
+    --rd-accent-rgb: 16, 185, 129;
+    --rd-gold-rgb: 217, 119, 6;
+    --rd-sky-rgb: 2, 132, 199;
+    --rd-emerald: #10b981;
+    --rd-emerald-deep: #059669;
+    --rd-gold: #f59e0b;
+    --rd-sky: #0284c7;
+    background: rgba(2, 12, 8, 0.72) !important;
+    backdrop-filter: blur(10px) saturate(135%);
+    -webkit-backdrop-filter: blur(10px) saturate(135%);
+}
+
+[data-accent="sapphire"] #ramadanTokensModal {
+    --rd-accent-rgb: 59, 130, 246;
+}
+[data-accent="gold"] #ramadanTokensModal {
+    --rd-accent-rgb: 217, 119, 6;
+}
+
+#ramadanTokensModal .modal-content {
+    max-width: var(--rd-modal-max-w, 1180px);
+    width: 97%;
+    max-height: 94vh;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    background: var(--bg-main);
+    border: 1px solid rgba(var(--rd-accent-rgb), 0.24);
+    box-shadow: 0 28px 80px -18px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    transition: max-width 0.22s cubic-bezier(0.16, 1, 0.3, 1), width 0.22s ease, height 0.22s ease, border-radius 0.22s ease;
+}
+
+#ramadanTokensModal.rd-modal-maximized .modal-content {
+    max-width: calc(100vw - 24px) !important;
+    width: calc(100vw - 24px) !important;
+    height: calc(100vh - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+    border-radius: 16px;
+}
+
+/* Top Studio Header */
+#ramadanTokensModal .rd-tok-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0.62rem 1.1rem;
+    background: linear-gradient(125deg,
+        rgba(6, 78, 59, 0.08) 0%,
+        var(--bg-card) 42%,
+        rgba(245, 158, 11, 0.06) 100%);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    gap: 0.55rem 0.85rem;
+}
+
+[data-theme="dark"] #ramadanTokensModal .rd-tok-header {
+    background: linear-gradient(125deg,
+        rgba(16, 185, 129, 0.12) 0%,
+        var(--bg-card) 48%,
+        rgba(245, 158, 11, 0.08) 100%);
+}
+
+#ramadanTokensModal .rd-tok-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2.5px;
+    background: linear-gradient(90deg, #059669 0%, #10b981 45%, #f59e0b 80%, #0284c7 100%);
+    pointer-events: none;
+}
+
+#ramadanTokensModal .rd-tok-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.72rem;
+    min-width: 240px;
+    flex: 1 1 280px;
+}
+
+#ramadanTokensModal .rd-tok-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(6, 95, 70, 0.14), rgba(16, 185, 129, 0.22));
+    border: 1px solid rgba(16, 185, 129, 0.34);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #059669;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px -4px rgba(16, 185, 129, 0.26);
+}
+
+[data-theme="dark"] #ramadanTokensModal .rd-tok-icon {
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.2), rgba(245, 158, 11, 0.12));
+    color: #34d399;
+}
+
+#ramadanTokensModal .rd-tok-icon .edf-lottie-slot {
+    width: 26px;
+    height: 26px;
+}
+
+#ramadanTokensModal .rd-tok-title {
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.015em;
+}
+
+#ramadanTokensModal .rd-charter-mini-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.12rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    background: rgba(16, 185, 129, 0.12);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+[data-theme="dark"] #ramadanTokensModal .rd-charter-mini-tag {
+    color: #6ee7b7;
+}
+
+#ramadanTokensModal .rd-tok-sub {
+    font-size: 0.71rem;
+    color: var(--text-muted);
+    margin: 0.14rem 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+#ramadanTokensModal .rd-tok-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.36rem;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+#ramadanTokensModal .rd-hdr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    padding: 0.34rem 0.66rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+#ramadanTokensModal .rd-hdr-btn:hover {
+    background: var(--bg-main);
+    border-color: rgba(var(--rd-accent-rgb), 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+#ramadanTokensModal .rd-hdr-btn.active {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.14);
+    color: #047857;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-hdr-btn.active {
+    color: #34d399;
+}
+
+#ramadanTokensModal .rd-hdr-btn-emerald {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.34);
+}
+[data-theme="dark"] #ramadanTokensModal .rd-hdr-btn-emerald { color: #34d399; }
+#ramadanTokensModal .rd-hdr-btn-emerald:hover {
+    background: rgba(16, 185, 129, 0.22);
+    border-color: #10b981;
+}
+
+#ramadanTokensModal .rd-hdr-btn-primary {
+    background: linear-gradient(135deg, #065f46, #059669 65%, #10b981);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
+}
+#ramadanTokensModal .rd-hdr-btn-primary:hover {
+    background: linear-gradient(135deg, #064e3b, #047857 70%, #059669);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.36);
+}
+
+#ramadanTokensModal .rd-hdr-btn .edf-lottie-slot {
+    width: 17px;
+    height: 17px;
+}
+
+#ramadanTokensModal .rd-hdr-util-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.14s ease;
+    flex-shrink: 0;
+}
+#ramadanTokensModal .rd-hdr-util-btn:hover {
+    background: var(--bg-main);
+    color: var(--text-main);
+    border-color: rgba(16, 185, 129, 0.45);
+}
+#ramadanTokensModal .rd-hdr-util-btn.active {
+    background: rgba(16, 185, 129, 0.14);
+    color: #059669;
+    border-color: #10b981;
+}
+
+#ramadanTokensModal .btn-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.14s ease;
+}
+#ramadanTokensModal .btn-close:hover {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #ef4444;
+}
+
+/* Export group popover/inline cleanly aligned */
+#ramadanTokensModal .rd-hdr-export-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border-color);
+    margin: 0 0.12rem;
+}
+
+/* ── 5-Block Lifecycle Bento KPI + Funnel Bar ───────────────────────── */
+#ramadanTokensModal .rd-tok-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(100px, 1fr)) 1.5fr;
+    gap: 0.46rem;
+    padding: 0.48rem 1.1rem;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    align-items: stretch;
+}
+@media (max-width: 1120px) {
+    #ramadanTokensModal .rd-tok-stats-bar {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+#ramadanTokensModal .rd-stat-pill {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.38rem 0.68rem 0.38rem 0.78rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+#ramadanTokensModal .rd-stat-pill::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 3.5px;
+    border-radius: 99px;
+}
+
+#ramadanTokensModal .rd-stat-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+#ramadanTokensModal .rd-stat-pill.active-stat-pill {
+    box-shadow: 0 0 0 2px #10b981, 0 6px 16px -4px rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+}
+
+#ramadanTokensModal .rd-stat-num {
+    font-size: 1.12rem;
+    font-weight: 900;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+}
+
+#ramadanTokensModal .rd-stat-lbl {
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+#ramadanTokensModal .rd-stat-sub {
+    font-size: 0.63rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Stage color identities */
+#ramadanTokensModal .rd-stat-pending { background: rgba(245, 158, 11, 0.055); border-color: rgba(245, 158, 11, 0.26); }
+#ramadanTokensModal .rd-stat-pending::before { background: linear-gradient(180deg, #f59e0b, #d97706); }
+#ramadanTokensModal .rd-stat-pending .rd-stat-num,
+#ramadanTokensModal .rd-stat-pending .rd-stat-lbl { color: #d97706; }
+[data-theme="dark"] #ramadanTokensModal .rd-stat-pending .rd-stat-num,
+[data-theme="dark"] #ramadanTokensModal .rd-stat-pending .rd-stat-lbl { color: #fbbf24; }
+
+#ramadanTokensModal .rd-stat-issued { background: rgba(13, 148, 136, 0.055); border-color: rgba(13, 148, 136, 0.26); }
+#ramadanTokensModal .rd-stat-issued::before { background: linear-gradient(180deg, #14b8a6, #0d9488); }
+#ramadanTokensModal .rd-stat-issued .rd-stat-num,
+#ramadanTokensModal .rd-stat-issued .rd-stat-lbl { color: #0f766e; }
+[data-theme="dark"] #ramadanTokensModal .rd-stat-issued .rd-stat-num,
+[data-theme="dark"] #ramadanTokensModal .rd-stat-issued .rd-stat-lbl { color: #5eead4; }
+
+#ramadanTokensModal .rd-stat-redeemed { background: rgba(14, 165, 233, 0.06); border-color: rgba(14, 165, 233, 0.26); }
+#ramadanTokensModal .rd-stat-redeemed::before { background: linear-gradient(180deg, #38bdf8, #0284c7); }
+#ramadanTokensModal .rd-stat-redeemed .rd-stat-num,
+#ramadanTokensModal .rd-stat-redeemed .rd-stat-lbl { color: #0284c7; }
+[data-theme="dark"] #ramadanTokensModal .rd-stat-redeemed .rd-stat-num,
+[data-theme="dark"] #ramadanTokensModal .rd-stat-redeemed .rd-stat-lbl { color: #38bdf8; }
+
+#ramadanTokensModal .rd-stat-collected { background: rgba(16, 185, 129, 0.07); border-color: rgba(16, 185, 129, 0.3); }
+#ramadanTokensModal .rd-stat-collected::before { background: linear-gradient(180deg, #34d399, #059669); }
+#ramadanTokensModal .rd-stat-collected .rd-stat-num,
+#ramadanTokensModal .rd-stat-collected .rd-stat-lbl { color: #059669; }
+[data-theme="dark"] #ramadanTokensModal .rd-stat-collected .rd-stat-num,
+[data-theme="dark"] #ramadanTokensModal .rd-stat-collected .rd-stat-lbl { color: #34d399; }
+
+#ramadanTokensModal .rd-stat-total::before { background: linear-gradient(180deg, #94a3b8, #475569); }
+
+#ramadanTokensModal .rd-progress-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.42rem 0.85rem;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.22);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(245, 158, 11, 0.04));
+}
+
+#ramadanTokensModal .rd-progress-issued-fill { background: #14b8a6; }
+#ramadanTokensModal .rd-progress-track { height: 7px; border-radius: 99px; }
+#ramadanTokensModal .rd-unassigned-hint { color: #059669; }
+[data-theme="dark"] #ramadanTokensModal .rd-unassigned-hint { color: #34d399; }
+
+/* ── Live Scan Session Feed Ticker Strip ─────────────────────────────── */
+#ramadanTokensModal .rd-session-feed {
+    display: none;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 1.1rem;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.07), rgba(14, 165, 233, 0.04));
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+#ramadanTokensModal .rd-session-feed.visible {
+    display: flex;
+}
+#ramadanTokensModal .rd-session-feed::-webkit-scrollbar { display: none; }
+
+.rd-feed-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #059669;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+[data-theme="dark"] .rd-feed-label { color: #34d399; }
+
+.rd-feed-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22);
+}
+
+.rd-feed-items {
+    display: flex;
+    align-items: center;
+    gap: 0.32rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.rd-feed-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    padding: 0.14rem 0.48rem;
+    border-radius: 99px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-main);
+    font-size: 0.67rem;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color 0.12s, transform 0.12s;
+    font-family: inherit;
+}
+.rd-feed-chip:hover {
+    border-color: #10b981;
+    transform: translateY(-1px);
+}
+.rd-feed-chip-tag {
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    color: #059669;
+}
+[data-theme="dark"] .rd-feed-chip-tag { color: #34d399; }
+.rd-feed-chip.is-redeem .rd-feed-chip-tag { color: #0284c7; }
+[data-theme="dark"] .rd-feed-chip.is-redeem .rd-feed-chip-tag { color: #38bdf8; }
+
+.rd-feed-clear {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 0.1rem 0.3rem;
+    flex-shrink: 0;
+}
+.rd-feed-clear:hover { color: #ef4444; }
+
+/* ── Scanner Desk Command Station ────────────────────────────────────── */
+#ramadanTokensModal .rd-scanner-station {
+    display: flex;
+    flex-direction: column;
+    gap: 0.38rem;
+    padding: 0.46rem 1.1rem;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.035), var(--input-bg));
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    transition: background 0.18s ease;
+}
+
+#ramadanTokensModal .rd-scanner-station.rd-mode-redeem {
+    background: linear-gradient(180deg, rgba(14, 165, 233, 0.045), var(--input-bg));
+}
+
+#ramadanTokensModal .rd-scanner-station.rd-mode-collect {
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.065), var(--input-bg));
+}
+
+#ramadanTokensModal .rd-mode-tabs {
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    padding: 3px;
+    gap: 3px;
+}
+
+#ramadanTokensModal .rd-mode-tab {
+    border-radius: 7px;
+    padding: 0.28rem 0.68rem;
+}
+
+#ramadanTokensModal .rd-mode-tab.active#rdScanMode-issue {
+    color: #0f766e;
+    background: rgba(20, 184, 166, 0.14);
+}
+[data-theme="dark"] #ramadanTokensModal .rd-mode-tab.active#rdScanMode-issue {
+    color: #5eead4;
+}
+
+#ramadanTokensModal .rd-mode-tab.active#rdScanMode-redeem {
+    color: #0284c7;
+    background: rgba(14, 165, 233, 0.14);
+}
+[data-theme="dark"] #ramadanTokensModal .rd-mode-tab.active#rdScanMode-redeem {
+    color: #38bdf8;
+}
+
+#ramadanTokensModal .rd-mode-tab.active#rdScanMode-collect {
+    color: #059669;
+    background: rgba(16, 185, 129, 0.16);
+}
+[data-theme="dark"] #ramadanTokensModal .rd-mode-tab.active#rdScanMode-collect {
+    color: #34d399;
+}
+
+#ramadanTokensModal .rd-toggle-chip input[type="checkbox"] {
+    accent-color: #10b981;
+}
+
+#ramadanTokensModal .rd-toggle-chip.active {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.36);
+    color: #047857;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-toggle-chip.active {
+    color: #6ee7b7;
+}
+
+#ramadanTokensModal .rd-station-input {
+    border-radius: 10px;
+    border: 1.5px solid var(--border-color);
+    min-height: 40px;
+}
+
+#ramadanTokensModal .rd-station-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.14);
+}
+
+#ramadanTokensModal .rd-scanner-station.rd-mode-redeem .rd-station-input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
+}
+
+#ramadanTokensModal .rd-station-action-btn {
+    min-height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+}
+
+#ramadanTokensModal .rd-station-action-btn.rd-mode-redeem {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.28);
+}
+
+#ramadanTokensModal .rd-station-action-btn.rd-mode-collect {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
+}
+
+#ramadanTokensModal .rd-station-camera-btn {
+    min-height: 40px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(16, 185, 129, 0.35);
+    background: rgba(16, 185, 129, 0.08);
+    color: #059669;
+    gap: 0.38rem;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-station-camera-btn { color: #34d399; }
+#ramadanTokensModal .rd-station-camera-btn:hover {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: #10b981;
+}
+#ramadanTokensModal .rd-station-camera-btn.active {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.42);
+}
+#ramadanTokensModal .rd-station-camera-btn .edf-lottie-slot {
+    width: 17px;
+    height: 17px;
+}
+
+/* ── Camera HUD Drawer ───────────────────────────────────────────────── */
+#ramadanTokensModal .rd-camera-drawer {
+    border-bottom: 1px solid rgba(16, 185, 129, 0.32);
+}
+
+/* ── Drawers (Shop Audit & Assign) ───────────────────────────────────── */
+#ramadanTokensModal .rd-shop-audit-drawer {
+    padding: 0.72rem 1.1rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+}
+#ramadanTokensModal .rd-assign-drawer {
+    padding: 0.72rem 1.1rem;
+}
+#ramadanTokensModal .rd-shop-audit-card {
+    border-radius: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+#ramadanTokensModal .rd-shop-audit-card:hover {
+    border-color: rgba(16, 185, 129, 0.36);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Verify Banner (Dark-mode Safe Stage 1 Confirm) ──────────────────── */
+#ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.14), rgba(16, 185, 129, 0.08));
+    border-color: rgba(20, 184, 166, 0.42);
+}
+#ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-icon {
+    background: linear-gradient(135deg, #0d9488, #10b981);
+    color: #ffffff;
+}
+#ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-title,
+#ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-name {
+    color: #0f766e;
+}
+#ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-meta {
+    color: #115e59;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-title,
+[data-theme="dark"] #ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-name {
+    color: #5eead4;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-auto-collect-banner.rd-ac-stage1 .rd-ac-meta {
+    color: #99f6e4;
+}
+
+/* ── Toolbar, Presets & Quick Restore Chips ──────────────────────────── */
+#ramadanTokensModal .rd-tok-toolbar {
+    padding: 0.44rem 1.1rem;
+    gap: 0.36rem;
+}
+
+#ramadanTokensModal .rd-search-wrap:focus-within {
+    border-color: #10b981;
+    box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.12);
+}
+
+#ramadanTokensModal .rd-filter-toggle.active {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+    color: #047857;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-filter-toggle.active {
+    color: #34d399;
+}
+
+#ramadanTokensModal .rd-filter-btn.active .rd-filter-cnt {
+    background: #10b981;
+    color: #ffffff;
+}
+
+#ramadanTokensModal .rd-col-preset-btn.active {
+    color: #059669;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-col-preset-btn.active { color: #34d399; }
+
+#ramadanTokensModal .rd-col-check-item input[type="checkbox"] {
+    accent-color: #10b981;
+}
+
+#ramadanTokensModal .rd-hidden-col-chip {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #059669;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-hidden-col-chip { color: #6ee7b7; }
+#ramadanTokensModal .rd-hidden-col-chip:hover {
+    background: rgba(16, 185, 129, 0.16);
+    border-color: #10b981;
+}
+
+/* ── Tokens Table & Copy Actions ─────────────────────────────────────── */
+#ramadanTokensModal .rd-table thead th {
+    padding: 0.46rem 0.4rem;
+    background: var(--bg-card);
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+#ramadanTokensModal .rd-table tbody tr {
+    transition: background 0.12s ease;
+}
+
+#ramadanTokensModal .rd-table tbody tr.rd-row-selected {
+    background: rgba(16, 185, 129, 0.07);
+}
+
+#ramadanTokensModal .rd-token-pill-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22rem;
+}
+
+#ramadanTokensModal .rd-token-pill {
+    background: rgba(16, 185, 129, 0.09);
+    color: #047857;
+    border-color: rgba(16, 185, 129, 0.26);
+    transition: all 0.14s ease;
+}
+#ramadanTokensModal .rd-token-pill:hover {
+    background: rgba(16, 185, 129, 0.16);
+    border-color: #10b981;
+}
+[data-theme="dark"] #ramadanTokensModal .rd-token-pill {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.34);
+}
+
+.rd-copy-mini-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0.55;
+    padding: 0;
+    transition: opacity 0.12s, background 0.12s, color 0.12s;
+}
+tr:hover .rd-copy-mini-btn, .rd-copy-mini-btn:focus-visible {
+    opacity: 1;
+}
+.rd-copy-mini-btn:hover {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #059669;
+}
+
+/* Align Stage 1 dropdown & primary button from indigo to teal/emerald harmony */
+#ramadanTokensModal .rd-status-select.rd-st-issued {
+    background-color: #ccfbf1;
+    color: #0f766e;
+    border-color: rgba(13, 148, 136, 0.32);
+}
+[data-theme="dark"] #ramadanTokensModal .rd-status-select.rd-st-issued {
+    background-color: rgba(20, 184, 166, 0.18);
+    color: #5eead4;
+    border-color: rgba(94, 234, 212, 0.35);
+}
+
+#ramadanTokensModal .rd-act-primary,
+#ramadanTokensModal .rd-act-issue {
+    background: #0d9488;
+    border-color: #0d9488;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.26);
+}
+#ramadanTokensModal .rd-act-primary:hover,
+#ramadanTokensModal .rd-act-issue:hover {
+    background: #0f766e;
+    border-color: #0f766e;
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.35);
+}
+
+#ramadanTokensModal .rd-act-icon-btn.has-notes {
+    color: #059669;
+}
+#ramadanTokensModal .rd-act-icon-btn.has-notes::after {
+    background: #f59e0b;
+    box-shadow: 0 0 4px #f59e0b;
+}
+
+/* PII Masking Integration from Settings Studio (body.mask-pii) */
+body.mask-pii #ramadanTokensModal .rd-c-ids,
+body.mask-pii #ramadanTokensModal .rd-c-name .rd-td-sub,
+body.mask-pii #ramadanTokensModal .rd-vr-nic-pill {
+    filter: blur(5px);
+    transition: filter 0.16s ease;
+}
+body.mask-pii #ramadanTokensModal .rd-c-ids:hover,
+body.mask-pii #ramadanTokensModal .rd-c-name .rd-td-sub:hover,
+body.mask-pii #ramadanTokensModal .rd-vr-nic-pill:hover {
+    filter: none;
+}
+
+/* Rich Lottie Empty State inside Table */
+.rd-empty-lottie-wrap {
+    width: 66px;
+    height: 66px;
+    margin: 0 auto 0.65rem;
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.12), rgba(245, 158, 11, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #059669;
+}
+.rd-empty-lottie-wrap .edf-lottie-slot {
+    width: 42px;
+    height: 42px;
+}
+.rd-empty-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.85rem;
+}
+
+/* Footer Pagination & Shortcut Hints */
+#ramadanTokensModal .rd-pagination {
+    padding: 0.55rem 1.1rem;
+}
+#ramadanTokensModal .rd-page-btn.active {
+    background: linear-gradient(135deg, #059669, #10b981);
+    border-color: transparent;
+    color: #ffffff;
+}
+.rd-shortcuts-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+.rd-kbd {
+    display: inline-block;
+    padding: 0.06rem 0.35rem;
+    border-radius: 5px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    font-family: 'Courier New', monospace;
+    font-size: 0.64rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+@media (max-width: 900px) {
+    .rd-shortcuts-hint { display: none; }
+}
+
+/* Bulk Tray Theme Sync */
+#ramadanTokensModal .rd-tok-bulk-bar {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(14, 165, 233, 0.06));
+    border-bottom-color: rgba(16, 185, 129, 0.28);
+}
+
+/* ── Quick Edit Modal (#rdTokenQuickModal) Emerald-Gold Harmony ─────── */
+#rdTokenQuickModal .modal-content {
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+}
+#rdTokenQuickModal .modal-header {
+    background: linear-gradient(125deg, rgba(16, 185, 129, 0.1), rgba(245, 158, 11, 0.06)) !important;
+}
+
+@media (max-width: 768px) {
+    #ramadanTokensModal .rd-tok-header {
+        padding: 0.55rem 0.75rem;
+        padding-top: calc(0.55rem + env(safe-area-inset-top));
+    }
+    #ramadanTokensModal .rd-tok-icon {
+        width: 34px;
+        height: 34px;
+    }
+    #ramadanTokensModal .rd-tok-icon .edf-lottie-slot {
+        width: 22px;
+        height: 22px;
+    }
+    #ramadanTokensModal #rdExpandModalBtn,
+    #ramadanTokensModal .rd-hdr-export-sep {
+        display: none;
+    }
+    #ramadanTokensModal .rd-tok-stats-bar {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding: 0.38rem 0.6rem;
+        gap: 0.3rem;
+    }
+    #ramadanTokensModal .rd-session-feed {
+        padding: 0.24rem 0.6rem;
+    }
+}
+

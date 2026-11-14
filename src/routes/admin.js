@@ -34,14 +34,17 @@ module.exports = (db) => {
         try {
             const users = await db.all(`
                 SELECT
-                    id, username, email, full_name, role, status,
-                    avatar_url, last_login, last_seen, created_at, blocked_by,
+                    u.id, u.username, u.email, u.full_name, u.phone, u.bio,
+                    u.role, u.status, u.avatar_url, u.last_login, u.last_seen,
+                    u.force_logout_at, u.created_at, u.blocked_by,
+                    COALESCE(b.full_name, b.username) AS blocked_by_name,
                     CASE
-                        WHEN last_seen >= datetime('now', '-90 seconds') THEN 1
+                        WHEN u.last_seen >= datetime('now', '-90 seconds') THEN 1
                         ELSE 0
                     END AS is_online
-                FROM users
-                ORDER BY created_at ASC
+                FROM users u
+                LEFT JOIN users b ON u.blocked_by = b.id
+                ORDER BY u.created_at ASC
             `);
 
             for (const u of users) {
@@ -83,7 +86,7 @@ module.exports = (db) => {
     // ── POST create user ─────────────────────────────────────────────────────
     router.post('/users', authenticateToken, requireAdmin, async (req, res) => {
         try {
-            const { username, email, full_name, password, role, permissions } = req.body;
+            const { username, email, full_name, phone, bio, password, role, status, permissions } = req.body;
 
             if (!username || !email || !password) {
                 return res.status(400).json({ message: 'Username, email, and password are required' });
@@ -93,6 +96,7 @@ module.exports = (db) => {
             }
 
             const targetRole = role || 'user';
+            const targetStatus = status === 'blocked' ? 'blocked' : 'active';
 
             // Only full admin can create admin/super_user accounts
             if ((targetRole === 'admin' || targetRole === 'super_user') && req.user.role !== 'admin') {
@@ -108,8 +112,8 @@ module.exports = (db) => {
 
             const hashed = await bcrypt.hash(password, 10);
             const result = await db.run(
-                'INSERT INTO users (username, email, full_name, password, role) VALUES (?, ?, ?, ?, ?)',
-                [username, email, full_name || null, hashed, targetRole]
+                'INSERT INTO users (username, email, full_name, phone, bio, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [username, email, full_name || null, phone || null, bio || null, hashed, targetRole, targetStatus]
             );
             const newId = result.lastID;
 
@@ -123,7 +127,7 @@ module.exports = (db) => {
                 }
             }
 
-            res.json({ id: newId, message: 'User created successfully' });
+            res.status(201).json({ id: newId, message: 'User created successfully' });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Failed to create user' });
@@ -134,7 +138,7 @@ module.exports = (db) => {
     router.put('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
         try {
             const targetId = parseInt(req.params.id);
-            const { full_name, email, role, permissions, password } = req.body;
+            const { username, full_name, email, phone, bio, role, status, permissions, password } = req.body;
 
             const target = await db.get('SELECT * FROM users WHERE id = ?', [targetId]);
             if (!target) return res.status(404).json({ message: 'User not found' });
@@ -152,18 +156,44 @@ module.exports = (db) => {
                 }
             }
 
+            // Username uniqueness check
+            const nextUsername = username !== undefined ? String(username).trim() : target.username;
+            if (!nextUsername) {
+                return res.status(400).json({ message: 'Username cannot be empty' });
+            }
+            if (nextUsername !== target.username) {
+                const takenUser = await db.get('SELECT id FROM users WHERE username = ? AND id != ?', [nextUsername, targetId]);
+                if (takenUser) return res.status(409).json({ message: 'Username is already taken' });
+            }
+
             // Email uniqueness check
             if (email && email !== target.email) {
                 const taken = await db.get('SELECT id FROM users WHERE email = ? AND id != ?', [email, targetId]);
                 if (taken) return res.status(409).json({ message: 'Email address is already in use' });
             }
 
+            // Status guard
+            let nextStatus = target.status || 'active';
+            let nextBlockedBy = target.blocked_by || null;
+            if (status === 'active' || status === 'blocked') {
+                if (targetId === req.user.id && status === 'blocked') {
+                    return res.status(400).json({ message: 'You cannot block your own account' });
+                }
+                nextStatus = status;
+                nextBlockedBy = status === 'blocked' ? req.user.id : null;
+            }
+
             await db.run(
-                'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?',
+                'UPDATE users SET username = ?, full_name = ?, email = ?, phone = ?, bio = ?, role = ?, status = ?, blocked_by = ? WHERE id = ?',
                 [
-                    full_name  !== undefined ? full_name  : target.full_name,
+                    nextUsername,
+                    full_name  !== undefined ? (full_name || null) : target.full_name,
                     email      !== undefined ? email      : target.email,
+                    phone      !== undefined ? (phone || null) : target.phone,
+                    bio        !== undefined ? (bio || null)   : target.bio,
                     role       !== undefined ? role       : target.role,
+                    nextStatus,
+                    nextBlockedBy,
                     targetId
                 ]
             );
@@ -192,6 +222,102 @@ module.exports = (db) => {
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Failed to update user' });
+        }
+    });
+
+    // ── GET user inspection activity & session events ───────────────────────
+    router.get('/users/:id/activity', authenticateToken, requireAdmin, async (req, res) => {
+        try {
+            const targetId = parseInt(req.params.id);
+            const user = await db.get(`
+                SELECT
+                    u.id, u.username, u.email, u.full_name, u.phone, u.bio,
+                    u.role, u.status, u.avatar_url, u.last_login, u.last_seen,
+                    u.force_logout_at, u.created_at, u.blocked_by,
+                    COALESCE(b.full_name, b.username) AS blocked_by_name,
+                    CASE WHEN u.last_seen >= datetime('now', '-90 seconds') THEN 1 ELSE 0 END AS is_online
+                FROM users u
+                LEFT JOIN users b ON u.blocked_by = b.id
+                WHERE u.id = ?
+            `, [targetId]);
+            if (!user) return res.status(404).json({ message: 'User not found' });
+
+            const perms = await db.all('SELECT permission FROM user_permissions WHERE user_id = ?', [targetId]);
+            user.permissions = perms.map(p => p.permission);
+
+            const [loginEvents, auditLogs] = await Promise.all([
+                db.all(
+                    `SELECT id, event_type, ip_address, created_at
+                     FROM login_events
+                     WHERE user_id = ?
+                     ORDER BY created_at DESC LIMIT 12`,
+                    [targetId]
+                ),
+                db.all(
+                    `SELECT id, action, entity, details, created_at
+                     FROM system_logs
+                     WHERE user_id = ? AND entity NOT IN ('STATS','LOGS')
+                     ORDER BY created_at DESC LIMIT 15`,
+                    [targetId]
+                )
+            ]);
+
+            res.json({ user, loginEvents, auditLogs });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Failed to load user activity' });
+        }
+    });
+
+    // ── POST bulk actions on selected users ──────────────────────────────────
+    router.post('/users/bulk-action', authenticateToken, requireAdmin, async (req, res) => {
+        try {
+            const { user_ids, action } = req.body;
+            const ids = Array.isArray(user_ids)
+                ? [...new Set(user_ids.map(n => parseInt(n, 10)).filter(n => Number.isInteger(n) && n > 0))]
+                : [];
+            if (!ids.length) {
+                return res.status(400).json({ message: 'Select at least one user account' });
+            }
+            if (!['block', 'unblock', 'force_logout'].includes(action)) {
+                return res.status(400).json({ message: 'Invalid bulk action' });
+            }
+
+            let affected = 0;
+            const skipped = [];
+
+            for (const targetId of ids) {
+                if (targetId === req.user.id) {
+                    skipped.push({ id: targetId, reason: 'Cannot modify your own session/status here' });
+                    continue;
+                }
+                const target = await db.get('SELECT id, username, role FROM users WHERE id = ?', [targetId]);
+                if (!target) continue;
+                if (target.role === 'admin' && req.user.role !== 'admin') {
+                    skipped.push({ id: targetId, reason: 'Admin permission required' });
+                    continue;
+                }
+                if (action === 'block') {
+                    await db.run(
+                        "UPDATE users SET status = 'blocked', blocked_by = ?, last_seen = NULL, force_logout_at = CURRENT_TIMESTAMP WHERE id = ?",
+                        [req.user.id, targetId]
+                    );
+                } else if (action === 'unblock') {
+                    await db.run("UPDATE users SET status = 'active', blocked_by = NULL WHERE id = ?", [targetId]);
+                } else if (action === 'force_logout') {
+                    await db.run("UPDATE users SET force_logout_at = CURRENT_TIMESTAMP, last_seen = NULL WHERE id = ?", [targetId]);
+                }
+                affected++;
+            }
+
+            res.json({
+                message: `Bulk ${action.replace('_', ' ')} applied to ${affected} user${affected === 1 ? '' : 's'}.`,
+                affected,
+                skipped
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Bulk action failed' });
         }
     });
 
@@ -241,8 +367,15 @@ module.exports = (db) => {
                 return res.status(403).json({ message: 'Only administrators can block admin accounts' });
             }
 
+            if (target.role === 'admin') {
+                const adminCount = await db.get("SELECT COUNT(*) AS c FROM users WHERE role = 'admin' AND status = 'active'");
+                if (adminCount.c <= 1) {
+                    return res.status(400).json({ message: 'Cannot block the last active administrator account' });
+                }
+            }
+
             await db.run(
-                "UPDATE users SET status = 'blocked', blocked_by = ? WHERE id = ?",
+                "UPDATE users SET status = 'blocked', blocked_by = ?, last_seen = NULL, force_logout_at = CURRENT_TIMESTAMP WHERE id = ?",
                 [req.user.id, targetId]
             );
             res.json({ message: 'User blocked successfully' });
@@ -348,38 +481,66 @@ module.exports = (db) => {
         }
 
         try {
-            // Tables to wipe, ordered to satisfy foreign-key constraints
-            const operationalTables = [
+            // Full operational tables to wipe, ordered children -> parents
+            const candidateTables = [
+                'madrasa_attendance',
+                'madrasa_students',
+                'madrasa_classes',
+                'madrasa_muallimahs',
+                'inventory_usage',
+                'inventory_maintenance',
+                'inventory_loans',
+                'inventory_items',
+                'program_applications',
+                'batches',
+                'courses',
+                'form_templates',
                 'ramadan_tokens',
                 'ramadan_distributions',
+                'beneficiary_help_logs',
+                'beneficiary_helps',
                 'beneficiary_children_study',
                 'beneficiary_children_dropout',
                 'beneficiary_children_university',
                 'beneficiary_children_abroad',
                 'beneficiary_children_other',
                 'beneficiaries',
+                'beneficiary_categories',
+                'subscription_payments',
                 'subscriptions',
                 'family_donations',
                 'families',
                 'member_relatives',
                 'members',
-                'batches',
-                'courses',
                 'transactions',
                 'external_donations',
+                'donations',
+                'projects',
+                'volunteer_activities',
                 'volunteers',
+                'sms_logs',
             ];
 
-            if (include_logs) operationalTables.push('system_logs');
+            if (include_logs) {
+                candidateTables.push('system_logs', 'login_events');
+            }
+
+            const existingRows = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+            const existingSet = new Set(existingRows.map(r => r.name));
+            const operationalTables = candidateTables.filter(t => existingSet.has(t));
 
             const counts = {};
             await db.run('PRAGMA foreign_keys = OFF');
             for (const table of operationalTables) {
-                const row = await db.get(`SELECT COUNT(*) AS c FROM ${table}`);
+                const row = await db.get(`SELECT COUNT(*) AS c FROM [${table}]`);
                 counts[table] = row ? row.c : 0;
-                await db.run(`DELETE FROM ${table}`);
+                await db.run(`DELETE FROM [${table}]`);
                 await db.run(`DELETE FROM sqlite_sequence WHERE name = ?`, [table]);
             }
+            await db.run(
+                `INSERT INTO global_settings (key, value) VALUES ('madrasa_seeded', '1')
+                 ON CONFLICT(key) DO UPDATE SET value = '1', updated_at = CURRENT_TIMESTAMP`
+            );
             await db.run('PRAGMA foreign_keys = ON');
 
             const totalRows = Object.values(counts).reduce((s, c) => s + c, 0);

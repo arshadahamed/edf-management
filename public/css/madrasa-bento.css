@@ -1,0 +1,1002 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *   EDF GALGAMUWA — Madrasa & Maktab Management System Bento CSS
+ *   Sovereign Emerald (#10b981 / #059669) & Sanctuary Gold (#f59e0b / #d97706)
+ *   Scoped to #madrasaTab & #mdrClassModal, #mdrStudentModal,
+ *   #mdrMuallimahModal, #mdrAttendanceModal, #mdrConfirmModal
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. Hero Banner ────────────────────────────────────────────────────────── */
+#madrasaTab .mdr-hero-banner {
+    position: relative;
+    overflow: hidden;
+    padding: 1.35rem 1.55rem;
+    margin-bottom: 1.15rem;
+    border-radius: 22px;
+    border: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 92% 16%, rgba(16, 185, 129, 0.16) 0%, transparent 48%),
+        radial-gradient(circle at 10% 88%, rgba(245, 158, 11, 0.13) 0%, transparent 45%),
+        var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.15rem;
+}
+
+[data-theme="dark"] #madrasaTab .mdr-hero-banner {
+    background:
+        radial-gradient(circle at 92% 16%, rgba(16, 185, 129, 0.24) 0%, transparent 50%),
+        radial-gradient(circle at 10% 88%, rgba(245, 158, 11, 0.16) 0%, transparent 46%),
+        var(--bg-card);
+}
+
+#madrasaTab .mdr-hero-pattern {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.25;
+    background-image: radial-gradient(rgba(16, 185, 129, 0.28) 1px, transparent 1px);
+    background-size: 20px 20px;
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.85), transparent 64%);
+    -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.85), transparent 64%);
+}
+
+#madrasaTab .mdr-hero-left {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1 1 380px;
+    min-width: 260px;
+}
+
+#madrasaTab .mdr-hero-emblem {
+    width: 56px;
+    height: 56px;
+    border-radius: 17px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.36);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #059669;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="dark"] #madrasaTab .mdr-hero-emblem {
+    color: #34d399;
+}
+
+#madrasaTab .mdr-hero-emblem .edf-lottie-slot,
+.mdr-modal-overlay .mdr-modal-emblem .edf-lottie-slot {
+    width: 30px;
+    height: 30px;
+}
+
+#madrasaTab .mdr-hero-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.28rem;
+}
+
+#madrasaTab .mdr-hero-title {
+    margin: 0;
+    font-size: 1.38rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+}
+
+#madrasaTab .mdr-hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    padding: 0.2rem 0.62rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] #madrasaTab .mdr-hero-pill {
+    color: #34d399;
+}
+
+#madrasaTab .mdr-hero-sub {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.48;
+    color: var(--text-muted);
+    max-width: 680px;
+}
+
+#madrasaTab .mdr-hero-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+/* ── 2. Shared Buttons ─────────────────────────────────────────────────────── */
+#madrasaTab .mdr-btn,
+.mdr-modal-overlay .mdr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    padding: 0.56rem 0.96rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.81rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+}
+
+#madrasaTab .mdr-btn:hover,
+.mdr-modal-overlay .mdr-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(16, 185, 129, 0.42);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+#madrasaTab .mdr-btn-primary,
+.mdr-modal-overlay .mdr-btn-primary {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
+}
+
+#madrasaTab .mdr-btn-primary:hover,
+.mdr-modal-overlay .mdr-btn-primary:hover {
+    background: linear-gradient(135deg, #047857, #059669);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.34);
+}
+
+#madrasaTab .mdr-btn-gold {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(217, 119, 6, 0.1));
+    color: #b45309;
+    border-color: rgba(245, 158, 11, 0.36);
+}
+
+[data-theme="dark"] #madrasaTab .mdr-btn-gold {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.35);
+}
+
+#madrasaTab .mdr-btn-danger,
+.mdr-modal-overlay .mdr-btn-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+#madrasaTab .mdr-btn-sm {
+    padding: 0.36rem 0.68rem;
+    border-radius: 9px;
+    font-size: 0.74rem;
+}
+
+#madrasaTab .mdr-icon-btn {
+    padding: 0.34rem 0.56rem;
+    border-radius: 9px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+#madrasaTab .mdr-icon-btn:hover {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-color: rgba(16, 185, 129, 0.42);
+}
+
+#madrasaTab .mdr-icon-btn.emerald:hover {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.36);
+}
+
+#madrasaTab .mdr-icon-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.32);
+}
+
+/* ── 3. Bento KPI Strip ────────────────────────────────────────────────────── */
+#madrasaTab .mdr-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 1.15rem;
+}
+
+#madrasaTab .mdr-kpi-card {
+    position: relative;
+    overflow: hidden;
+    padding: 1rem 1.1rem;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+}
+
+#madrasaTab .mdr-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(16, 185, 129, 0.42);
+    box-shadow: 0 10px 26px rgba(16, 185, 129, 0.11);
+}
+
+#madrasaTab .mdr-kpi-meta {
+    min-width: 0;
+}
+
+#madrasaTab .mdr-kpi-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+#madrasaTab .mdr-kpi-val {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+}
+
+#madrasaTab .mdr-kpi-sub {
+    margin-top: 0.25rem;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#madrasaTab .mdr-kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.13), rgba(245, 158, 11, 0.1));
+    color: #059669;
+}
+
+[data-theme="dark"] #madrasaTab .mdr-kpi-icon {
+    color: #34d399;
+}
+
+#madrasaTab .mdr-kpi-icon .edf-lottie-slot {
+    width: 24px;
+    height: 24px;
+}
+
+/* ── 4. Sub-Tabs Bar ───────────────────────────────────────────────────────── */
+#madrasaTab .mdr-subtabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.48rem;
+    margin-bottom: 1.1rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+}
+
+#madrasaTab .mdr-subtabs-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+#madrasaTab .mdr-subtab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.52rem 0.92rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+
+#madrasaTab .mdr-subtab-btn:hover {
+    color: var(--text-main);
+    background: var(--input-bg);
+}
+
+#madrasaTab .mdr-subtab-btn.active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(245, 158, 11, 0.1));
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.34);
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] #madrasaTab .mdr-subtab-btn.active {
+    color: #34d399;
+}
+
+#madrasaTab .mdr-subtab-btn .edf-lottie-slot {
+    width: 18px;
+    height: 18px;
+}
+
+#madrasaTab .mdr-tab-count {
+    padding: 0.12rem 0.46rem;
+    border-radius: 999px;
+    font-size: 0.69rem;
+    font-weight: 800;
+    background: rgba(148, 163, 184, 0.16);
+    color: var(--text-muted);
+}
+
+#madrasaTab .mdr-subtab-btn.active .mdr-tab-count {
+    background: rgba(16, 185, 129, 0.22);
+    color: #047857;
+}
+
+[data-theme="dark"] #madrasaTab .mdr-subtab-btn.active .mdr-tab-count {
+    color: #6ee7b7;
+}
+
+/* ── 5. Panels, Toolbars & Cards ───────────────────────────────────────────── */
+#madrasaTab .mdr-panel {
+    display: none;
+}
+
+#madrasaTab .mdr-panel.active {
+    display: block;
+    animation: mdrFadeIn 0.2s ease;
+}
+
+@keyframes mdrFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#madrasaTab .mdr-card {
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 1.15rem;
+}
+
+#madrasaTab .mdr-card-hdr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.04), transparent);
+}
+
+#madrasaTab .mdr-card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#madrasaTab .mdr-card-sub {
+    margin: 0.16rem 0 0;
+    font-size: 0.77rem;
+    color: var(--text-muted);
+}
+
+#madrasaTab .mdr-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(148, 163, 184, 0.03);
+}
+
+#madrasaTab .mdr-input,
+#madrasaTab .mdr-select,
+.mdr-modal-overlay .mdr-input,
+.mdr-modal-overlay .mdr-select,
+.mdr-modal-overlay .mdr-textarea {
+    padding: 0.52rem 0.78rem;
+    border-radius: 11px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 0.82rem;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#madrasaTab .mdr-input:focus,
+#madrasaTab .mdr-select:focus,
+.mdr-modal-overlay .mdr-input:focus,
+.mdr-modal-overlay .mdr-select:focus,
+.mdr-modal-overlay .mdr-textarea:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
+}
+
+#madrasaTab .mdr-search-wrap {
+    flex: 1 1 220px;
+    min-width: 180px;
+    position: relative;
+}
+
+#madrasaTab .mdr-search-wrap .mdr-input {
+    width: 100%;
+    padding-left: 2.15rem;
+}
+
+#madrasaTab .mdr-search-ico {
+    position: absolute;
+    left: 0.72rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* ── 6. Daily Roll Call Sheet & Status Pills ───────────────────────────────── */
+#madrasaTab .mdr-roll-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.78rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.06), rgba(245, 158, 11, 0.05));
+}
+
+#madrasaTab .mdr-roll-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+#madrasaTab .mdr-stat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    padding: 0.28rem 0.66rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-main);
+}
+
+#madrasaTab .mdr-stat-chip.present { color: #059669; border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.1); }
+#madrasaTab .mdr-stat-chip.absent { color: #dc2626; border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.09); }
+#madrasaTab .mdr-stat-chip.late { color: #d97706; border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.1); }
+#madrasaTab .mdr-stat-chip.excused { color: #2563eb; border-color: rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.09); }
+
+[data-theme="dark"] #madrasaTab .mdr-stat-chip.present { color: #34d399; }
+[data-theme="dark"] #madrasaTab .mdr-stat-chip.absent { color: #f87171; }
+[data-theme="dark"] #madrasaTab .mdr-stat-chip.late { color: #fbbf24; }
+[data-theme="dark"] #madrasaTab .mdr-stat-chip.excused { color: #60a5fa; }
+
+#madrasaTab .mdr-att-pill-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    padding: 0.22rem;
+    border-radius: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+}
+
+#madrasaTab .mdr-att-pill {
+    padding: 0.3rem 0.62rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.73rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.14s ease;
+}
+
+#madrasaTab .mdr-att-pill:hover {
+    color: var(--text-main);
+    background: var(--bg-card);
+}
+
+#madrasaTab .mdr-att-pill.active[data-status="present"] {
+    background: #10b981;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.32);
+}
+
+#madrasaTab .mdr-att-pill.active[data-status="absent"] {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+#madrasaTab .mdr-att-pill.active[data-status="late"] {
+    background: #f59e0b;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+#madrasaTab .mdr-att-pill.active[data-status="excused"] {
+    background: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* ── 7. Tables & Directory Badges ──────────────────────────────────────────── */
+#madrasaTab .mdr-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+#madrasaTab .mdr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+#madrasaTab .mdr-table th {
+    text-align: left;
+    padding: 0.72rem 1rem;
+    font-size: 0.71rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    background: rgba(148, 163, 184, 0.06);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+#madrasaTab .mdr-table td {
+    padding: 0.76rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+#madrasaTab .mdr-table tbody tr:hover {
+    background: rgba(16, 185, 129, 0.035);
+}
+
+#madrasaTab .mdr-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#madrasaTab .mdr-avatar-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.68rem;
+}
+
+#madrasaTab .mdr-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.32);
+    color: #059669;
+    font-weight: 800;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] #madrasaTab .mdr-avatar {
+    color: #34d399;
+}
+
+#madrasaTab .mdr-primary-text {
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.25;
+}
+
+#madrasaTab .mdr-sub-text {
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+#madrasaTab .mdr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    padding: 0.2rem 0.56rem;
+    border-radius: 999px;
+    font-size: 0.71rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+#madrasaTab .mdr-badge.emerald {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+#madrasaTab .mdr-badge.gold {
+    background: rgba(245, 158, 11, 0.13);
+    color: #b45309;
+    border-color: rgba(245, 158, 11, 0.34);
+}
+
+#madrasaTab .mdr-badge.red {
+    background: rgba(239, 68, 68, 0.11);
+    color: #dc2626;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+#madrasaTab .mdr-badge.blue {
+    background: rgba(59, 130, 246, 0.11);
+    color: #2563eb;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] #madrasaTab .mdr-badge.emerald { color: #34d399; }
+[data-theme="dark"] #madrasaTab .mdr-badge.gold { color: #fbbf24; }
+[data-theme="dark"] #madrasaTab .mdr-badge.red { color: #f87171; }
+[data-theme="dark"] #madrasaTab .mdr-badge.blue { color: #60a5fa; }
+
+/* ── 8. Classes & Halqahs Bento Grid ───────────────────────────────────────── */
+#madrasaTab .mdr-classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1rem;
+    padding: 1.15rem;
+}
+
+#madrasaTab .mdr-class-card {
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    padding: 1.05rem 1.12rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.72rem;
+    transition: transform 0.17s ease, border-color 0.17s ease, box-shadow 0.17s ease;
+}
+
+#madrasaTab .mdr-class-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(16, 185, 129, 0.42);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    background: var(--bg-card);
+}
+
+#madrasaTab .mdr-class-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.6rem;
+}
+
+#madrasaTab .mdr-class-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.71rem;
+    font-weight: 800;
+    color: #059669;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    padding: 0.15rem 0.5rem;
+    border-radius: 7px;
+}
+
+[data-theme="dark"] #madrasaTab .mdr-class-code {
+    color: #34d399;
+}
+
+#madrasaTab .mdr-class-name {
+    margin: 0.35rem 0 0.15rem;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+#madrasaTab .mdr-class-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+}
+
+#madrasaTab .mdr-capacity-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+#madrasaTab .mdr-capacity-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+#madrasaTab .mdr-capacity-track {
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.2);
+    overflow: hidden;
+}
+
+#madrasaTab .mdr-capacity-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #059669, #10b981);
+    transition: width 0.35s ease;
+}
+
+#madrasaTab .mdr-capacity-fill.warn {
+    background: linear-gradient(90deg, #d97706, #f59e0b);
+}
+
+#madrasaTab .mdr-capacity-fill.full {
+    background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+#madrasaTab .mdr-class-footer {
+    margin-top: auto;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem;
+}
+
+#madrasaTab .mdr-empty-box {
+    text-align: center;
+    padding: 2.5rem 1.2rem;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+}
+
+/* ── 9. Madrasa Bento Modals ───────────────────────────────────────────────── */
+.mdr-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9150;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    align-items: center;
+    justify-content: center;
+}
+
+.mdr-modal-overlay.open {
+    display: flex;
+    animation: mdrFadeIn 0.18s ease;
+}
+
+.mdr-modal-card {
+    width: 680px;
+    max-width: 96vw;
+    max-height: 92vh;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.38);
+}
+
+#mdrAttendanceModal .mdr-modal-card { width: 520px; }
+#mdrConfirmModal .mdr-modal-card { width: 450px; }
+
+.mdr-modal-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 1.05rem 1.35rem;
+    border-bottom: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 92% 18%, rgba(245, 158, 11, 0.14) 0%, transparent 48%),
+        radial-gradient(circle at 8% 84%, rgba(16, 185, 129, 0.16) 0%, transparent 46%),
+        var(--bg-card);
+}
+
+.mdr-modal-hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.mdr-modal-emblem {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.36);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #059669;
+}
+
+[data-theme="dark"] .mdr-modal-emblem {
+    color: #34d399;
+}
+
+.mdr-modal-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.mdr-modal-sub {
+    margin: 0.14rem 0 0;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.mdr-modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.mdr-modal-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.mdr-modal-body {
+    padding: 1.2rem 1.35rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.mdr-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.mdr-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.32rem;
+}
+
+.mdr-field.full {
+    grid-column: 1 / -1;
+}
+
+.mdr-field label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+.mdr-field .mdr-input,
+.mdr-field .mdr-select,
+.mdr-field .mdr-textarea {
+    width: 100%;
+}
+
+.mdr-textarea {
+    min-height: 76px;
+    resize: vertical;
+}
+
+.mdr-modal-ftr {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    padding: 0.92rem 1.35rem;
+    border-top: 1px solid var(--border-color);
+    background: rgba(148, 163, 184, 0.04);
+}
+
+/* ── 10. Responsive Breakpoints ────────────────────────────────────────────── */
+@media (max-width: 1080px) {
+    #madrasaTab .mdr-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    #madrasaTab .mdr-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .mdr-form-grid {
+        grid-template-columns: 1fr;
+    }
+    #madrasaTab .mdr-hero-banner {
+        padding: 1.05rem;
+    }
+}
+

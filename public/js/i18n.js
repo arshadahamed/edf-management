@@ -101,10 +101,20 @@ function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('edf_lang', lang);
     
-    // Update topbar label
-    document.getElementById('currentLangLbl').textContent = lang.toUpperCase();
-    
+    // Update topbar label & settings dropdown
+    const lbl = document.getElementById('currentLangLbl');
+    if (lbl) lbl.textContent = lang.toUpperCase();
+    const sel = document.getElementById('settingLanguage');
+    if (sel && sel.value !== lang) sel.value = lang;
+
+    try {
+        const s = JSON.parse(localStorage.getItem('edf-settings') || '{}');
+        s.language = lang;
+        localStorage.setItem('edf-settings', JSON.stringify(s));
+    } catch (_) {}
+
     updateTranslations();
+    if (typeof syncSettingsHeroPills === 'function') syncSettingsHeroPills();
 }
 
 function updateTranslations() {

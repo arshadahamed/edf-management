@@ -1,0 +1,804 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *   EDF GALGAMUWA — Documents & Knowledge Vault + Upload Studio Bento CSS
+ *   Scoped to #documentsTab, #doc-modal-overlay & #doc-preview-overlay
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+
+/* ── 1. Hero Header Banner ─────────────────────────────────────────────────── */
+#documentsTab .doc-hero-banner {
+    position: relative;
+    overflow: hidden;
+    padding: 1.35rem 1.55rem;
+    margin-bottom: 1.1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 92% 16%, rgba(16, 185, 129, 0.14) 0%, transparent 48%),
+        radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.1) 0%, transparent 44%),
+        var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.15rem;
+}
+
+[data-theme="dark"] #documentsTab .doc-hero-banner {
+    background:
+        radial-gradient(circle at 92% 16%, rgba(16, 185, 129, 0.21) 0%, transparent 50%),
+        radial-gradient(circle at 12% 88%, rgba(245, 158, 11, 0.14) 0%, transparent 45%),
+        var(--bg-card);
+}
+
+#documentsTab .doc-hero-pattern {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image: radial-gradient(rgba(16, 185, 129, 0.26) 1px, transparent 1px);
+    background-size: 20px 20px;
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent 64%);
+    -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent 64%);
+}
+
+#documentsTab .doc-hero-left {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.95rem;
+    flex: 1 1 360px;
+    min-width: 260px;
+}
+
+#documentsTab .doc-hero-emblem {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.34);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.12);
+}
+
+#documentsTab .doc-hero-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Storage Meter Pill inside Hero */
+#documentsTab .doc-storage-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.32rem 0.72rem;
+    border-radius: 99px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: var(--text-main);
+    font-variant-numeric: tabular-nums;
+}
+
+#documentsTab .doc-storage-track {
+    width: 74px;
+    height: 6px;
+    border-radius: 99px;
+    background: rgba(148, 163, 184, 0.25);
+    overflow: hidden;
+}
+
+#documentsTab .doc-storage-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #10b981, #f59e0b);
+    transition: width 0.35s ease;
+}
+
+/* ── 2. Interactive 6-Card Bento KPI Strip ─────────────────────────────────── */
+#documentsTab .doc-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.05rem;
+}
+
+#documentsTab .doc-stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 0.95rem 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    cursor: pointer;
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+#documentsTab .doc-stat-card:hover,
+#documentsTab .doc-stat-card.active {
+    transform: translateY(-2px);
+    border-color: #10b981;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12);
+}
+
+#documentsTab .doc-stat-lbl {
+    font-size: 0.69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.045em;
+    color: var(--text-muted);
+    margin: 0 0 0.22rem;
+}
+
+#documentsTab .doc-stat-val {
+    font-size: 1.42rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+#documentsTab .doc-stat-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.18rem;
+}
+
+#documentsTab .doc-stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── 3. Folder Strip + Unified Search / View Toolbar ───────────────────────── */
+#documentsTab .doc-toolbar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 0.9rem 1.05rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+#documentsTab .doc-folder-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.42rem;
+    flex-wrap: wrap;
+}
+
+#documentsTab .doc-folder-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.34rem 0.72rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+}
+
+#documentsTab .doc-folder-pill:hover {
+    border-color: rgba(16, 185, 129, 0.42);
+    color: var(--text-main);
+}
+
+#documentsTab .doc-folder-pill.active {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: #10b981;
+    color: #059669;
+}
+
+[data-theme="dark"] #documentsTab .doc-folder-pill.active {
+    color: #34d399;
+}
+
+#documentsTab .doc-filters-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--border-color);
+}
+
+#documentsTab .doc-search {
+    flex: 1 1 240px;
+    position: relative;
+    min-width: 190px;
+}
+
+#documentsTab .doc-search input {
+    width: 100%;
+    padding: 0.52rem 2rem 0.52rem 2.2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.82rem;
+    background: var(--input-bg);
+    color: var(--text-main);
+    transition: border-color 0.15s ease;
+}
+
+#documentsTab .doc-search input:focus {
+    outline: none;
+    border-color: #10b981;
+}
+
+#documentsTab .doc-search-icon {
+    position: absolute;
+    left: 0.72rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+#documentsTab .doc-search-clear {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    display: none;
+}
+
+#documentsTab .doc-select {
+    padding: 0.52rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--input-bg);
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+#documentsTab .doc-view-switch {
+    display: inline-flex;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+}
+
+#documentsTab .doc-view-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.34rem 0.55rem;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+#documentsTab .doc-view-btn.active {
+    background: var(--bg-card);
+    color: #10b981;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── 4. Bulk Selection Bar ─────────────────────────────────────────────────── */
+#documentsTab .doc-bulk-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, #064e3b, #0f172a);
+    color: #ffffff;
+    padding: 0.72rem 1.05rem;
+    border-radius: 14px;
+    margin-bottom: 0.9rem;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: var(--shadow-md);
+}
+
+/* ── 5. Table View & Card Grid View ────────────────────────────────────────── */
+#documentsTab .doc-vault-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+#documentsTab .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#documentsTab .doc-table th {
+    padding: 0.78rem 1rem;
+    font-size: 0.69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--input-bg);
+    white-space: nowrap;
+}
+
+#documentsTab .doc-table td {
+    padding: 0.8rem 1rem;
+    font-size: 0.83rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+#documentsTab .doc-table tr:last-child td { border-bottom: none; }
+#documentsTab .doc-table tbody tr:hover td { background: rgba(16, 185, 129, 0.04); }
+
+#documentsTab .doc-icon-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+}
+
+#documentsTab .doc-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+#documentsTab .doc-name {
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 290px;
+}
+
+#documentsTab .doc-name:hover { color: #10b981; }
+
+#documentsTab .doc-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.14rem;
+    max-width: 290px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#documentsTab .doc-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.18rem 0.56rem;
+    border-radius: 99px;
+    font-size: 0.69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+#documentsTab .doc-folder-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.14rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.69rem;
+    font-weight: 600;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+#documentsTab .doc-vis-badge {
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 0.1rem 0.42rem;
+    border-radius: 6px;
+    text-transform: capitalize;
+}
+
+#documentsTab .doc-vis-internal   { background: rgba(16, 185, 129, 0.1); color: #059669; }
+#documentsTab .doc-vis-board_only { background: rgba(245, 158, 11, 0.14); color: #d97706; }
+#documentsTab .doc-vis-restricted { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
+
+#documentsTab .doc-pin-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+#documentsTab .doc-pin-btn.pinned { color: #f59e0b; }
+#documentsTab .doc-pin-btn:hover  { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+
+#documentsTab .doc-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    justify-content: flex-end;
+}
+
+#documentsTab .doc-act-btn {
+    padding: 0.34rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-main);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.15s ease;
+}
+
+#documentsTab .doc-act-btn:hover           { border-color: #10b981; color: #10b981; }
+#documentsTab .doc-act-btn.btn-dl:hover    { border-color: #2563eb; color: #2563eb; }
+#documentsTab .doc-act-btn.btn-del:hover   { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.08); }
+
+/* Bento Grid Cards */
+#documentsTab .doc-grid-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+    gap: 0.9rem;
+}
+
+#documentsTab .doc-file-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1rem 1.05rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+#documentsTab .doc-file-card.is-pinned {
+    border-color: rgba(245, 158, 11, 0.45);
+}
+
+#documentsTab .doc-file-card:hover {
+    transform: translateY(-2px);
+    border-color: #10b981;
+    box-shadow: var(--shadow-md);
+}
+
+#documentsTab .doc-empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* ── 6. Upload / Edit Studio Modal (#doc-modal-overlay) ────────────────────── */
+#doc-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.56);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 9000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+#doc-modal-overlay.open {
+    display: flex;
+    animation: docModalFade 0.18s ease;
+}
+
+@keyframes docModalFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+#doc-modal-overlay .doc-modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    width: 680px;
+    max-width: 96vw;
+    max-height: 92vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 28px 64px rgba(0, 0, 0, 0.34);
+}
+
+#doc-modal-overlay .doc-modal-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 1.05rem 1.4rem;
+    border-bottom: 1px solid var(--border-color);
+    background:
+        radial-gradient(circle at 94% 20%, rgba(245, 158, 11, 0.14) 0%, transparent 48%),
+        radial-gradient(circle at 8% 82%, rgba(16, 185, 129, 0.12) 0%, transparent 44%),
+        var(--bg-card);
+}
+
+#doc-modal-overlay .doc-modal-hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+#doc-modal-overlay .doc-modal-emblem {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(245, 158, 11, 0.16));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+#doc-modal-overlay .doc-modal-hdr h3 {
+    font-size: 1.08rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-main);
+}
+
+#doc-modal-overlay .doc-modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+#doc-modal-overlay .doc-modal-close:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+#doc-modal-overlay .doc-modal-body {
+    padding: 1.2rem 1.4rem;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+#doc-modal-overlay .doc-modal-foot {
+    padding: 0.9rem 1.4rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--input-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Dropzone Studio */
+#doc-modal-overlay .doc-upload-zone {
+    position: relative;
+    border: 2px dashed rgba(16, 185, 129, 0.42);
+    border-radius: 16px;
+    padding: 1.55rem 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08), transparent 72%),
+        var(--input-bg);
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.16s ease;
+}
+
+#doc-modal-overlay .doc-upload-zone:hover,
+#doc-modal-overlay .doc-upload-zone.drag-over {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-1px);
+}
+
+#doc-modal-overlay .doc-queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.85rem;
+    max-height: 170px;
+    overflow-y: auto;
+}
+
+#doc-modal-overlay .doc-queue-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 11px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+}
+
+#doc-modal-overlay .doc-queue-thumb {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+#doc-modal-overlay .doc-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+    #doc-modal-overlay .doc-meta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+#doc-modal-overlay .doc-form-group {
+    margin-bottom: 0.75rem;
+}
+
+#doc-modal-overlay .doc-form-group label {
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+#doc-modal-overlay .doc-form-group input,
+#doc-modal-overlay .doc-form-group select,
+#doc-modal-overlay .doc-form-group textarea {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.82rem;
+    background: var(--input-bg);
+    color: var(--text-main);
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+#doc-modal-overlay .doc-form-group textarea {
+    resize: vertical;
+    min-height: 68px;
+}
+
+#doc-modal-overlay .doc-progress-wrap {
+    display: none;
+    margin-top: 0.85rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 11px;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    background: rgba(16, 185, 129, 0.06);
+}
+
+#doc-modal-overlay .doc-progress {
+    height: 7px;
+    background: rgba(148, 163, 184, 0.25);
+    border-radius: 99px;
+    margin-top: 0.45rem;
+    overflow: hidden;
+}
+
+#doc-modal-overlay .doc-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #f59e0b);
+    width: 0;
+    border-radius: 99px;
+    transition: width 0.2s ease;
+}
+
+/* ── 7. In-App Quick File Preview Overlay (#doc-preview-overlay) ───────────── */
+#doc-preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 15, 28, 0.72);
+    backdrop-filter: blur(8px);
+    z-index: 9200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+}
+
+#doc-preview-overlay.open {
+    display: flex;
+}
+
+#doc-preview-overlay .doc-preview-box {
+    width: 920px;
+    max-width: 96vw;
+    height: 86vh;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+}
+
+#doc-preview-overlay .doc-preview-hdr {
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--input-bg);
+}
+
+#doc-preview-overlay .doc-preview-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: auto;
+    background: var(--bg-main);
+}
+

@@ -19,7 +19,11 @@ const PATH_PERMISSION_MAP = [
     { pattern: /^\/edf\/volunteers/,         permission: 'volunteers'    },
     { pattern: /^\/programs/,               permission: 'courses'       },
     { pattern: /^\/forms/,                  permission: 'courses'       },
+    { pattern: /^\/madrasa/,                permission: 'courses'       },
     { pattern: /^\/ramadan/,                permission: 'ramadan'       },
+    { pattern: /^\/sms\/gateways/,          permission: 'settings'      },
+    { pattern: /^\/backups/,                permission: 'settings'      },
+    { pattern: /^\/sms/,                    permission: 'beneficiaries' },
 ];
 
 module.exports = (db) => {

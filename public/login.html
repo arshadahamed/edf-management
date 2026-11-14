@@ -1,1319 +1,1151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — EDF Galgamuwa</title>
+  <title>Staff Portal Sign In — EDF Galgamuwa | Education &amp; Development Foundation</title>
+  <meta name="description"
+    content="Education & Development Foundation (EDF) Galgamuwa Staff Portal. Member-sustained stewardship, education sponsorship, and community care.">
+  <meta name="theme-color" content="#062c22">
 
-  <!-- Fonts -->
+  <!-- OpenGraph / Social Metadata -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Staff Portal Sign In — EDF Galgamuwa">
+  <meta property="og:description"
+    content="Administrative authentication gateway for Education & Development Foundation trustees, staff, and field coordinators.">
+  <meta property="og:image" content="/uploads/logo/logo-1775982368852.svg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23D4AF37'%3E%3Cpath d='M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts (Latin, Arabic Cairo/Amiri, Tamil & Sinhala) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@500;600;700;800&family=Cinzel:wght@600;700;800;900&family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
     rel="stylesheet">
 
-  <style>
-    /* ═══════════════════════════════════════════
-       DESIGN TOKENS
-    ═══════════════════════════════════════════ */
-    :root {
-      --cream: #F9F4EC;
-      --linen: #EDE3D0;
-      --linen-dk: #D9CAAF;
-      --navy: #0C1A34;
-      --navy-mid: #162A50;
-      --navy-lt: #1E3A6E;
-      --crimson: #C21833;
-      --crimson-dk: #941226;
-      --crimson-lt: #E52545;
-      --crimson-glow: rgba(194, 24, 51, 0.15);
-      --amber: #E8A020;
-      --amber-dim: rgba(232, 160, 32, 0.12);
-      --green: #25D366;
-      --text: #18100A;
-      --text-soft: #6B5040;
-      --text-muted: #9A8878;
-      --border-lt: rgba(255, 255, 255, 0.08);
-      --border-md: rgba(255, 255, 255, 0.13);
-      --serif: 'Playfair Display', Georgia, serif;
-      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --ease: cubic-bezier(0.16, 1, 0.3, 1);
-    }
+  <!-- Font Awesome 6.5.1 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    /* ── Reset ── */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <!-- Lucide Icons (Shadcn/UI Official Icon Library) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    html,
-    body {
-      height: 100%;
-    }
-
-    body {
-      font-family: var(--sans);
-      display: flex;
-      min-height: 100vh;
-    }
-
-    ::selection {
-      background: var(--crimson);
-      color: white;
-    }
-
-    /* ═══════════════════════════════════════════
-       LEFT PANEL — Brand Identity
-    ═══════════════════════════════════════════ */
-    .panel-left {
-      width: 42%;
-      background: var(--cream);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 52px 60px;
-      overflow: hidden;
-      animation: slideInLeft .9s var(--ease) both;
-    }
-
-    @keyframes slideInLeft {
-      from {
-        transform: translateX(-48px);
-        opacity: 0;
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              950: '#041c15',
+              900: '#062c22',
+              850: '#083529',
+              800: '#0a3d30',
+              700: '#0f5241',
+              600: '#146b54',
+              500: '#10b981',
+              100: '#e6f7f2',
+              50: '#f0fbf7',
+            },
+            amber: {
+              450: '#d4af37',
+              550: '#b8861c',
+            },
+            parchment: {
+              DEFAULT: '#faf8f5',
+              dark: '#f3eee3',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Cinzel', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            arabic: ['Amiri', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
       }
-
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    /* Geometric tile pattern */
-    .panel-left::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0.038;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Cpolygon points='35,2 44,18 62,10 54,27 70,35 54,43 62,60 44,52 35,68 26,52 8,60 16,43 0,35 16,27 8,10 26,18' fill='none' stroke='%2318100A' stroke-width='0.55'/%3E%3Ccircle cx='35' cy='35' r='6' fill='none' stroke='%2318100A' stroke-width='0.4'/%3E%3C/svg%3E");
-      background-size: 70px 70px;
-    }
-
-    /* Warm blobs */
-    .blob-amber {
-      position: absolute;
-      top: -120px;
-      right: -100px;
-      width: 480px;
-      height: 480px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(232, 160, 32, 0.14) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .blob-crim {
-      position: absolute;
-      bottom: -80px;
-      left: -80px;
-      width: 360px;
-      height: 360px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(194, 24, 51, 0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* Brand logo */
-    .brand-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      margin-bottom: 52px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .brand-badge {
-      width: 42px;
-      height: 42px;
-      background: var(--crimson);
-      border-radius: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(194, 24, 51, 0.3);
-    }
-
-    .brand-badge svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .brand-name {
-      font-family: var(--serif);
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: .01em;
-      line-height: 1.2;
-    }
-
-    .brand-name span {
-      color: var(--crimson);
-    }
-
-    .brand-sub {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      display: block;
-      margin-top: 1px;
-    }
-
-    /* Star motif */
-    .star-motif {
-      width: 108px;
-      height: 108px;
-      margin-bottom: 36px;
-      position: relative;
-      z-index: 1;
-      animation: rotateSlow 40s linear infinite;
-    }
-
-    @keyframes rotateSlow {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Headline */
-    .left-headline {
-      font-family: var(--serif);
-      font-size: clamp(30px, 3.2vw, 50px);
-      font-weight: 900;
-      line-height: 1.08;
-      color: var(--text);
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .left-headline em {
-      color: var(--crimson);
-      font-style: italic;
-      font-weight: 400;
-    }
-
-    .left-sub {
-      font-size: 14px;
-      line-height: 1.75;
-      color: var(--text-soft);
-      max-width: 300px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Bottom: stats + copyright */
-    .left-bottom {
-      position: relative;
-      z-index: 1;
-    }
-
-    .stats-row {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      background: var(--linen);
-      border-radius: 16px;
-      padding: 20px 24px;
-      margin-bottom: 28px;
-      border: 1px solid var(--linen-dk);
-    }
-
-    .stat {
-      flex: 1;
-    }
-
-    .stat-num {
-      font-family: var(--serif);
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .stat-lbl {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-muted);
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .stat-sep {
-      width: 1px;
-      height: 36px;
-      background: var(--linen-dk);
-      margin: 0 20px;
-    }
-
-    .left-copy {
-      font-size: 12px;
-      color: var(--text-muted);
-      letter-spacing: .02em;
-    }
-
-    /* ═══════════════════════════════════════════
-       RIGHT PANEL — Auth Forms
-    ═══════════════════════════════════════════ */
-    .panel-right {
-      flex: 1;
-      background: var(--navy);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 52px 72px;
-      position: relative;
-      overflow: hidden;
-      animation: fadeIn .9s var(--ease) .12s both;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    .panel-right::before {
-      content: '';
-      position: absolute;
-      top: -120px;
-      right: -120px;
-      width: 560px;
-      height: 560px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(194, 24, 51, 0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .panel-right::after {
-      content: '';
-      position: absolute;
-      bottom: -100px;
-      left: -100px;
-      width: 440px;
-      height: 440px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(232, 160, 32, 0.05) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* Horizontal grid lines decoration */
-    .grid-deco {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.03;
-      background-image: repeating-linear-gradient(to bottom,
-          rgba(255, 255, 255, 1) 0px, rgba(255, 255, 255, 1) 1px,
-          transparent 1px, transparent 64px);
-    }
-
-    /* ── Form wrapper ── */
-    .form-wrap {
-      width: 100%;
-      max-width: 400px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── Panel switching ── */
-    .auth-panel {
-      transition: opacity .35s var(--ease), transform .35s var(--ease);
-    }
-
-    .auth-panel.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(32px);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-    }
-
-    .auth-panel.slide-out-left {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-32px);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-    }
-
-    /* ── Form heading ── */
-    .form-heading {
-      font-family: var(--serif);
-      font-size: 36px;
-      font-weight: 700;
-      color: white;
-      line-height: 1.1;
-      margin-bottom: 8px;
-    }
-
-    .form-heading em {
-      color: var(--amber);
-      font-style: italic;
-      font-weight: 400;
-    }
-
-    .form-subhead {
-      font-size: 14px;
-      color: rgba(255, 255, 255, .38);
-      margin-bottom: 36px;
-      line-height: 1.65;
-    }
-
-    /* ── Field group ── */
-    .fg {
-      margin-bottom: 18px;
-    }
-
-    .fg-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 9px;
-    }
-
-    .fg-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .38);
-    }
-
-    .fg-hint {
-      font-size: 11px;
-      color: rgba(255, 255, 255, .25);
-    }
-
-    .fg-input-wrap {
-      position: relative;
-    }
-
-    .fg-icon {
-      position: absolute;
-      left: 17px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255, 255, 255, .25);
-      transition: color .22s;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-    }
-
-    .fg-icon svg {
-      width: 17px;
-      height: 17px;
-    }
-
-    .fg-input {
-      width: 100%;
-      background: rgba(255, 255, 255, .045);
-      border: 1.5px solid rgba(255, 255, 255, .08);
-      border-radius: 14px;
-      padding: 15px 20px 15px 46px;
-      font-size: 14px;
-      font-family: var(--sans);
-      color: white;
-      outline: none;
-      transition: background .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease);
-    }
-
-    .fg-input::placeholder {
-      color: rgba(255, 255, 255, .18);
-    }
-
-    .fg-input:focus {
-      background: rgba(255, 255, 255, .075);
-      border-color: var(--crimson);
-      box-shadow: 0 0 0 4px rgba(194, 24, 51, .13);
-    }
-
-    .fg-input-wrap:focus-within .fg-icon {
-      color: var(--crimson);
-    }
-
-    /* Password toggle button */
-    .pw-toggle {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: rgba(255, 255, 255, .25);
-      padding: 5px;
-      display: flex;
-      transition: color .2s;
-      border-radius: 6px;
-    }
-
-    .pw-toggle:hover {
-      color: rgba(255, 255, 255, .6);
-    }
-
-    .pw-toggle svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    /* Forgot password link */
-    .forgot-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: var(--sans);
-      color: rgba(255, 255, 255, .3);
-      padding: 0;
-      transition: color .2s;
-    }
-
-    .forgot-btn:hover {
-      color: var(--amber);
-    }
-
-    /* ── Messages ── */
-    .error-message {
-      background: rgba(194, 24, 51, .12);
-      border: 1px solid rgba(194, 24, 51, .28);
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #fca5a5;
-      margin-bottom: 18px;
-      display: none;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .success-msg {
-      background: rgba(37, 211, 102, .09);
-      border: 1px solid rgba(37, 211, 102, .22);
-      border-radius: 12px;
-      padding: 16px 18px;
-      font-size: 13px;
-      color: #6ee7b7;
-      margin-bottom: 18px;
-      display: none;
-      line-height: 1.65;
-    }
-
-    .success-msg strong {
-      color: white;
-    }
-
-    /* ── Submit button ── */
-    .btn-submit {
-      width: 100%;
-      padding: 16px 20px;
-      background: var(--crimson);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 600;
-      font-family: var(--sans);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 6px;
-      transition: background .25s, transform .25s var(--ease), box-shadow .25s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-submit:hover {
-      background: var(--crimson-dk);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(194, 24, 51, .4);
-    }
-
-    .btn-submit:active {
-      transform: translateY(0);
-    }
-
-    .btn-submit:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .btn-text {
-      position: relative;
-      z-index: 1;
-    }
-
-    .spinner {
-      display: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255, 255, 255, .3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      position: absolute;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* ── Back link ── */
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 13px;
-      font-family: var(--sans);
-      color: rgba(255, 255, 255, .3);
-      padding: 0;
-      margin-bottom: 36px;
-      transition: color .2s;
-    }
-
-    .back-link:hover {
-      color: white;
-    }
-
-    .back-link svg {
-      width: 15px;
-      height: 15px;
-    }
-
-    /* ── Divider ── */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin: 26px 0;
-    }
-
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 255, 255, .07);
-    }
-
-    .divider-txt {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .16em;
-      color: rgba(255, 255, 255, .2);
-      white-space: nowrap;
-    }
-
-    /* ── WhatsApp button (inline) ── */
-    .wa-btn {
-      width: 100%;
-      padding: 14px 20px;
-      background: rgba(37, 211, 102, .07);
-      border: 1.5px solid rgba(37, 211, 102, .2);
-      border-radius: 14px;
-      color: #25D366;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: var(--sans);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      text-decoration: none;
-      transition: background .22s, border-color .22s, transform .22s var(--ease);
-    }
-
-    .wa-btn:hover {
-      background: rgba(37, 211, 102, .14);
-      border-color: rgba(37, 211, 102, .42);
-      transform: translateY(-1px);
-    }
-
-    .wa-btn svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    /* ── Right panel footer ── */
-    .right-foot {
-      position: absolute;
-      bottom: 28px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, .2);
-      z-index: 1;
-    }
-
-    .right-foot a {
-      color: rgba(255, 255, 255, .32);
-      text-decoration: none;
-      transition: color .2s;
-    }
-
-    .right-foot a:hover {
-      color: white;
-    }
-
-    /* ═══════════════════════════════════════════
-       FLOATING WHATSAPP FAB
-    ═══════════════════════════════════════════ */
-    .wa-fab {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 500;
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: #25D366;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      box-shadow: 0 8px 24px rgba(37, 211, 102, .45);
-      transition: transform .25s var(--ease), box-shadow .25s;
-      animation: fabBounce .7s var(--ease) 1.2s both;
-    }
-
-    .wa-fab:hover {
-      transform: scale(1.1) translateY(-2px);
-      box-shadow: 0 14px 36px rgba(37, 211, 102, .55);
-    }
-
-    .wa-fab svg {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-    }
-
-    .wa-fab-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: #25D366;
-      animation: fabRing 2.8s ease-out infinite;
-    }
-
-    @keyframes fabRing {
-      0% {
-        transform: scale(1);
-        opacity: .6;
-      }
-
-      100% {
-        transform: scale(2);
-        opacity: 0;
-      }
-    }
-
-    @keyframes fabBounce {
-      0% {
-        opacity: 0;
-        transform: scale(.5);
-      }
-
-      70% {
-        transform: scale(1.12);
-      }
-
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .wa-fab-tooltip {
-      position: absolute;
-      right: 68px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, .8);
-      color: white;
-      font-size: 12px;
-      font-family: var(--sans);
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 8px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
-    }
-
-    .wa-fab:hover .wa-fab-tooltip {
-      opacity: 1;
-    }
-
-    /* ═══════════════════════════════════════════
-       ANIMATIONS
-    ═══════════════════════════════════════════ */
-    @keyframes shake {
-
-      0%,
-      100% {
-        transform: translateX(0);
-      }
-
-      20%,
-      60% {
-        transform: translateX(-7px);
-      }
-
-      40%,
-      80% {
-        transform: translateX(7px);
-      }
-    }
-
-    .shake {
-      animation: shake .4s ease;
-    }
-
-    /* ═══════════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════════ */
-    @media (max-width: 900px) {
-      .panel-left {
-        width: 38%;
-        padding: 40px 40px;
-      }
-
-      .panel-right {
-        padding: 40px 40px;
-      }
-    }
-
-    @media (max-width: 700px) {
-      body {
-        flex-direction: column;
-        overflow-y: auto;
-      }
-
-      .panel-left {
-        width: 100%;
-        padding: 32px 28px 28px;
-        flex-direction: row;
-        gap: 20px;
-        align-items: center;
-        animation: slideInLeft .6s var(--ease) both;
-      }
-
-      .left-bottom,
-      .star-motif {
-        display: none;
-      }
-
-      .left-headline {
-        font-size: 26px;
-        margin-bottom: 8px;
-      }
-
-      .left-sub {
-        font-size: 13px;
-      }
-
-      .brand-link {
-        margin-bottom: 16px;
-      }
-
-      .left-top {
-        flex: 1;
-      }
-
-      .panel-right {
-        padding: 36px 24px 80px;
-        flex: 1;
-      }
-
-      .form-heading {
-        font-size: 28px;
-      }
-
-      .wa-fab {
-        bottom: 18px;
-        right: 18px;
-        width: 52px;
-        height: 52px;
-      }
-    }
-  </style>
+    };
+  </script>
+
+  <!-- Bespoke NGO & Shadcn/UI Design System -->
+  <link rel="stylesheet" href="/css/landing-ngo.css">
 </head>
 
-<body>
+<body class="bg-[#faf8f5] text-[#1a2e26] font-sans antialiased selection:bg-amber-400 selection:text-emerald-950 flex flex-col min-h-screen">
 
-  <!-- ═══════════════════════════════════════════
-       LEFT PANEL
-  ═══════════════════════════════════════════ -->
-  <aside class="panel-left">
-    <div class="blob-amber"></div>
-    <div class="blob-crim"></div>
+  <!-- Top Scroll Progress Thread -->
+  <div id="scroll-progress-bar"></div>
 
-    <div class="left-top">
-      <!-- Brand -->
-      <a href="/" class="brand-link">
-        <div class="brand-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path
-              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
-          </svg>
-        </div>
-        <div>
-          <div class="brand-name">EDF <span>Galgamuwa</span></div>
-          <span class="brand-sub">Staff Portal</span>
-        </div>
-      </a>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       1. RAZOR-SLIM SOVEREIGN CHARTER & LANGUAGE RIBBON (SHARED ACROSS HOME, LOGIN, 404)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <header class="bg-emerald-950 text-white text-[11px] border-b border-emerald-900/70 relative z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-9 flex items-center justify-between gap-3">
+      
+      <!-- Unified Clickable Charter Notice -->
+      <button type="button" class="open-charter-modal-btn flex items-center gap-2 min-w-0 text-left group">
+        <span class="edf-lottie-slot w-4 h-4 text-amber-300 shrink-0" data-lottie-icon="shield" data-lottie-trigger="loop"></span>
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-bold tracking-wider text-[10px] border border-amber-400/35 shrink-0">
+          <span data-i18n="top.badge">SELF-FUNDED · EST. 2016</span>
+        </span>
+        <span class="hidden sm:inline text-emerald-100/90 group-hover:text-amber-300 font-medium truncate transition-colors" data-i18n="top.notice">
+          100% Member-Sustained Foundation — EDF does not solicit or accept outside monetary donations
+        </span>
+      </button>
 
-      <!-- Animated star motif -->
-      <div class="star-motif">
-        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon
-            points="60,4 74,28 100,16 88,42 114,54 88,66 100,92 74,80 60,104 46,80 20,92 32,66 6,54 32,42 20,16 46,28"
-            fill="none" stroke="#C21833" stroke-width="1.2" opacity="0.35" />
-          <polygon
-            points="60,16 70,36 92,26 82,48 104,57 82,66 92,88 70,78 60,98 50,78 28,88 38,66 16,57 38,48 28,26 50,36"
-            fill="none" stroke="#E8A020" stroke-width="0.9" opacity="0.45" />
-          <polygon
-            points="60,28 67,44 84,36 76,53 93,60 76,67 84,84 67,76 60,92 53,76 36,84 44,67 27,60 44,53 36,36 53,44"
-            fill="none" stroke="#C21833" stroke-width="0.6" opacity="0.25" />
-          <circle cx="60" cy="60" r="18" fill="none" stroke="#E8A020" stroke-width="0.8" opacity="0.35" />
-          <circle cx="60" cy="60" r="10" fill="none" stroke="#C21833" stroke-width="0.6" opacity="0.3" />
-          <circle cx="60" cy="60" r="4" fill="#C21833" opacity="0.3" />
-          <circle cx="60" cy="60" r="2" fill="#E8A020" opacity="0.6" />
-        </svg>
-      </div>
+      <!-- Compact Utility Pair: Hijri Date + Language Switcher -->
+      <div class="flex items-center gap-3 text-emerald-200 shrink-0">
+        <div class="hidden lg:inline-flex items-center gap-1.5 text-[11px] text-emerald-100/90 font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span id="hijri-date-badge">1448 AH</span>
+        </div>
 
-      <!-- Headline -->
-      <h1 class="left-headline">
-        Building<br><em>Brighter</em><br>Futures.
-      </h1>
-      <p class="left-sub">
-        The secure management portal for EDF Galgamuwa staff. Authorised personnel only.
-      </p>
-    </div>
+        <span class="hidden lg:inline-block text-emerald-800">|</span>
 
-    <div class="left-bottom">
-      <div class="stats-row">
-        <div class="stat">
-          <div class="stat-num">240+</div>
-          <div class="stat-lbl">Families</div>
+        <!-- Shadcn Language Selector (EN / AR / TA / SI) -->
+        <div id="lang-switcher-group" class="inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-emerald-900/95 border border-emerald-800" role="group" aria-label="Language selection">
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-400 text-emerald-950 shadow-xs transition" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold text-emerald-200 hover:text-white transition" data-lang="ar" aria-pressed="false">عربي</button>
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold text-emerald-200 hover:text-white transition" data-lang="ta" aria-pressed="false">தமிழ்</button>
+          <button type="button" class="lang-switch-btn px-2 py-0.5 rounded-md text-[10px] font-bold text-emerald-200 hover:text-white transition" data-lang="si" aria-pressed="false">සිංහල</button>
         </div>
-        <div class="stat-sep"></div>
-        <div class="stat">
-          <div class="stat-num">100+</div>
-          <div class="stat-lbl">Students</div>
-        </div>
-        <div class="stat-sep"></div>
-        <div class="stat">
-          <div class="stat-num">10 yrs</div>
-          <div class="stat-lbl">Service</div>
-        </div>
-      </div>
-      <div class="left-copy">
-        © 2026 Education &amp; Development Foundation, Galgamuwa. All rights reserved.
-        <span style="display: inline-block; margin: 0 6px; opacity: 0.4;">|</span>
-        Crafted with <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--crimson)" stroke="var(--crimson)"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          style="vertical-align: -2px; display: inline-block;">
-          <path
-            d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0l-1.1 1-1.1-1a5.5 5.5 0 0 0-7.8 7.8l1 1 7.9 7.9 7.9-7.9 1-1a5.5 5.5 0 0 0 0-7.8z">
-          </path>
-        </svg> by <a href="https://arshadahamed.com/" target="_blank"
-          style="color: var(--text-muted); text-decoration: none; transition: color 0.2s; font-weight: 600;"
-          onmouseover="this.style.color='var(--navy)'" onmouseout="this.style.color='var(--text-muted)'">Arshad
-          Ahamed</a>
       </div>
     </div>
-  </aside>
+  </header>
 
-  <!-- ═══════════════════════════════════════════
-       RIGHT PANEL
-  ═══════════════════════════════════════════ -->
-  <main class="panel-right">
-    <div class="grid-deco"></div>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       2. UNIQUE FLOATING PILL-ARCH NAVBAR (FREE LOTTIE ANIMATED ICONS)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <nav id="main-navbar" class="sticky top-2 sm:top-2.5 z-40 px-3 sm:px-6 lg:px-8 py-1.5 pointer-events-none">
+    <div class="nav-shell-frame pointer-events-auto max-w-7xl mx-auto px-3.5 sm:px-5">
+      <div class="flex items-center justify-between h-[64px] gap-3">
+        
+        <!-- Left Zone: Focused Brand Signature -->
+        <a href="/" class="flex items-center gap-2.5 group shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-900 via-emerald-850 to-emerald-950 p-1.5 border border-amber-400/45 shadow-sm flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-1">
+            <img src="/uploads/logo/logo-1775982368852.svg" alt="EDF Logo" class="brand-logo-img w-full h-full object-contain filter drop-shadow">
+          </div>
+          <div class="leading-tight">
+            <div class="font-serif font-extrabold text-base sm:text-lg tracking-tight text-emerald-950" data-i18n="brand.title">EDF Galgamuwa</div>
+            <div class="hidden sm:block text-[10.5px] text-emerald-800/75 font-semibold tracking-wide" data-i18n="brand.sub">Education &amp; Development Foundation</div>
+          </div>
+        </a>
 
-    <div class="form-wrap">
+        <!-- Center Zone: Morphing Glide Rail with Free Lottie Icons -->
+        <div class="hidden lg:flex items-center relative">
+          <div class="nav-pill-group">
+            <span id="nav-hover-indicator" aria-hidden="true"></span>
 
-      <!-- ────────────────────────────
-           PANEL A: LOGIN
-      ──────────────────────────── -->
-      <div id="panel-login" class="auth-panel">
+            <a href="/about" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="landmark" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.about">About</span>
+            </a>
+            <a href="/#initiatives" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="compass" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.initiatives">Initiatives</span>
+            </a>
+            <a href="/#programs" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="book" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.pillars">Pillars</span>
+            </a>
+            <a href="/#charter" class="nav-link-item text-amber-800 font-bold">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="shield" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.charter">Our Charter</span>
+            </a>
+            <a href="/gallery" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="gallery" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.gallery">Gallery</span>
+            </a>
+            <a href="/#membership" class="nav-link-item">
+              <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="community" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.membership">Membership</span>
+            </a>
 
-        <div class="form-heading">Welcome <em>back.</em></div>
-        <p class="form-subhead">Sign in to access your staff dashboard.</p>
+            <!-- Compact Explore Popover Trigger -->
+            <button type="button" id="nav-more-btn" class="nav-link-item" aria-haspopup="true" aria-expanded="false">
+              <span class="edf-lottie-slot w-[17px] h-[17px]" data-lottie-icon="sparkles" data-lottie-trigger="hover"></span>
+              <span data-i18n="nav.more">Explore</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 opacity-60"></i>
+            </button>
+          </div>
 
-        <div id="errorMessage" class="error-message" role="alert"></div>
+          <!-- Shadcn Explore Popover Card -->
+          <div id="nav-more-menu" class="nav-more-popover absolute top-full mt-2.5 right-0 w-64 rounded-2xl bg-white shadow-2xl border border-emerald-900/12 p-2 text-xs z-50">
+            <a href="/#life-uplift-journey" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-emerald-950 transition">
+              <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="sparkles" data-lottie-trigger="loop"></span>
+              <span data-i18n="cmd.itemUplift">3D Scroll Story: Sadaqah &amp; Life Uplift</span>
+            </a>
+            <a href="/#transparency" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800 transition">
+              <i data-lucide="scale" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span data-i18n="nav.governance">Governance</span>
+            </a>
+            <a href="/#stories" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800 transition">
+              <i data-lucide="message-square-quote" class="w-4 h-4 text-amber-600 shrink-0"></i>
+              <span data-i18n="nav.stories">Stories</span>
+            </a>
+            <a href="/#get-involved" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800 transition">
+              <i data-lucide="hand-helping" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+              <span data-i18n="mobile.getInvolved">How to Get Involved</span>
+            </a>
+          </div>
+        </div>
 
-        <form id="loginForm" novalidate>
-          <!-- Username -->
-          <div class="fg">
-            <div class="fg-top">
-              <label class="fg-label" for="username">Username or Email</label>
+        <!-- Right Zone: Clean 3-Control Action Cluster -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <!-- Compact Quick Search ⌘K -->
+          <button type="button" class="open-cmd-palette-btn hidden md:inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold text-emerald-900 bg-emerald-50/80 hover:bg-emerald-100/90 border border-emerald-900/10 transition" title="Quick Navigation (Ctrl+K)" aria-label="Quick Jump">
+            <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="search" data-lottie-trigger="hover"></span>
+            <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-white rounded border border-emerald-900/10 text-emerald-800">⌘K</kbd>
+          </button>
+
+          <!-- Staff Login (Active Route Pill) -->
+          <a href="/login" aria-current="page" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-emerald-900 text-amber-300 border border-amber-400/45 shadow-xs transition">
+            <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="portal" data-lottie-trigger="loop"></span>
+            <span data-i18n="nav.staffPortal">Staff Portal</span>
+          </a>
+
+          <!-- Signature Join CTA with Live Lottie Community Icon -->
+          <button type="button" class="open-inquiry-btn btn-shimmer inline-flex items-center gap-2 px-3.5 sm:px-4.5 py-2 rounded-xl font-bold text-xs sm:text-sm text-emerald-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 gold-pulse-glow" data-tier="Community Membership Application">
+            <span class="edf-lottie-slot w-[18px] h-[18px]" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+            <span data-i18n="nav.joinCta">Join EDF</span>
+          </button>
+
+          <!-- Mobile Drawer Trigger -->
+          <button id="mobile-menu-toggle" aria-label="Open mobile navigation menu"
+            class="lg:hidden p-2 rounded-xl text-emerald-950 hover:bg-emerald-50 focus:outline-hidden border border-emerald-900/15 transition">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Integrated Hairline Scroll Progress Track -->
+      <div id="nav-scroll-line" aria-hidden="true">
+        <div id="nav-scroll-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Shadcn Bento-Grid Slide-Over Mobile Sheet Drawer -->
+  <div id="mobile-menu-drawer"
+    class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 ease-in-out bg-emerald-950/75 backdrop-blur-md">
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-emerald-950 text-white p-5 shadow-2xl border-l border-amber-400/20 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-emerald-900">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-lg bg-emerald-900 p-1.5 border border-amber-400/40">
+              <img src="/uploads/logo/logo-1775982368852.svg" alt="EDF Logo" class="brand-logo-img w-full h-full object-contain">
             </div>
-            <div class="fg-input-wrap">
-              <div class="fg-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <input type="text" id="username" class="fg-input" placeholder="Enter your username"
-                autocomplete="username" required>
+            <div>
+              <div class="font-serif font-bold text-base text-white" data-i18n="brand.title">EDF Galgamuwa</div>
+              <div class="text-[11px] text-emerald-300" data-i18n="brand.sub">Education &amp; Development Foundation</div>
+            </div>
+          </div>
+          <button id="mobile-menu-close" aria-label="Close menu" class="p-2 rounded-lg text-emerald-300 hover:text-white hover:bg-emerald-900">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Language Selector -->
+        <div class="mt-4 p-2.5 rounded-xl bg-emerald-900/60 border border-emerald-800/80">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-amber-300 mb-2" data-i18n="mobile.langLabel">Language / اللغة / மொழி / භාෂාව</div>
+          <div class="grid grid-cols-4 gap-1">
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-emerald-950 transition" data-lang="en">EN</button>
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white bg-emerald-950/60 transition" data-lang="ar">عربي</button>
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white bg-emerald-950/60 transition" data-lang="ta">தமிழ்</button>
+            <button type="button" class="lang-switch-btn py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white bg-emerald-950/60 transition" data-lang="si">සිංහල</button>
+          </div>
+        </div>
+
+        <!-- Compact 2-Column Bento Tile Navigation -->
+        <nav class="mt-4 grid grid-cols-2 gap-2 font-medium text-xs">
+          <a href="/about" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="landmark" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.about">About</span>
+          </a>
+          <a href="/#initiatives" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="compass" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-amber-300" data-i18n="nav.initiatives">Initiatives</span>
+          </a>
+          <a href="/#programs" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="book" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.pillars">Pillars</span>
+          </a>
+          <a href="/#charter" class="mobile-nav-link p-3 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/35 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="shield" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-amber-300" data-i18n="nav.charter">Our Charter</span>
+          </a>
+          <a href="/#transparency" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <i data-lucide="scale" class="w-4 h-4 text-emerald-400"></i>
+            <span class="font-bold text-white" data-i18n="nav.governance">Governance</span>
+          </a>
+          <a href="/#stories" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <i data-lucide="message-square-quote" class="w-4 h-4 text-amber-400"></i>
+            <span class="font-bold text-white" data-i18n="nav.stories">Stories</span>
+          </a>
+          <a href="/gallery" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="gallery" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.gallery">Gallery</span>
+          </a>
+          <a href="/#membership" class="mobile-nav-link p-3 rounded-xl bg-emerald-900/50 hover:bg-emerald-900 border border-emerald-800/80 flex flex-col gap-1.5">
+            <span class="edf-lottie-slot w-5 h-5" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+            <span class="font-bold text-white" data-i18n="nav.membership">Membership</span>
+          </a>
+        </nav>
+
+        <a href="/login" class="mobile-nav-link mt-2.5 py-2.5 px-3.5 rounded-xl bg-emerald-900 text-amber-300 border border-amber-400/35 flex items-center justify-between text-xs font-bold">
+          <span class="flex items-center gap-2"><span class="edf-lottie-slot w-4 h-4" data-lottie-icon="portal" data-lottie-trigger="loop"></span> <span data-i18n="mobile.staff">Staff Portal Login</span></span>
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div class="pt-4 mt-4 border-t border-emerald-900 space-y-2.5">
+        <button class="open-inquiry-btn w-full py-3 rounded-xl font-bold text-center text-xs text-emerald-950 bg-amber-400 shadow-lg flex items-center justify-center gap-2" data-tier="Community Membership Application">
+          <span class="edf-lottie-slot w-4 h-4" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+          <span data-i18n="mobile.joinBtn">Join Our Community</span>
+        </button>
+        <a href="https://wa.me/94715358380" target="_blank"
+          class="w-full py-2.5 rounded-xl font-semibold text-center text-white bg-emerald-900 hover:bg-emerald-800 border border-emerald-800 flex items-center justify-center gap-2 text-xs">
+          <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i>
+          <span data-i18n="mobile.whatsapp">Official WhatsApp Desk</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       3. MODERNIZED FELLOWSHIP SANCTUARY & GLASS MIHRAB LOGIN PORTAL
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <main class="flex-1 login-sanctuary py-10 lg:py-14 relative overflow-hidden flex items-center justify-center border-b border-amber-400/20">
+
+    <!-- Atmospheric Background Artwork: Muslim People Gathering Together for Good Deeds -->
+    <div class="login-bg-mural-wrap">
+      <img id="login-bg-mural" src="/images/login-bg-fellowship.jpg" alt="Muslim elders, youth, and women gathering together in fellowship for charitable good deeds">
+    </div>
+    <div class="login-bg-scrim"></div>
+
+    <!-- Three.js Celestial Constellation Layer -->
+    <canvas id="zakat-3d-canvas" class="three-bg-canvas opacity-70"></canvas>
+
+    <!-- Soft Radiance Halos -->
+    <div class="hidden lg:block absolute top-12 left-1/4 w-96 h-96 bg-emerald-500/12 rounded-full blur-3xl pointer-events-none z-[1]"></div>
+    <div class="hidden lg:block absolute bottom-10 right-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none z-[1]"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-11 items-center">
+
+        <!-- Left Column: Live Fellowship Window, Cooperation Ayah & Impact Telemetry -->
+        <div class="lg:col-span-6 text-white space-y-5">
+
+          <div class="hero-anim flex flex-wrap items-center gap-3">
+            <span class="arabic-calligraphy text-amber-300 text-lg sm:text-2xl font-medium tracking-wide">
+              وَتَعَاوَنُوا عَلَى الْبِرِّ وَالتَّقْوَىٰ
+            </span>
+            <span class="hidden sm:inline-block h-4 w-px bg-amber-400/30"></span>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/85 border border-amber-400/40 text-[11px] font-semibold text-amber-300 shadow-inner">
+              <span class="edf-lottie-slot w-3.5 h-3.5" data-lottie-icon="community" data-lottie-trigger="loop"></span>
+              <span data-i18n="login.badge">Amanah · Good-Deeds Fellowship Portal</span>
             </div>
           </div>
 
-          <!-- Password -->
-          <div class="fg">
-            <div class="fg-top">
-              <label class="fg-label" for="password">Password</label>
-              <button type="button" class="forgot-btn" id="forgotTrigger">Forgot password?</button>
-            </div>
-            <div class="fg-input-wrap">
-              <div class="fg-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+          <h1 class="hero-anim font-serif text-3xl sm:text-4xl xl:text-5xl font-extrabold leading-[1.08] text-white">
+            <span data-i18n="login.title1">United in Goodness.</span><br>
+            <span class="text-gold-gradient italic font-normal" data-i18n="login.title2">Accountable in Trust.</span>
+          </h1>
+
+          <p class="hero-anim text-emerald-100/90 text-xs sm:text-sm md:text-[15px] leading-relaxed max-w-xl" data-i18n="login.sub">
+            Our elders, sisters, and community stewards gather regularly in Galgamuwa to organize 100% member-sustained aid, student tuition, and neighborhood relief — with zero outsider donations.
+          </p>
+
+          <!-- Interactive Framed Fellowship Showcase Window -->
+          <div class="hero-anim login-fellowship-card p-3 sm:p-4 max-w-xl">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>EDF Fellowship Gathering</span>
+              </span>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button type="button" class="login-scene-pill is-active px-2.5 py-1 rounded-full text-[10px] font-bold" data-scene="/images/login-bg-fellowship.jpg" data-i18n="login.pillGather">Fellowship Circle</button>
+                <button type="button" class="login-scene-pill px-2.5 py-1 rounded-full text-[10px] font-bold" data-scene="/images/hero-storyboard/act2-relief.jpg" data-i18n="login.pillRations">Hampers &amp; Relief</button>
+                <button type="button" class="login-scene-pill px-2.5 py-1 rounded-full text-[10px] font-bold" data-scene="/images/hero-storyboard/act3-guild.jpg" data-i18n="login.pillStudy">Study &amp; Skills</button>
               </div>
-              <input type="password" id="password" class="fg-input" placeholder="••••••••"
-                autocomplete="current-password" required style="padding-right:48px;">
-              <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
-                <svg id="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                <svg id="eye-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" style="display:none;">
-                  <path
-                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                  <line x1="1" y1="1" x2="23" y2="23" />
-                </svg>
+            </div>
+
+            <div class="relative aspect-[16/9] rounded-xl overflow-hidden border border-amber-400/25 shadow-lg">
+              <img id="login-fellowship-preview" src="/images/login-bg-fellowship.jpg" alt="Muslim people gathering together for good deeds and community welfare" class="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/20 to-transparent flex items-end p-3.5">
+                <div class="text-xs text-emerald-50 font-medium leading-snug" data-i18n="login.fellowshipNote">
+                  Members &amp; volunteers gathering together for charitable distribution in Galgamuwa
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-3 border-t border-emerald-800/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+              <p class="font-serif italic text-emerald-100/95" data-i18n="login.hadith">
+                “The best of people are those who bring most benefit to the rest of mankind.”
+              </p>
+              <span class="text-amber-300 font-semibold shrink-0" data-i18n="login.hadithSrc">— Prophet Muhammad ﷺ</span>
+            </div>
+          </div>
+
+          <!-- Compact Glass Bento Stewardship Counters -->
+          <div class="hero-anim grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-xl">
+            <div class="p-3 rounded-xl bg-emerald-950/75 border border-emerald-800/70 backdrop-blur-md">
+              <div class="font-serif font-bold text-xl text-amber-300 gsap-counter" data-count="240" data-suffix="+">240+</div>
+              <div class="text-[10px] text-emerald-200 font-semibold" data-i18n="login.s1Lbl">Families Uplifted</div>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/75 border border-emerald-800/70 backdrop-blur-md">
+              <div class="font-serif font-bold text-xl text-amber-300 gsap-counter" data-count="100" data-suffix="+">100+</div>
+              <div class="text-[10px] text-emerald-200 font-semibold" data-i18n="login.s2Lbl">Active Students</div>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/75 border border-emerald-800/70 backdrop-blur-md">
+              <div class="font-serif font-bold text-xl text-amber-300">100%</div>
+              <div class="text-[10px] text-emerald-200 font-semibold" data-i18n="login.s3Lbl">Member Funded</div>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/75 border border-amber-400/35 backdrop-blur-md">
+              <div class="font-serif font-bold text-xl text-emerald-300">Rs. 0</div>
+              <div class="text-[10px] text-amber-200 font-semibold" data-i18n="login.s4Lbl">Outsider Cash</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Modernized Frosted Glass Mihrab Authentication Vault -->
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="mihrab-card hero-anim" id="mihrabCard">
+
+            <!-- Architectural Pointed Arch Crown + Lottie Portal Crest -->
+            <div class="mihrab-crown">
+              <svg viewBox="0 0 180 42" fill="none" class="w-40 h-9 text-amber-400">
+                <path d="M0 42 H48 C48 42 70 40 82 22 C86 15 90 2 90 2 C90 2 94 15 98 22 C110 40 132 42 132 42 H180"
+                  stroke="#D4AF37" stroke-width="1.3" stroke-opacity="0.7" />
+                <path d="M36 42 C58 42 78 32 90 8 C102 32 122 42 144 42" stroke="#F5D061" stroke-width="0.9"
+                  stroke-dasharray="2 3" stroke-opacity="0.45" />
+              </svg>
+              <div class="finial-crescent">
+                <span class="edf-lottie-slot w-6 h-6" data-lottie-icon="portal" data-lottie-trigger="loop"></span>
+              </div>
+            </div>
+
+            <!-- View 1: Staff Sign In -->
+            <div id="viewSignIn">
+              <div class="text-center mb-5">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-400/15 text-amber-300 border border-amber-400/35">
+                  <span class="edf-lottie-slot w-3.5 h-3.5" data-lottie-icon="shield" data-lottie-trigger="loop"></span>
+                  <span data-i18n="login.verifiedTag">Verified Steward Access</span>
+                </span>
+                <h2 class="font-serif font-bold text-2xl sm:text-3xl text-white mt-2.5" data-i18n="login.cardTitle">Welcome Back</h2>
+                <p class="text-xs text-emerald-200/90 mt-1" data-i18n="login.cardSub">Sign in to coordinate community programs, student rosters &amp; distributions</p>
+              </div>
+
+              <!-- Mode Switcher Tabs -->
+              <div class="auth-tab-bar" role="tablist">
+                <button type="button" class="auth-tab-btn active" id="tabStaffLogin">
+                  <i class="fa-solid fa-user-shield text-amber-300"></i>
+                  <span data-i18n="login.tabSignIn">Staff Sign In</span>
+                </button>
+                <button type="button" class="auth-tab-btn" id="tabForgotAccess">
+                  <i class="fa-solid fa-key text-emerald-300"></i>
+                  <span data-i18n="login.tabHelp">Key Recovery</span>
+                </button>
+              </div>
+
+              <!-- Optional Saved ID Indicator Pill -->
+              <div id="savedIdPill" class="hidden mb-4 px-3 py-2 rounded-xl bg-emerald-900/65 border border-emerald-700/70 flex items-center justify-between text-[11px] text-emerald-100">
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                  <span>Prefilled Staff ID: <strong id="savedIdValue" class="text-amber-300"></strong></span>
+                </span>
+                <button type="button" id="clearSavedIdBtn" class="text-emerald-300 hover:text-white text-[10px] font-bold underline">Clear</button>
+              </div>
+
+              <!-- Status Alert for Errors -->
+              <div id="errorMessage" class="status-alert-box error" role="alert"></div>
+
+              <!-- Authentication Form -->
+              <form id="loginForm" novalidate autocomplete="on">
+
+                <!-- Staff ID / Email -->
+                <div class="auth-input-group">
+                  <label class="auth-input-label" for="username" data-i18n="login.idLabel">Staff ID or Email</label>
+                  <div class="auth-input-container">
+                    <i class="fa-solid fa-user auth-input-icon"></i>
+                    <input type="text" id="username" class="auth-form-input" placeholder="e.g. admin or steward username"
+                      data-i18n-placeholder="login.idPh" autocomplete="username" required spellcheck="false">
+                  </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="auth-input-group">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="auth-input-label !mb-0" for="password" data-i18n="login.keyLabel">Secret Key</label>
+                    <button type="button" class="text-[11px] text-amber-300 hover:text-amber-200 font-semibold" id="forgotTriggerLink" data-i18n="login.forgotLink">
+                      Forgot key?
+                    </button>
+                  </div>
+                  <div class="auth-input-container">
+                    <i class="fa-solid fa-key auth-input-icon"></i>
+                    <input type="password" id="password" class="auth-form-input" placeholder="••••••••••••"
+                      autocomplete="current-password" required>
+                    <button type="button" class="pw-peek-toggle" id="pwToggle" aria-label="Toggle password view">
+                      <i class="fa-solid fa-eye" id="eye-show"></i>
+                      <i class="fa-solid fa-eye-slash" id="eye-hide" style="display:none;"></i>
+                    </button>
+                  </div>
+                  <div id="capsLockWarning" class="caps-warning">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                    <span data-i18n="login.capsLock">Caps Lock is active</span>
+                  </div>
+                </div>
+
+                <!-- Remember Me & Encryption Pill -->
+                <div class="flex items-center justify-between text-xs text-emerald-200 mb-5 pt-0.5">
+                  <label class="inline-flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="rememberMe" class="w-4 h-4 rounded border-emerald-600 text-amber-400 focus:ring-amber-400 bg-emerald-950">
+                    <span class="text-xs" data-i18n="login.remember">Remember my ID</span>
+                  </label>
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/90 border border-emerald-800 text-[10px] font-semibold text-amber-300">
+                    <i data-lucide="lock" class="w-3 h-3"></i>
+                    <span data-i18n="login.sslBadge">256-Bit Encrypted</span>
+                  </span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="loginBtn"
+                  class="btn-shimmer w-full py-3.5 rounded-xl font-bold text-sm text-emerald-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-xl transition flex items-center justify-center gap-2 transform active:scale-98">
+                  <span id="loginBtnText" data-i18n="login.submitBtn">Enter Stewardship Portal</span>
+                  <div id="loginSpinner" class="hidden w-4 h-4 border-2 border-emerald-950 border-t-transparent rounded-full animate-spin"></div>
+                </button>
+
+              </form>
+            </div>
+
+            <!-- View 2: Forgot Password / Administrative Recovery -->
+            <div id="viewForgot" class="hidden">
+              <div class="text-center mb-6">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-400/15 text-amber-300 border border-amber-400/35">
+                  <i data-lucide="key-round" class="w-3 h-3"></i>
+                  <span data-i18n="login.resetTag">Credential Recovery</span>
+                </span>
+                <h2 class="font-serif font-bold text-2xl text-white mt-2.5" data-i18n="login.resetTitle">Reset Trustee Access</h2>
+                <p class="text-xs text-emerald-200/90 mt-1" data-i18n="login.resetSub">Direct verification with EDF Galgamuwa Administration Desk</p>
+              </div>
+
+              <div id="forgotFormContainer" class="space-y-4">
+                <div class="auth-input-group">
+                  <label class="auth-input-label" for="forgotUsernameInput" data-i18n="login.resetIdLabel">Enter Your Staff ID</label>
+                  <div class="auth-input-container">
+                    <i class="fa-solid fa-id-badge auth-input-icon"></i>
+                    <input type="text" id="forgotUsernameInput" class="auth-form-input" placeholder="e.g. admin">
+                  </div>
+                </div>
+
+                <button type="button" id="forgotSubmitBtn"
+                  class="btn-shimmer w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm text-emerald-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 transition flex items-center justify-center gap-2">
+                  <span id="forgotSubmitText" data-i18n="login.resetBtn">Generate Verified Recovery Ticket</span>
+                  <div id="forgotSpinner" class="hidden w-4 h-4 border-2 border-emerald-950 border-t-transparent rounded-full animate-spin"></div>
+                </button>
+              </div>
+
+              <div id="forgotSuccessBox" class="hidden p-4 rounded-xl bg-emerald-900/90 border border-emerald-700 text-xs text-emerald-100 space-y-2 mb-4">
+                <!-- Populated dynamically via safe text nodes -->
+              </div>
+
+              <a id="waForgotActionBtn" href="https://wa.me/94715358380" target="_blank"
+                class="hidden w-full py-3 rounded-xl font-bold text-xs sm:text-sm text-white bg-emerald-700 hover:bg-emerald-600 transition flex items-center justify-center gap-2 mb-3">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span data-i18n="login.waBtn">Open WhatsApp Support Desk</span>
+              </a>
+
+              <div class="text-center pt-2">
+                <button type="button" id="backToSignInBtn" class="text-xs font-semibold text-amber-300 hover:text-white underline" data-i18n="login.backBtn">
+                  ← Return to Staff Sign In
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault Bottom Stewardship Footer -->
+            <div class="mt-6 pt-4 border-t border-emerald-800/75 flex flex-wrap items-center justify-between gap-2 text-[11px] text-emerald-200/90">
+              <span>
+                <span data-i18n="login.supportPrefix">Administrator assistance desk:</span>
+                <a href="tel:+94715358380" class="text-amber-300 font-semibold hover:underline">+94 71 535 8380</a>
+              </span>
+              <button type="button" class="open-charter-modal-btn text-emerald-300 hover:text-amber-300 font-semibold inline-flex items-center gap-1 transition">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span data-i18n="nav.charter">Our Charter</span>
               </button>
             </div>
+
           </div>
-
-          <!-- Submit -->
-          <button type="submit" id="loginBtn" class="btn-submit">
-            <div class="spinner" id="loginSpinner"></div>
-            <span class="btn-text" id="loginBtnText">Sign In →</span>
-          </button>
-        </form>
-
-        <!-- Divider -->
-        <div class="divider">
-          <div class="divider-line"></div>
-          <div class="divider-txt">NEED HELP?</div>
-          <div class="divider-line"></div>
         </div>
 
-        <!-- WhatsApp contact -->
-        <a id="waLoginBtn" href="#" target="_blank" rel="noopener" class="wa-btn">
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
-          </svg>
-          Contact Admin via WhatsApp
-        </a>
-
-      </div><!-- /panel-login -->
-
-      <!-- ────────────────────────────
-           PANEL B: FORGOT PASSWORD
-      ──────────────────────────── -->
-      <div id="panel-forgot" class="auth-panel hidden">
-
-        <button class="back-link" id="backToLogin">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M19 12H5M12 5l-7 7 7 7" />
-          </svg>
-          Back to Sign In
-        </button>
-
-        <div class="form-heading">Reset <em>Password</em></div>
-        <p class="form-subhead">Enter your username and we'll connect you with an administrator to reset your access.
-        </p>
-
-        <div id="forgotSuccess" class="success-msg"></div>
-
-        <div id="forgotFields">
-          <div class="fg">
-            <div class="fg-top">
-              <label class="fg-label" for="forgotUsername">Your Username</label>
-            </div>
-            <div class="fg-input-wrap">
-              <div class="fg-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <input type="text" id="forgotUsername" class="fg-input" placeholder="Enter your username"
-                autocomplete="username">
-            </div>
-          </div>
-
-          <button type="button" id="forgotBtn" class="btn-submit">
-            <div class="spinner" id="forgotSpinner"></div>
-            <span class="btn-text" id="forgotBtnText">Generate Reset Link →</span>
-          </button>
-        </div>
-
-        <div class="divider">
-          <div class="divider-line"></div>
-          <div class="divider-txt">OR CONTACT DIRECTLY</div>
-          <div class="divider-line"></div>
-        </div>
-
-        <a id="waForgotBtn" href="#" target="_blank" rel="noopener" class="wa-btn">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
-          </svg>
-          Message Admin on WhatsApp
-        </a>
-
-      </div><!-- /panel-forgot -->
-
-    </div><!-- /form-wrap -->
-
-    <div class="right-foot">
-      <a href="/">← Return to EDF Website</a>
+      </div>
     </div>
   </main>
 
-  <!-- ═══════════════════════════════════════════
-       FLOATING WHATSAPP FAB
-  ═══════════════════════════════════════════ -->
-  <a id="waFab" href="#" target="_blank" rel="noopener" class="wa-fab" title="Contact Admin">
-    <div class="wa-fab-ring"></div>
-    <div class="wa-fab-tooltip">Contact Admin</div>
-    <svg viewBox="0 0 24 24" fill="white">
-      <path
-        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       4. MODERNIZED & CREATIVE MEGA FOOTER (SHARED ACROSS HOME, LOGIN, 404)
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <footer class="bg-emerald-950 text-white pt-16 pb-12 border-t-2 border-amber-400/40 relative overflow-hidden">
+    <!-- Subtle Top Architectural Gold Accent -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-56 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- Islamic Hadith & Status Banner -->
+      <div class="pb-12 mb-12 border-b border-emerald-900/80 text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/80 border border-amber-400/25 text-[11px] font-semibold text-amber-300 mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span data-i18n="footer.pill">Member-Sustained Since 2016 · Zero External Fundraising</span>
+        </div>
+        <div class="arabic-calligraphy text-amber-300 text-xl sm:text-2xl mb-2">
+          خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ
+        </div>
+        <p class="font-serif italic text-sm text-emerald-100" data-i18n="footer.hadith">
+          “The best of people are those that bring most benefit to the rest of mankind.”
+        </p>
+        <div class="text-[11px] text-amber-400 font-semibold mt-1" data-i18n="footer.hadithSrc">— Prophet Muhammad ﷺ (Al-Mu'jam Al-Awsat)</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-14">
+        
+        <!-- Col 1: Brand & Shadcn Community Bulletin Form -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-emerald-900 p-2 border border-amber-400/40 shadow-sm flex items-center justify-center">
+              <img src="/uploads/logo/logo-1775982368852.svg" alt="EDF Logo" class="brand-logo-img w-full h-full object-contain">
+            </div>
+            <div>
+              <div class="font-serif font-bold text-xl text-white" data-i18n="brand.title">EDF Galgamuwa</div>
+              <div class="text-xs text-amber-300 font-arabic">مؤسسة التعليم والتنمية</div>
+            </div>
+          </div>
+          <p class="text-xs text-emerald-200/90 leading-relaxed" data-i18n="footer.brandDesc">
+            Education &amp; Development Foundation (EDF), Galgamuwa — Sri Lanka's self-funded, member-sustained community foundation serving education, women's livelihoods, healthcare, and family welfare without taking outsider donations.
+          </p>
+
+          <form id="footer-newsletter-form" class="p-4 rounded-2xl bg-emerald-900/50 border border-emerald-800/80">
+            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2" data-i18n="footer.bulletinTitle">Community Field Bulletin</div>
+            <div class="flex gap-2">
+              <input type="email" placeholder="Your email address" data-i18n-placeholder="footer.bulletinPlaceholder" required
+                class="w-full px-3.5 py-2.5 rounded-xl bg-emerald-950/90 border border-emerald-800 text-xs text-white placeholder-emerald-400 focus:outline-hidden focus:ring-2 focus:ring-amber-400">
+              <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-950 bg-amber-400 hover:bg-amber-300 transition shrink-0" data-i18n="footer.bulletinBtn">
+                Join
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Col 2: Core Programs -->
+        <div class="lg:col-span-3 space-y-3">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4" data-i18n="footer.col1">Core Programmes</div>
+          <ul class="text-xs text-emerald-200 space-y-2.5">
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l1">Quran &amp; Academic Classes</a></li>
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l2">Women's Tailoring &amp; Bayans</a></li>
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l3">Youth Mobile &amp; CCTV Repair</a></li>
+            <li><a href="/#initiatives" class="hover:text-amber-300 transition-colors" data-i18n="footer.l4">Ramadan Family Ration Drive</a></li>
+            <li><a href="/#programs" class="hover:text-amber-300 transition-colors" data-i18n="footer.l5">Community Healthcare Camps</a></li>
+            <li><a href="/#charter" class="hover:text-amber-300 transition-colors text-amber-300 font-bold" data-i18n="footer.l6">Self-Funded Charter</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Foundation Directory -->
+        <div class="lg:col-span-2 space-y-3">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4" data-i18n="footer.col2">Foundation</div>
+          <ul class="text-xs text-emerald-200 space-y-2.5">
+            <li><a href="/about" class="hover:text-amber-300 transition-colors" data-i18n="footer.d1">Who We Are</a></li>
+            <li><a href="/about#team" class="hover:text-amber-300 transition-colors" data-i18n="footer.d2">Executive Team</a></li>
+            <li><a href="/#transparency" class="hover:text-amber-300 transition-colors" data-i18n="footer.d3">Governance</a></li>
+            <li><a href="/gallery" class="hover:text-amber-300 transition-colors" data-i18n="footer.d4">Moments Gallery</a></li>
+            <li><a href="/#membership" class="hover:text-amber-300 transition-colors" data-i18n="footer.d5">Membership</a></li>
+            <li><a href="/login" class="hover:text-amber-300 transition-colors font-bold text-amber-300" data-i18n="footer.d6">Staff Portal</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Official Contact & Policy Pill -->
+        <div class="lg:col-span-3 space-y-3">
+          <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4" data-i18n="footer.col3">Official Contact</div>
+          <div class="text-xs text-emerald-200 space-y-2.5 leading-relaxed">
+            <p class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+              <span data-i18n="footer.address">EDF Center, Galgamuwa, North Western Province, Sri Lanka</span>
+            </p>
+            <p class="flex items-center gap-2">
+              <i data-lucide="mail" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <a href="mailto:info@edfgalgamuwa.org" class="hover:text-amber-300 transition-colors">info@edfgalgamuwa.org</a>
+            </p>
+            <p class="flex items-center gap-2">
+              <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+              <a href="https://wa.me/94715358380" target="_blank" class="hover:text-amber-300 transition-colors">+94 71 535 8380</a>
+            </p>
+          </div>
+
+          <!-- Non-Solicitation Charter Badge in Footer -->
+          <div class="pt-2">
+            <button type="button" class="open-charter-modal-btn w-full px-3 py-2.5 rounded-xl bg-emerald-900/70 hover:bg-emerald-900 border border-amber-400/25 text-[11px] font-semibold text-amber-200 flex items-center justify-between transition">
+              <span class="flex items-center gap-2"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-400"></i> <span data-i18n="footer.policyPill">Zero Outsider Donations Policy</span></span>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-400"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2.5 pt-2">
+            <a href="https://www.facebook.com/edf28jan2016/" target="_blank" rel="noopener" aria-label="Facebook"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://wa.me/94715358380" target="_blank" rel="noopener" aria-label="WhatsApp"
+              class="w-8 h-8 rounded-lg bg-emerald-900 hover:bg-amber-400 hover:text-emerald-950 flex items-center justify-center text-sm transition">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-8 border-t border-emerald-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-emerald-300/80">
+        <div data-i18n="footer.rights">
+          © 2026 Education &amp; Development Foundation (EDF), Galgamuwa. All rights reserved.
+        </div>
+        <div>
+          Crafted with devotion &amp; excellence by
+          <a href="https://arshadahamed.com/" target="_blank" rel="noopener"
+            class="text-amber-400 font-semibold hover:underline">
+            Arshad Ahamed
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       5. SHADCN COMMAND PALETTE (⌘K) & INTERACTIVE MODALS
+  ═══════════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Shadcn Command Palette (⌘K) -->
+  <div id="cmd-palette-modal" class="modal-backdrop fixed inset-0 z-50 bg-emerald-950/75 backdrop-blur-sm flex items-start justify-center pt-20 p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-amber-400/40 overflow-hidden text-gray-900">
+      <div class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100">
+        <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+        <input type="text" id="cmd-search-input" placeholder="Search pillars, charter policy, gallery, membership..." data-i18n-placeholder="cmd.placeholder"
+          class="w-full text-sm font-medium text-gray-900 placeholder-gray-400 focus:outline-hidden bg-transparent">
+        <button type="button" class="close-modal-trigger text-xs font-mono px-2 py-0.5 rounded bg-gray-100 text-gray-500 hover:bg-gray-200">ESC</button>
+      </div>
+      <div class="p-2 max-h-80 overflow-y-auto divide-y divide-gray-50 text-xs">
+        <div class="py-1">
+          <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400" data-i18n="cmd.navGroup">Quick Navigation</div>
+          <a href="/" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="home" class="w-4 h-4 text-emerald-700"></i> Return to Home Page</span>
+            <span class="text-gray-400">Home</span>
+          </a>
+          <a href="/#life-uplift-journey" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i> <span data-i18n="cmd.itemUplift">3D Scroll Story: Sadaqah &amp; Life Uplift</span></span>
+            <span class="text-amber-600 font-bold">3D</span>
+          </a>
+          <a href="/#initiatives" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="compass" class="w-4 h-4 text-amber-600"></i> <span data-i18n="nav.initiatives">Active Community Initiatives</span></span>
+            <span class="text-gray-400">Home Section</span>
+          </a>
+          <a href="/#programs" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="layers" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.pillars">Our 6 Core Pillars &amp; Programmes</span></span>
+            <span class="text-gray-400">Home Section</span>
+          </a>
+          <a href="/#charter" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i> <span data-i18n="nav.charter">Self-Funded Zero-Outsider-Money Charter</span></span>
+            <span class="text-gray-400">Home Section</span>
+          </a>
+          <a href="/about" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="info" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.about">About EDF Galgamuwa</span></span>
+            <span class="text-gray-400">Page</span>
+          </a>
+          <a href="/gallery" class="cmd-item flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-gray-800">
+            <span class="flex items-center gap-2.5"><i data-lucide="images" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="nav.gallery">Groundwork Photo Gallery</span></span>
+            <span class="text-gray-400">Page</span>
+          </a>
+        </div>
+        <div class="py-1">
+          <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400" data-i18n="cmd.actGroup">Quick Actions</div>
+          <button type="button" class="cmd-item cmd-action-item open-inquiry-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-amber-50 font-semibold text-emerald-950" data-tier="Community Membership Application">
+            <span class="flex items-center gap-2.5"><i data-lucide="users" class="w-4 h-4 text-amber-600"></i> <span data-i18n="cmd.itemApply">Apply for Membership or Volunteer</span></span>
+            <span class="text-amber-700 font-bold">Inquiry</span>
+          </button>
+          <button type="button" class="cmd-item cmd-action-item open-charter-modal-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-emerald-50 font-semibold text-emerald-950">
+            <span class="flex items-center gap-2.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cmd.itemPolicy">View Zero-Outsider-Donations Policy</span></span>
+            <span class="text-emerald-700 font-bold">Policy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Non-Solicitation / Member-Sustained Charter Policy Modal -->
+  <div id="charter-modal" class="modal-backdrop fixed inset-0 z-50 bg-emerald-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-2 border-amber-400 relative overflow-y-auto max-h-[90vh] text-gray-900">
+      <button type="button" class="close-modal-trigger absolute top-5 right-5 text-gray-400 hover:text-gray-700 text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-xl bg-emerald-900 text-amber-300 flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider" data-i18n="cModal.eyebrow">Institutional Covenant</span>
+          <h3 class="font-serif font-bold text-xl text-emerald-950" data-i18n="cModal.title">Zero Outsider Donations Policy</h3>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4" data-i18n="cModal.body">
+        Education &amp; Development Foundation (EDF) Galgamuwa operates strictly as an internally financed community organisation. We do not solicit, crowdsource, or accept external monetary contributions from the public.
+      </p>
+
+      <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-950 space-y-2 mb-5">
+        <div class="flex items-center gap-2 font-bold"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cModal.p1">Funded purely by Regular, Life &amp; Patron Members</span></div>
+        <div class="flex items-center gap-2 font-bold"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cModal.p2">Volunteering &amp; In-Kind Partnerships Welcomed</span></div>
+        <div class="flex items-center gap-2 font-bold"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700"></i> <span data-i18n="cModal.p3">Complete Community Governance Since 2016</span></div>
+      </div>
+
+      <div class="space-y-3">
+        <a href="/#membership" class="block w-full py-3 rounded-xl font-bold text-center text-xs text-emerald-950 bg-amber-300 hover:bg-amber-400 transition" data-i18n="cModal.cta1">
+          Explore Internal Membership Tiers on Homepage →
+        </a>
+        <a href="https://wa.me/94715358380?text=Assalamu%20Alaikum,%20I%20would%20like%20to%20volunteer%20or%20enquire%20about%20EDF%20membership." target="_blank"
+          class="block w-full py-3 rounded-xl font-bold text-center text-xs text-white bg-emerald-900 hover:bg-emerald-800 transition">
+          <i class="fa-brands fa-whatsapp mr-1"></i> <span data-i18n="cModal.cta2">Connect on WhatsApp Community Desk</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Membership / Volunteer / Institutional Inquiry Modal -->
+  <div id="membership-modal" class="modal-backdrop fixed inset-0 z-50 bg-emerald-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-amber-400 relative overflow-hidden text-gray-900">
+      <button type="button" class="close-modal-trigger absolute top-5 right-5 text-gray-400 hover:text-gray-700 text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-5">
+        <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider" data-i18n="mModal.eyebrow">Community Stewardship · Zero Cash Solicited</span>
+        <h3 class="font-serif font-bold text-xl text-emerald-950 mt-1" id="mem-tier-title">Community Membership Inquiry</h3>
+      </div>
+
+      <div class="space-y-3.5 mb-5">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-name" data-i18n="mModal.nameLbl">Full Name *</label>
+          <input type="text" id="mem-name" placeholder="Your complete legal name" data-i18n-placeholder="mModal.namePh" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-phone" data-i18n="mModal.phoneLbl">WhatsApp / Phone Number *</label>
+          <input type="tel" id="mem-phone" placeholder="e.g. +94 77 123 4567" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-nic" data-i18n="mModal.nicLbl">Skills, Profession or NIC (Optional)</label>
+          <input type="text" id="mem-nic" placeholder="e.g. Teacher, Technician, Pharmacist, or ID" data-i18n-placeholder="mModal.nicPh" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1" for="mem-city" data-i18n="mModal.cityLbl">City / District</label>
+          <input type="text" id="mem-city" placeholder="e.g. Galgamuwa, Kurunegala, etc." data-i18n-placeholder="mModal.cityPh" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-emerald-700">
+        </div>
+      </div>
+
+      <button type="button" id="mem-submit-btn" class="w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm text-emerald-950 bg-amber-400 hover:bg-amber-300 shadow-md transition flex items-center justify-center gap-2">
+        <i class="fa-brands fa-whatsapp text-lg"></i>
+        <span data-i18n="mModal.submit">Send Inquiry via WhatsApp</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Back to Top Button with Circular SVG Progress Ring -->
+  <button id="backToTop" class="back-to-top relative w-12 h-12 rounded-full bg-emerald-950 text-amber-300 shadow-2xl flex items-center justify-center hover:bg-amber-400 hover:text-emerald-950 transition group" aria-label="Back to top">
+    <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(212,175,55,0.22)" stroke-width="2.5"></circle>
+      <circle id="btt-progress-ring" cx="24" cy="24" r="20" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round"></circle>
     </svg>
-  </a>
+    <i data-lucide="arrow-up" class="w-4 h-4 relative z-10"></i>
+  </button>
 
-  <!-- ═══════════════════════════════════════════
-       SCRIPTS
-  ═══════════════════════════════════════════ -->
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       6. SCRIPTS & AUTHENTICATION ENGINE
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+  <!-- Free Lottie Animated Icons Engine -->
+  <script src="/js/edf-lottie-icons.js"></script>
+  <!-- Multilingual Localization Engine (EN / AR RTL / TA / SI) -->
+  <script src="/js/landing-i18n.js"></script>
+  <!-- WebGL 3D & GSAP Choreography -->
+  <script src="/js/landing-3d-ngo.js"></script>
+  <!-- Shared Client-Side NGO Logic (Command Palette, Modals, Toast) -->
+  <script src="/js/landing-ngo.js"></script>
+
+  <!-- Staff Portal Authentication Script -->
   <script>
-    /* ─── CONFIG ───────────────────────────────────────
-       Update ADMIN_WA_NUMBER with the actual WhatsApp
-       number (country code + number, no spaces or +).
-       Example: '94771234567' for +94 77 123 4567
-    ─────────────────────────────────────────────────── */
-    const ADMIN_WA_NUMBER = '94771234567';
+    (function () {
+      'use strict';
 
-    /* ─── WhatsApp URL builder ── */
-    function waUrl(msg) {
-      return `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(msg)}`;
-    }
+      // Mode Switcher Elements
+      const tabStaffLogin = document.getElementById('tabStaffLogin');
+      const tabForgotAccess = document.getElementById('tabForgotAccess');
+      const viewSignIn = document.getElementById('viewSignIn');
+      const viewForgot = document.getElementById('viewForgot');
+      const forgotTriggerLink = document.getElementById('forgotTriggerLink');
+      const backToSignInBtn = document.getElementById('backToSignInBtn');
 
-    /* Seed generic WhatsApp links on load */
-    const genericMsg = 'Hi, I need help accessing the EDF Galgamuwa staff portal.';
-    document.getElementById('waLoginBtn').href = waUrl(genericMsg);
-    document.getElementById('waFab').href = waUrl(genericMsg);
-    document.getElementById('waForgotBtn').href = waUrl(genericMsg);
-
-    /* ─── Password Toggle ── */
-    const pwInput = document.getElementById('password');
-    const pwToggle = document.getElementById('pwToggle');
-    const eyeShow = document.getElementById('eye-show');
-    const eyeHide = document.getElementById('eye-hide');
-    let pwVisible = false;
-
-    pwToggle.addEventListener('click', () => {
-      pwVisible = !pwVisible;
-      pwInput.type = pwVisible ? 'text' : 'password';
-      eyeShow.style.display = pwVisible ? 'none' : 'block';
-      eyeHide.style.display = pwVisible ? 'block' : 'none';
-      pwToggle.setAttribute('aria-label', pwVisible ? 'Hide password' : 'Show password');
-    });
-
-    /* ─── Panel switching ── */
-    const panelLogin = document.getElementById('panel-login');
-    const panelForgot = document.getElementById('panel-forgot');
-
-    function showPanel(show, hide) {
-      hide.classList.add('hidden');
-      hide.classList.remove('slide-out-left');
-      // small delay so hidden class removes transforms before re-adding
-      requestAnimationFrame(() => {
-        show.classList.remove('hidden', 'slide-out-left');
-      });
-    }
-
-    document.getElementById('forgotTrigger').addEventListener('click', () => {
-      panelLogin.classList.add('slide-out-left');
-      panelLogin.classList.add('hidden');
-      showPanel(panelForgot, panelLogin);
-      document.getElementById('forgotUsername').focus();
-      // Reset forgot panel state
-      document.getElementById('forgotSuccess').style.display = 'none';
-      document.getElementById('forgotFields').style.display = 'block';
-      document.getElementById('forgotUsername').value = '';
-    });
-
-    document.getElementById('backToLogin').addEventListener('click', () => {
-      showPanel(panelLogin, panelForgot);
-    });
-
-    /* ─── Forgot Password handler ── */
-    document.getElementById('forgotBtn').addEventListener('click', () => {
-      const username = document.getElementById('forgotUsername').value.trim();
-      const btn = document.getElementById('forgotBtn');
-      const spinner = document.getElementById('forgotSpinner');
-      const btnText = document.getElementById('forgotBtnText');
-      const success = document.getElementById('forgotSuccess');
-      const fields = document.getElementById('forgotFields');
-
-      if (!username) {
-        document.getElementById('forgotUsername').classList.add('shake');
-        document.getElementById('forgotUsername').addEventListener('animationend', () => {
-          document.getElementById('forgotUsername').classList.remove('shake');
-        }, { once: true });
-        return;
+      function switchTab(mode) {
+        if (mode === 'signin') {
+          tabStaffLogin.classList.add('active');
+          tabForgotAccess.classList.remove('active');
+          viewSignIn.classList.remove('hidden');
+          viewForgot.classList.add('hidden');
+        } else {
+          tabForgotAccess.classList.add('active');
+          tabStaffLogin.classList.remove('active');
+          viewForgot.classList.remove('hidden');
+          viewSignIn.classList.add('hidden');
+        }
       }
 
-      /* Loading state */
-      btn.disabled = true;
-      spinner.style.display = 'block';
-      btnText.style.opacity = '0';
+      if (tabStaffLogin) tabStaffLogin.addEventListener('click', () => switchTab('signin'));
+      if (tabForgotAccess) tabForgotAccess.addEventListener('click', () => switchTab('forgot'));
+      if (forgotTriggerLink) forgotTriggerLink.addEventListener('click', () => switchTab('forgot'));
+      if (backToSignInBtn) backToSignInBtn.addEventListener('click', () => switchTab('signin'));
 
-      /* Simulate brief processing, then show WhatsApp redirect */
-      setTimeout(() => {
-        spinner.style.display = 'none';
-        btnText.style.opacity = '1';
-        btn.disabled = false;
+      // Password Peek Toggle
+      const pwToggle = document.getElementById('pwToggle');
+      const passwordInput = document.getElementById('password');
+      const eyeShow = document.getElementById('eye-show');
+      const eyeHide = document.getElementById('eye-hide');
 
-        /* Build personalised WhatsApp message */
-        const resetMsg = `Hi, I am ${username} and I need help resetting my password for the EDF Galgamuwa staff portal. Could you please assist me?`;
-        const resetUrl = waUrl(resetMsg);
+      if (pwToggle && passwordInput) {
+        pwToggle.addEventListener('click', () => {
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          eyeShow.style.display = isPassword ? 'none' : 'block';
+          eyeHide.style.display = isPassword ? 'block' : 'none';
+        });
+      }
 
-        /* Update the forgot-panel WhatsApp button with personalised message */
-        document.getElementById('waForgotBtn').href = resetUrl;
-
-        /* Hide input fields, show success */
-        fields.style.display = 'none';
-        success.innerHTML = `
-          <strong>Request received for "${username}"</strong><br>
-          Password resets are handled by your system administrator.<br>
-          Click the button below to send a pre-filled WhatsApp message directly to the admin.
-        `;
-        success.style.display = 'block';
-
-      }, 900);
-    });
-
-    /* ─── LOGIN FORM (integrates with existing auth.js) ── */
-    const loginForm = document.getElementById('loginForm');
-    const errorEl = document.getElementById('errorMessage');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginSpinner = document.getElementById('loginSpinner');
-    const loginBtnText = document.getElementById('loginBtnText');
-
-    if (loginForm) {
-      loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-
-        if (!username || !password) {
-          showError('Please fill in all fields.');
-          return;
-        }
-
-        /* Loading state */
-        setLoading(true);
-        errorEl.style.display = 'none';
-
-        try {
-          const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-          });
-          const data = await res.json();
-
-          if (res.ok) {
-            loginBtnText.textContent = 'Redirecting…';
-            window.location.href = '/dashboard';
+      // Caps Lock Detection
+      const capsLockWarning = document.getElementById('capsLockWarning');
+      if (passwordInput && capsLockWarning) {
+        passwordInput.addEventListener('keyup', (e) => {
+          if (e.getModifierState && e.getModifierState('CapsLock')) {
+            capsLockWarning.style.display = 'block';
           } else {
-            showError(data.message || 'Invalid credentials. Please try again.');
-            setLoading(false);
+            capsLockWarning.style.display = 'none';
           }
-        } catch {
-          showError('Network error. Please check your connection and try again.');
-          setLoading(false);
-        }
-      });
-    }
-
-    function setLoading(on) {
-      loginBtn.disabled = on;
-      loginSpinner.style.display = on ? 'block' : 'none';
-      loginBtnText.style.opacity = on ? '0' : '1';
-    }
-
-    function showError(msg) {
-      errorEl.textContent = msg;
-      errorEl.style.display = 'block';
-      /* Shake the form card */
-      loginForm.classList.add('shake');
-      loginForm.addEventListener('animationend', () => loginForm.classList.remove('shake'), { once: true });
-    }
-
-    /* ─── Input focus: update WhatsApp link with username ── */
-    document.getElementById('username').addEventListener('input', function () {
-      const val = this.value.trim();
-      if (val) {
-        const msg = `Hi, I need help accessing the EDF Galgamuwa portal. My username is: ${val}`;
-        document.getElementById('waLoginBtn').href = waUrl(msg);
-      } else {
-        document.getElementById('waLoginBtn').href = waUrl(genericMsg);
+        });
       }
-    });
+
+      // Fellowship Scene Switcher (Background Mural + Preview Window + GSAP)
+      const bgMural = document.getElementById('login-bg-mural');
+      const previewImg = document.getElementById('login-fellowship-preview');
+      document.querySelectorAll('.login-scene-pill').forEach((pill) => {
+        pill.addEventListener('click', (e) => {
+          const nextSrc = e.currentTarget.dataset.scene;
+          if (!nextSrc) return;
+          document.querySelectorAll('.login-scene-pill').forEach((p) => p.classList.remove('is-active'));
+          e.currentTarget.classList.add('is-active');
+          if (previewImg) {
+            previewImg.src = nextSrc;
+            if (typeof gsap !== 'undefined') {
+              gsap.fromTo(previewImg, { opacity: 0.45, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.65, ease: 'power2.out' });
+            }
+          }
+          if (bgMural) {
+            bgMural.src = nextSrc;
+            if (typeof gsap !== 'undefined') {
+              gsap.fromTo(bgMural, { opacity: 0.2 }, { opacity: 0.42, duration: 0.9, ease: 'power2.out' });
+            }
+          }
+        });
+      });
+
+      // Remember Me local storage & Saved ID Pill
+      const usernameInput = document.getElementById('username');
+      const rememberMeCheck = document.getElementById('rememberMe');
+      const savedIdPill = document.getElementById('savedIdPill');
+      const savedIdValue = document.getElementById('savedIdValue');
+      const clearSavedIdBtn = document.getElementById('clearSavedIdBtn');
+      const savedUser = localStorage.getItem('edf_staff_username');
+      if (savedUser && usernameInput) {
+        usernameInput.value = savedUser;
+        if (rememberMeCheck) rememberMeCheck.checked = true;
+        if (savedIdValue && savedIdPill) {
+          savedIdValue.textContent = savedUser;
+          savedIdPill.classList.remove('hidden');
+        }
+      }
+      if (clearSavedIdBtn) {
+        clearSavedIdBtn.addEventListener('click', () => {
+          localStorage.removeItem('edf_staff_username');
+          if (usernameInput) {
+            usernameInput.value = '';
+            usernameInput.focus();
+          }
+          if (rememberMeCheck) rememberMeCheck.checked = false;
+          if (savedIdPill) savedIdPill.classList.add('hidden');
+        });
+      }
+
+      // Authentication Form Submission (/api/auth/login)
+      const loginForm = document.getElementById('loginForm');
+      const errorEl = document.getElementById('errorMessage');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginSpinner = document.getElementById('loginSpinner');
+      const loginBtnText = document.getElementById('loginBtnText');
+      const mihrabCard = document.getElementById('mihrabCard');
+
+      function displayError(msg) {
+        if (errorEl) {
+          errorEl.textContent = msg;
+          errorEl.style.display = 'block';
+        }
+        if (mihrabCard) {
+          mihrabCard.classList.add('shake');
+          setTimeout(() => mihrabCard.classList.remove('shake'), 500);
+        }
+        if (typeof window.edfToast === 'function') {
+          window.edfToast('Authentication Notice', msg, 'error');
+        }
+      }
+
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const username = usernameInput.value.trim();
+          const password = passwordInput.value;
+
+          if (!username || !password) {
+            displayError('Please complete both Staff ID and Secret Key fields.');
+            if (!username) usernameInput.focus();
+            else passwordInput.focus();
+            return;
+          }
+
+          if (rememberMeCheck && rememberMeCheck.checked) {
+            localStorage.setItem('edf_staff_username', username);
+          } else {
+            localStorage.removeItem('edf_staff_username');
+          }
+
+          // UI Loading state
+          loginBtn.disabled = true;
+          loginSpinner.classList.remove('hidden');
+          loginBtnText.textContent = 'Authenticating…';
+          if (errorEl) errorEl.style.display = 'none';
+
+          try {
+            const response = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              loginBtnText.textContent = 'Verification Successful · Entering Portal…';
+              loginBtn.classList.remove('from-amber-400', 'via-amber-300', 'to-amber-500');
+              loginBtn.classList.add('bg-emerald-600', 'text-white');
+              
+              if (typeof confetti === 'function') {
+                confetti({
+                  particleCount: 50,
+                  spread: 60,
+                  origin: { y: 0.6 }
+                });
+              }
+
+              setTimeout(() => {
+                window.location.href = '/dashboard';
+              }, 400);
+            } else {
+              displayError(data.message || 'Invalid credentials. Please verify your Staff ID and Secret Key.');
+              loginBtn.disabled = false;
+              loginSpinner.classList.add('hidden');
+              loginBtnText.textContent = 'Authenticate & Enter Portal';
+            }
+          } catch (err) {
+            displayError('Network communication error. Please check your connectivity or contact administration.');
+            loginBtn.disabled = false;
+            loginSpinner.classList.add('hidden');
+            loginBtnText.textContent = 'Authenticate & Enter Portal';
+          }
+        });
+      }
+
+      // Forgot Access Ticket Generator
+      const forgotSubmitBtn = document.getElementById('forgotSubmitBtn');
+      const forgotUsernameInput = document.getElementById('forgotUsernameInput');
+      const forgotSpinner = document.getElementById('forgotSpinner');
+      const forgotSubmitText = document.getElementById('forgotSubmitText');
+      const forgotFormContainer = document.getElementById('forgotFormContainer');
+      const forgotSuccessBox = document.getElementById('forgotSuccessBox');
+      const waForgotActionBtn = document.getElementById('waForgotActionBtn');
+
+      if (forgotSubmitBtn) {
+        forgotSubmitBtn.addEventListener('click', () => {
+          const staffId = forgotUsernameInput.value.trim();
+          if (!staffId) {
+            forgotUsernameInput.focus();
+            return;
+          }
+
+          forgotSubmitBtn.disabled = true;
+          forgotSpinner.classList.remove('hidden');
+          forgotSubmitText.textContent = 'Verifying ID…';
+
+          setTimeout(() => {
+            forgotSpinner.classList.add('hidden');
+            forgotSubmitText.textContent = 'Generate Verified Recovery Ticket';
+            forgotSubmitBtn.disabled = false;
+
+            const msg = `Assalamu Alaikum. I am staff member "${staffId}" from EDF Galgamuwa and I request an administrator to reset my portal credentials.`;
+            const encoded = encodeURIComponent(msg);
+            waForgotActionBtn.href = `https://wa.me/94715358380?text=${encoded}`;
+
+            forgotFormContainer.classList.add('hidden');
+            forgotSuccessBox.innerHTML = '';
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'font-bold text-amber-300 mb-1';
+            titleDiv.textContent = `Recovery Ticket Generated for "${staffId}"`;
+            const bodyDiv = document.createElement('div');
+            bodyDiv.textContent = 'Administrative password resets are verified directly by our IT Stewardship desk. Click below to transmit your verified request directly via WhatsApp.';
+            forgotSuccessBox.appendChild(titleDiv);
+            forgotSuccessBox.appendChild(bodyDiv);
+
+            forgotSuccessBox.classList.remove('hidden');
+            waForgotActionBtn.classList.remove('hidden');
+            if (typeof window.edfToast === 'function') {
+              window.edfToast('Recovery Ticket Ready', 'Transmit your verified reset request via WhatsApp.');
+            }
+          }, 600);
+        });
+      }
+
+    })();
   </script>
 </body>
 
