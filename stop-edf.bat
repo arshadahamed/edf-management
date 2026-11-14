@@ -21,4 +21,4 @@ for /f "tokens=5" %%P in ('netstat -ano ^| findstr ":!PORT! " ^| findstr "LISTEN
 )
 
 echo Done. Both EDF Server and Cloudflare Tunnel have been stopped.
-timeout /t 2 >nul
+ping 127.0.0.1 -n 3 >nul

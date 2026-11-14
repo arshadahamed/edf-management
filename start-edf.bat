@@ -65,7 +65,7 @@ for /f "tokens=5" %%P in ('netstat -ano ^| findstr ":!PORT! " ^| findstr "LISTEN
 echo [2/3] Starting EDF Server on https://localhost:!PORT! and http://localhost:!PORT! ...
 start "EDF Server (Port !PORT!)" cmd /k "cd /d "%~dp0" && node server.js"
 
-timeout /t 2 /nobreak >nul
+ping 127.0.0.1 -n 3 >nul
 
 echo.
 echo   Local HTTP  : http://localhost:!PORT!
