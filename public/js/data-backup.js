@@ -1271,7 +1271,9 @@ function closeHybridDbDropdown() {
 }
 
 function openSupabaseSyncSettings() {
-    if (typeof switchView === 'function') {
+    if (typeof switchTab === 'function') {
+        switchTab('settings');
+    } else if (typeof switchView === 'function') {
         switchView('settings');
     }
     setTimeout(() => {
@@ -1284,7 +1286,7 @@ function openSupabaseSyncSettings() {
         if (card) {
             card.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-    }, 120);
+    }, 150);
 }
 
 async function triggerQuickSupabaseSync(event) {
@@ -1464,11 +1466,28 @@ async function runSupabaseSync(mode = 'push') {
     }
 }
 
-// Initialize Hybrid DB Topbar Indicator & Auto-Reconnect Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => loadSupabaseSyncStatus(false), 800);
+// Expose Hybrid DB functions globally for inline onclick handlers
+window.loadSupabaseSyncStatus = loadSupabaseSyncStatus;
+window.toggleHybridDbDropdown = toggleHybridDbDropdown;
+window.closeHybridDbDropdown = closeHybridDbDropdown;
+window.openSupabaseSyncSettings = openSupabaseSyncSettings;
+window.triggerQuickSupabaseSync = triggerQuickSupabaseSync;
+window.runSupabaseSync = runSupabaseSync;
+window.testSupabaseConnectionUI = testSupabaseConnectionUI;
+window.saveSupabaseConfigUI = saveSupabaseConfigUI;
+window.toggleSupabaseUrlVisibility = toggleSupabaseUrlVisibility;
+
+// Initialize Hybrid DB Topbar Indicator & Auto-Reconnect Listeners immediately or on DOMContentLoaded
+function _initHybridDbSyncUI() {
+    loadSupabaseSyncStatus(false);
+    setTimeout(() => loadSupabaseSyncStatus(false), 1200);
     setInterval(() => loadSupabaseSyncStatus(false), 25000);
-});
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _initHybridDbSyncUI);
+} else {
+    _initHybridDbSyncUI();
+}
 document.addEventListener('click', (e) => {
     const container = document.getElementById('hybridDbTopbarContainer');
     if (container && !container.contains(e.target)) {

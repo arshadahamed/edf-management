@@ -104,13 +104,15 @@ async function createApp() {
         // maintenanceGuard MUST come before express.static so page requests are intercepted first.
         app.use(maintenanceGuard);
 
-        // Static files served locally / from bundled public directory with fast browser caching for CSS/JS/images/vendor
+        // Static files served locally / from bundled public directory
         app.use(express.static(PUBLIC_DIR, {
             etag: true,
             lastModified: true,
             setHeaders: (res, filePath) => {
-                if (/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp)$/i.test(filePath)) {
+                if (/[\\/]vendor[\\/]/i.test(filePath) || /\.(png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp)$/i.test(filePath)) {
                     res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+                } else if (/\.(js|css|html)$/i.test(filePath)) {
+                    res.setHeader('Cache-Control', 'no-cache');
                 }
             }
         }));
