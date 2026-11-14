@@ -58,7 +58,8 @@ const SYNC_TABLES_ORDERED = [
     'sms_templates',
     'sms_logs',
     'system_logs',
-    'login_events'
+    'login_events',
+    'backup_snapshots'
 ];
 
 const SYNC_TABLE_SET = new Set(SYNC_TABLES_ORDERED);
@@ -273,6 +274,7 @@ async function ensurePgTableForSqlite(pgClient, sqliteDb, tableName, forceDdl = 
     await pgClient.query(`
         CREATE TABLE IF NOT EXISTS "${tableName}" (${colDefs.join(', ')});
         ALTER TABLE "${tableName}" ENABLE ROW LEVEL SECURITY;
+        REVOKE ALL ON TABLE "${tableName}" FROM anon, authenticated;
         ALTER TABLE "${tableName}" ${addColClauses};
     `);
 
@@ -306,6 +308,7 @@ async function ensureSupabaseSchema(pgClient, sqliteDb) {
             ddlStatements.push(
                 `CREATE TABLE IF NOT EXISTS "${table}" (${colDefs.join(', ')});`,
                 `ALTER TABLE "${table}" ENABLE ROW LEVEL SECURITY;`,
+                `REVOKE ALL ON TABLE "${table}" FROM anon, authenticated;`,
                 `ALTER TABLE "${table}" ${addColClauses};`
             );
         }
