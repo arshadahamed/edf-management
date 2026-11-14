@@ -96,6 +96,7 @@ async function loadDataBackupWorkspace() {
             _dbkState.totalPages = Number(listData.totalPages || 1);
             _dbkRenderVault();
         }
+        loadSupabaseSyncStatus();
     } catch (err) {
         console.error('loadDataBackupWorkspace error:', err);
     }
@@ -953,4 +954,362 @@ function cldDone() {
     closeModal('clearDataModal');
     if (typeof fetchStats === 'function') fetchStats();
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * 8. Hybrid Database Engine (Supabase PostgreSQL + Offline SQLite3 Sync)
+ * ══════════════════════════════════════════════════════════════════════════════ */
+let _supaLastStatus = null;
+
+async function loadSupabaseSyncStatus(forcePing = false) {
+    try {
+        const res = await fetch(`/api/backups/supabase/status${forcePing ? '?ping=1' : ''}`);
+        if (!res.ok) return null;
+        const st = await res.json();
+        _supaLastStatus = st;
+        renderSupabaseSyncStatus(st);
+        return st;
+    } catch (_) {
+        // Browser itself may be offline
+        renderSupabaseSyncStatus({
+            configured: _supaLastStatus ? _supaLastStatus.configured : false,
+            online: false,
+            mode: 'offline-sqlite',
+            pendingOutboxCount: _supaLastStatus ? _supaLastStatus.pendingOutboxCount : 0,
+            lastSyncAt: _supaLastStatus ? _supaLastStatus.lastSyncAt : null,
+            lastError: 'Local network offline — operating on local SQLite3'
+        });
+        return null;
+    }
+}
+
+function renderSupabaseSyncStatus(st) {
+    if (!st) return;
+    const isOnline = Boolean(st.configured && st.online && navigator.onLine !== false);
+    const pending = Number(st.pendingOutboxCount || 0);
+
+    // 1. Update Topbar Pill
+    const dot = document.getElementById('hybridDbStatusDot');
+    const txt = document.getElementById('hybridDbStatusText');
+    const badge = document.getElementById('hybridDbPendingBadge');
+    const wrap = document.getElementById('hybridDbTopbarWrap');
+
+    if (dot && txt) {
+        if (st.syncInProgress) {
+            dot.style.background = '#3b82f6';
+            dot.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.22)';
+            txt.textContent = 'Syncing Supabase...';
+        } else if (isOnline) {
+            dot.style.background = '#10b981';
+            dot.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.22)';
+            txt.textContent = 'Supabase + SQLite3 Online';
+            if (wrap) wrap.style.borderColor = 'rgba(16,185,129,0.35)';
+        } else if (st.configured) {
+            dot.style.background = '#f59e0b';
+            dot.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';
+            txt.textContent = 'Offline · Using SQLite3';
+            if (wrap) wrap.style.borderColor = 'rgba(245,158,11,0.4)';
+        } else {
+            dot.style.background = '#10b981';
+            dot.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.18)';
+            txt.textContent = 'SQLite3 Local Ready';
+            if (wrap) wrap.style.borderColor = 'var(--border-color)';
+        }
+    }
+
+    if (badge) {
+        if (pending > 0) {
+            badge.style.display = 'inline-block';
+            badge.textContent = `${pending} unsynced`;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    // 2. Update Settings -> Data & Backup Hybrid Card
+    const engineBadge = document.getElementById('supaEngineBadge');
+    const modeVal = document.getElementById('supaModeValue');
+    const latSub = document.getElementById('supaLatencySub');
+    const pendCnt = document.getElementById('supaPendingCount');
+    const pendSub = document.getElementById('supaPendingSub');
+    const lastLbl = document.getElementById('supaLastSyncLbl');
+    const lastSub = document.getElementById('supaLastSyncSub');
+    const autoToggle = document.getElementById('supaAutoSyncToggle');
+    const urlInput = document.getElementById('supaDbUrlInput');
+
+    if (engineBadge) {
+        if (isOnline) {
+            engineBadge.textContent = 'ONLINE · SUPABASE + SQLITE3';
+            engineBadge.style.background = 'rgba(16,185,129,0.15)';
+            engineBadge.style.color = '#10b981';
+        } else if (st.configured) {
+            engineBadge.textContent = 'OFFLINE FALLBACK · SQLITE3';
+            engineBadge.style.background = 'rgba(245,158,11,0.15)';
+            engineBadge.style.color = '#f59e0b';
+        } else {
+            engineBadge.textContent = 'LOCAL SQLITE3 MODE';
+            engineBadge.style.background = 'rgba(59,130,246,0.12)';
+            engineBadge.style.color = '#3b82f6';
+        }
+    }
+
+    if (modeVal) {
+        modeVal.textContent = isOnline
+            ? 'Supabase Cloud + SQLite3'
+            : (st.configured ? 'SQLite3 (Offline Queue Active)' : 'SQLite3 Local Storage');
+        modeVal.style.color = isOnline ? '#10b981' : (st.configured ? '#f59e0b' : 'var(--text-primary)');
+    }
+    if (latSub) {
+        const ping = st.latencyMs ?? st.lastPingMs;
+        if (isOnline) {
+            latSub.textContent = `Connected to Supabase${ping ? ` (${ping} ms)` : ''} · Live write-through enabled`;
+        } else if (st.configured) {
+            latSub.textContent = st.lastError ? `Offline (${st.lastError}) — queuing in SQLite3` : 'No internet — saving to local SQLite3';
+        } else {
+            latSub.textContent = 'All 45 tables stored locally · Add Supabase URL below to enable cloud sync';
+        }
+    }
+
+    if (pendCnt) {
+        pendCnt.textContent = `${pending.toLocaleString()} change${pending === 1 ? '' : 's'}`;
+        pendCnt.style.color = pending > 0 ? '#f59e0b' : '#10b981';
+    }
+    if (pendSub) {
+        const dirtyArr = st.pendingByTable || st.dirtyTables || [];
+        const dirtyLen = Array.isArray(dirtyArr) ? dirtyArr.length : 0;
+        pendSub.textContent = pending > 0
+            ? `${dirtyLen} table${dirtyLen === 1 ? '' : 's'} queued offline — ready to sync to Supabase`
+            : 'All local SQLite3 records are up to date';
+    }
+
+    if (lastLbl) {
+        lastLbl.textContent = st.lastSyncAt ? _dbkFormatRelative(st.lastSyncAt) : 'Not synced yet';
+    }
+    if (lastSub) {
+        const sum = st.lastSyncSummary;
+        const pushedRows = sum ? (sum.rowsPushed ?? sum.pushedRows) : undefined;
+        const pushedTables = sum ? (sum.tablesSynced ?? sum.pushedTables) : undefined;
+        if (pushedRows !== undefined) {
+            lastSub.textContent = `Pushed ${Number(pushedRows || 0).toLocaleString()} rows across ${pushedTables || 0} tables`;
+        } else if (st.lastError && st.configured) {
+            lastSub.textContent = st.lastError;
+        } else {
+            lastSub.textContent = st.autoSync ? 'Auto-sync on reconnect: Enabled' : 'Manual sync mode';
+        }
+    }
+
+    if (autoToggle && typeof st.autoSync === 'boolean') {
+        autoToggle.checked = st.autoSync;
+    }
+    const masked = st.maskedDbUrl || st.maskedUrl;
+    if (urlInput && masked && !urlInput.value) {
+        urlInput.placeholder = `Configured: ${masked} (paste new URI to replace)`;
+    }
+}
+
+function openSupabaseSyncSettings() {
+    if (typeof switchView === 'function') {
+        switchView('settings');
+    }
+    setTimeout(() => {
+        const dataTabBtn = document.querySelector('.settings-tab[ onclick*="settings-data" ]') ||
+                           Array.from(document.querySelectorAll('.settings-tab')).find(b => (b.getAttribute('onclick') || '').includes('settings-data'));
+        if (dataTabBtn && typeof switchSettingsTab === 'function') {
+            switchSettingsTab(dataTabBtn, 'settings-data');
+        }
+        const card = document.getElementById('supabaseHybridSyncCard');
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 120);
+}
+
+async function triggerQuickSupabaseSync(event) {
+    if (event) event.stopPropagation();
+    const st = _supaLastStatus || await loadSupabaseSyncStatus(true);
+    if (!st || !st.configured) {
+        openSupabaseSyncSettings();
+        setTimeout(() => {
+            const inp = document.getElementById('supaDbUrlInput');
+            if (inp) inp.focus();
+            if (typeof showToast === 'function') {
+                showToast('Enter your Supabase PostgreSQL URI to enable 1-click cloud sync', 'info');
+            }
+        }, 250);
+        return;
+    }
+    await runSupabaseSync('bidirectional');
+}
+
+function toggleSupabaseUrlVisibility() {
+    const inp = document.getElementById('supaDbUrlInput');
+    if (!inp) return;
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+async function testSupabaseConnectionUI() {
+    const inp = document.getElementById('supaDbUrlInput');
+    const btn = document.getElementById('supaTestConnBtn');
+    const url = inp ? inp.value.trim() : '';
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Testing...';
+        _dbkSetIcons();
+    }
+    try {
+        const res = await fetch('/api/backups/supabase/test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ supabaseDbUrl: url || undefined })
+        });
+        const data = await res.json();
+        if (res.ok && data.online) {
+            showToast(`Supabase reachable! Latency: ${data.latencyMs} ms`, 'success');
+        } else {
+            showToast(`Supabase unreachable: ${data.error || 'Connection failed'} (Using local SQLite3)`, 'warning');
+        }
+        await loadSupabaseSyncStatus(true);
+    } catch (err) {
+        showToast(err.message || 'Connection test failed', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="wifi" style="width:14px;height:14px;"></i> Test Connection';
+            _dbkSetIcons();
+        }
+    }
+}
+
+async function saveSupabaseConfigUI(silent = false) {
+    const inp = document.getElementById('supaDbUrlInput');
+    const toggle = document.getElementById('supaAutoSyncToggle');
+    const payload = {
+        autoSync: toggle ? toggle.checked : true
+    };
+    if (inp && inp.value.trim()) {
+        payload.supabaseDbUrl = inp.value.trim();
+    }
+    try {
+        const res = await fetch('/api/backups/supabase/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || data.error || 'Failed to save Supabase settings');
+        if (inp) inp.value = '';
+        const st = data.status || data;
+        _supaLastStatus = st;
+        renderSupabaseSyncStatus(st);
+        if (!silent) {
+            if (st.online) {
+                showToast(data.message || 'Supabase connected & hybrid auto-sync enabled!', 'success');
+            } else if (st.configured) {
+                showToast(data.message || 'Saved! Currently offline — changes will queue in SQLite3 & sync when online.', 'info');
+            } else {
+                showToast(data.message || 'Hybrid sync settings updated.', 'success');
+            }
+        }
+    } catch (err) {
+        if (!silent) showToast(err.message || 'Failed to save config', 'error');
+    }
+}
+
+async function runSupabaseSync(mode = 'push') {
+    const pushBtn = document.getElementById('supaPushBtn');
+    const biBtn = document.getElementById('supaBiSyncBtn');
+    const pullBtn = document.getElementById('supaPullBtn');
+    const quickBtn = document.getElementById('hybridDbQuickSyncBtn');
+    const banner = document.getElementById('supaSyncResultBanner');
+
+    // If user typed a URL in the input box and clicked Sync directly, save it first
+    const inp = document.getElementById('supaDbUrlInput');
+    if (inp && inp.value.trim()) {
+        await saveSupabaseConfigUI(true);
+    }
+
+    const activeBtn = mode === 'pull' ? pullBtn : (mode === 'bidirectional' ? biBtn : pushBtn);
+    const origHtml = activeBtn ? activeBtn.innerHTML : '';
+    const origQuickHtml = quickBtn ? quickBtn.innerHTML : '';
+
+    if (activeBtn) {
+        activeBtn.disabled = true;
+        activeBtn.innerHTML = '<i data-lucide="loader" class="spin" style="width:14px;height:14px;"></i> Syncing...';
+    }
+    if (quickBtn) {
+        quickBtn.disabled = true;
+        quickBtn.innerHTML = '<i data-lucide="loader" class="spin" style="width:11px;height:11px;"></i> Syncing';
+    }
+    _dbkSetIcons();
+
+    try {
+        const res = await fetch('/api/backups/supabase/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.message || data.error || 'Sync could not complete');
+        }
+
+        const sum = data.summary || data;
+        const pushedRows = Number(sum.rowsPushed ?? sum.pushedRows ?? 0);
+        const pulledRows = Number(sum.rowsPulled ?? sum.pulledRows ?? 0);
+        const tablesSynced = Number(sum.tablesSynced ?? sum.pushedTables ?? 0);
+        const durationMs = Number(sum.durationMs ?? 0);
+
+        if (banner) {
+            banner.style.display = 'block';
+            banner.style.background = 'rgba(16,185,129,0.1)';
+            banner.style.border = '1px solid rgba(16,185,129,0.3)';
+            banner.style.color = '#10b981';
+            const pushedInfo = `Pushed ${pushedRows.toLocaleString()} rows (${tablesSynced} tables)`;
+            const pulledInfo = mode !== 'push' ? ` · Pulled ${pulledRows.toLocaleString()} rows` : '';
+            banner.innerHTML = `<strong>Sync Complete (${durationMs} ms):</strong> ${pushedInfo}${pulledInfo}. Both Supabase & Local SQLite3 are in sync.`;
+        }
+
+        showToast(data.message || `Synced with Supabase (${pushedRows.toLocaleString()} rows pushed)`, 'success');
+        if (data.status) {
+            _supaLastStatus = data.status;
+            renderSupabaseSyncStatus(data.status);
+        } else {
+            await loadSupabaseSyncStatus(false);
+        }
+        await _dbkRefreshAppCaches();
+    } catch (err) {
+        if (banner) {
+            banner.style.display = 'block';
+            banner.style.background = 'rgba(245,158,11,0.1)';
+            banner.style.border = '1px solid rgba(245,158,11,0.3)';
+            banner.style.color = '#f59e0b';
+            banner.textContent = `${err.message} — Data remains safely stored in local SQLite3 and queued for sync.`;
+        }
+        showToast(err.message || 'Supabase sync failed — using local SQLite3', 'warning');
+        await loadSupabaseSyncStatus(false);
+    } finally {
+        if (activeBtn) {
+            activeBtn.disabled = false;
+            activeBtn.innerHTML = origHtml;
+        }
+        if (quickBtn) {
+            quickBtn.disabled = false;
+            quickBtn.innerHTML = origQuickHtml;
+        }
+        _dbkSetIcons();
+    }
+}
+
+// Initialize Hybrid DB Topbar Indicator & Auto-Reconnect Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => loadSupabaseSyncStatus(false), 800);
+    setInterval(() => loadSupabaseSyncStatus(false), 25000);
+});
+window.addEventListener('online', () => {
+    setTimeout(() => loadSupabaseSyncStatus(true), 1000);
+});
+window.addEventListener('offline', () => {
+    loadSupabaseSyncStatus(false);
+});
+
 

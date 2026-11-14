@@ -1,5 +1,6 @@
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const supabaseSync = require('../services/supabaseSync');
 
 const SCHEMA_VERSION = '2026-11-14-turso-v1';
 
@@ -134,13 +135,29 @@ function wrapSqliteDb(rawDb) {
             engine: 'sqlite',
             get: (sql, ...params) => target.get(sql, ...params),
             all: (sql, ...params) => target.all(sql, ...params),
-            run: (sql, ...params) => target.run(sql, ...params),
+            async run(sql, ...params) {
+                let skipSync = false;
+                if (params.length > 0) {
+                    const last = params[params.length - 1];
+                    if (last && typeof last === 'object' && !Array.isArray(last) && last._skipSyncHook === true) {
+                        skipSync = true;
+                        params = params.slice(0, -1);
+                    }
+                }
+                const res = await target.run(sql, ...params);
+                if (!skipSync) {
+                    supabaseSync.onLocalWrite(sql, params).catch(() => {});
+                }
+                return res;
+            },
             exec: (sql) => target.exec(sql),
             async batch(statements) {
                 const normalized = normalizeBatchStatements(statements);
                 const results = [];
                 for (const st of normalized) {
-                    results.push(await target.run(st.sql, st.args));
+                    const r = await target.run(st.sql, st.args);
+                    supabaseSync.onLocalWrite(st.sql, st.args).catch(() => {});
+                    results.push(r);
                 }
                 return results;
             }
@@ -240,6 +257,9 @@ async function _initDbInternal() {
     }
     db.schemaAlreadyCurrent = schemaAlreadyCurrent;
     if (schemaAlreadyCurrent) {
+        if (!db.isRemote) {
+            await supabaseSync.attachHybridSync(db);
+        }
         return db;
     }
 
@@ -1389,6 +1409,12 @@ async function ensureAllColumnMigrations(db) {
         ['notes', 'TEXT'],
         ['updated_at', 'DATETIME']
     ]);
+
+    if (!db.isRemote) {
+        await supabaseSync.attachHybridSync(db);
+    }
+
+    return db;
 }
 
 module.exports = { initDb, resetDbCache, wrapTursoClient, wrapSqliteDb };

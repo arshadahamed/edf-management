@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const { authenticateToken } = require('../middleware/authMiddleware');
 const storageSvc = require('../services/storage');
+const supabaseSync = require('../services/supabaseSync');
 
 const DB_PATH = path.join(__dirname, '../db/database.sqlite');
 const BACKUP_DIR = path.join(__dirname, '../../backups');
@@ -1333,6 +1334,103 @@ module.exports = (db) => {
         } catch (err) {
             console.error('Maintenance error:', err);
             res.status(500).json({ message: 'Maintenance failed: ' + err.message });
+        }
+    });
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // SUPABASE + LOCAL SQLITE3 HYBRID DUAL-DATABASE SYNC ROUTES
+    // ══════════════════════════════════════════════════════════════════════════
+
+    // GET /api/backups/supabase/status — Live online/offline engine & outbox status
+    router.get('/supabase/status', authenticateToken, async (req, res) => {
+        try {
+            const force = req.query.ping === '1' || req.query.ping === 'true';
+            const status = await supabaseSync.getSyncStatus(force);
+            res.json(status);
+        } catch (err) {
+            console.error('Supabase status error:', err);
+            res.status(500).json({ message: 'Failed to read Supabase sync status: ' + err.message });
+        }
+    });
+
+    // POST /api/backups/supabase/config — Save Supabase PostgreSQL URL & Auto-Sync setting
+    router.post('/supabase/config', authenticateToken, requireStrictAdmin, async (req, res) => {
+        try {
+            const { supabaseDbUrl, autoSync } = req.body || {};
+            const status = await supabaseSync.saveConfig({ supabaseDbUrl, autoSync });
+            await logActivity(req, 'supabase_config_updated', 'supabase', `configured=${status.configured}, online=${status.online}, autoSync=${status.autoSync}`);
+            res.json({
+                message: status.online
+                    ? `Connected to Supabase (${status.latencyMs}ms) — Hybrid Dual-Database mode active!`
+                    : (status.configured
+                        ? 'Supabase URL saved (currently offline — using local SQLite3 with outbox queue).'
+                        : 'Switched to Local SQLite3 only mode.'),
+                status
+            });
+        } catch (err) {
+            console.error('Supabase config error:', err);
+            res.status(500).json({ message: 'Failed to save Supabase config: ' + err.message });
+        }
+    });
+
+    // POST /api/backups/supabase/test — Test connection to a candidate or saved Supabase URL
+    router.post('/supabase/test', authenticateToken, requireStrictAdmin, async (req, res) => {
+        try {
+            const candidateUrl = req.body?.supabaseDbUrl;
+            const check = await supabaseSync.checkConnectivity(candidateUrl);
+            res.json({
+                online: check.online,
+                latencyMs: check.latencyMs,
+                databaseName: check.databaseName || null,
+                error: check.lastError || null,
+                message: check.online
+                    ? `Supabase PostgreSQL reachable (${check.latencyMs}ms)`
+                    : (check.lastError || 'Could not connect to Supabase')
+            });
+        } catch (err) {
+            res.status(500).json({ online: false, message: err.message });
+        }
+    });
+
+    // POST /api/backups/supabase/sync — Push (SQLite->Supabase), Pull (Supabase->SQLite), or Bidirectional Merge
+    router.post('/supabase/sync', authenticateToken, requireStrictAdmin, async (req, res) => {
+        try {
+            const mode = ['push', 'pull', 'bidirectional'].includes(req.body?.mode)
+                ? req.body.mode
+                : 'bidirectional';
+
+            if (mode === 'pull') {
+                // Take automatic local safety snapshot before pulling cloud data over local SQLite
+                await createSnapshotInternal({
+                    label: 'Pre-Supabase Pull Safety Backup',
+                    notes: 'Automatic local SQLite snapshot before pulling cloud records from Supabase.',
+                    type: 'pre_restore',
+                    createdBy: req.user?.username || 'admin'
+                }).catch(() => {});
+            }
+
+            const summary = await supabaseSync.runFullSync(mode);
+            const status = await supabaseSync.getSyncStatus(false);
+
+            await logActivity(
+                req,
+                'supabase_sync',
+                mode,
+                `Tables=${summary.tablesSynced}, Pushed=${summary.rowsPushed}, Pulled=${summary.rowsPulled}, Duration=${summary.durationMs}ms`
+            );
+
+            res.json({
+                message: mode === 'push'
+                    ? `Synced ${summary.rowsPushed.toLocaleString()} records across ${summary.tablesSynced} tables to Supabase Cloud (${summary.durationMs}ms)`
+                    : mode === 'pull'
+                        ? `Pulled ${summary.rowsPulled.toLocaleString()} records from Supabase Cloud into local SQLite3 (${summary.durationMs}ms)`
+                        : `Bidirectional sync complete — Pushed ${summary.rowsPushed.toLocaleString()} & Merged ${summary.rowsPulled.toLocaleString()} records (${summary.durationMs}ms)`,
+                summary,
+                status
+            });
+        } catch (err) {
+            console.error('Supabase sync error:', err);
+            res.status(500).json({ message: 'Supabase sync failed: ' + err.message });
         }
     });
 
