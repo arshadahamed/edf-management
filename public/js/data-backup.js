@@ -1104,6 +1104,170 @@ function renderSupabaseSyncStatus(st) {
     if (urlInput && masked && !urlInput.value) {
         urlInput.placeholder = `Configured: ${masked} (paste new URI to replace)`;
     }
+
+    // 3. Update Topbar Dropdown Popover (#hybridDbDropdown)
+    _renderHybridDbDropdown(st, isOnline, pending, masked);
+}
+
+function _formatFullSyncDateTime(iso) {
+    if (!iso) return 'Not synced yet';
+    try {
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return String(iso);
+        const datePart = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const timePart = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        return `${datePart} · ${timePart}`;
+    } catch (_) {
+        return String(iso);
+    }
+}
+
+function _renderHybridDbDropdown(st, isOnline, pending, masked) {
+    const statusBadge = document.getElementById('hddStatusBadge');
+    const latencyBadge = document.getElementById('hddLatencyBadge');
+    const engineTitle = document.getElementById('hddEngineTitle');
+    const hostSub = document.getElementById('hddHostSub');
+    const relEl = document.getElementById('hddLastSyncRelative');
+    const dtEl = document.getElementById('hddLastSyncDateTime');
+    const detailsEl = document.getElementById('hddLastSyncDetails');
+    const totalRowsEl = document.getElementById('hddTotalRows');
+    const totalTablesEl = document.getElementById('hddTotalTables');
+    const pendingEl = document.getElementById('hddPendingQueue');
+    const activeCntEl = document.getElementById('hddActiveTablesCount');
+    const breakdownList = document.getElementById('hddTableBreakdownList');
+
+    const ping = st.latencyMs ?? st.lastPingMs;
+    const sum = st.lastSyncSummary || null;
+    const pushedRows = sum ? Number(sum.rowsPushed ?? sum.pushedRows ?? 0) : 0;
+    const pulledRows = sum ? Number(sum.rowsPulled ?? sum.pulledRows ?? 0) : 0;
+    const syncedTables = Number(st.totalSyncedTables || (sum ? (sum.tablesSynced ?? sum.pushedTables) : 51) || 51);
+    const totalRows = Number(st.totalLocalRows || pushedRows || 0);
+
+    if (statusBadge) {
+        if (st.syncInProgress) {
+            statusBadge.textContent = 'SYNCING NOW...';
+            statusBadge.style.background = 'rgba(59,130,246,0.16)';
+            statusBadge.style.color = '#3b82f6';
+        } else if (isOnline) {
+            statusBadge.textContent = 'HYBRID ONLINE';
+            statusBadge.style.background = 'rgba(16,185,129,0.16)';
+            statusBadge.style.color = '#10b981';
+        } else if (st.configured) {
+            statusBadge.textContent = 'OFFLINE FALLBACK';
+            statusBadge.style.background = 'rgba(245,158,11,0.16)';
+            statusBadge.style.color = '#f59e0b';
+        } else {
+            statusBadge.textContent = 'LOCAL SQLITE3';
+            statusBadge.style.background = 'rgba(59,130,246,0.14)';
+            statusBadge.style.color = '#3b82f6';
+        }
+    }
+
+    if (latencyBadge) {
+        latencyBadge.textContent = isOnline && ping ? `${ping} ms` : (st.configured ? 'Offline' : 'Local <1ms');
+    }
+
+    if (engineTitle) {
+        engineTitle.textContent = isOnline
+            ? 'Supabase Cloud + Local SQLite3'
+            : (st.configured ? 'Local SQLite3 (Offline Queue)' : 'Local SQLite3 Database');
+    }
+
+    if (hostSub) {
+        if (masked) {
+            const hostMatch = String(masked).match(/@([^/]+)/);
+            hostSub.textContent = hostMatch ? `Host: ${hostMatch[1]}` : masked;
+        } else {
+            hostSub.textContent = 'src/db/database.sqlite (Cloud URI not set)';
+        }
+    }
+
+    if (relEl) {
+        relEl.textContent = st.lastSyncAt ? _dbkFormatRelative(st.lastSyncAt) : 'Never';
+        relEl.style.color = st.lastSyncAt ? '#10b981' : 'var(--text-muted)';
+    }
+
+    if (dtEl) {
+        dtEl.textContent = _formatFullSyncDateTime(st.lastSyncAt);
+    }
+
+    if (detailsEl) {
+        if (sum) {
+            const modeLabel = sum.mode === 'push'
+                ? 'Push (SQLite3 → Supabase)'
+                : (sum.mode === 'pull' ? 'Pull (Supabase → SQLite3)' : '2-Way Smart Sync');
+            const durSec = sum.durationMs ? `${(Number(sum.durationMs) / 1000).toFixed(1)}s` : '';
+            detailsEl.textContent = `${modeLabel} · ${pushedRows.toLocaleString()} pushed${pulledRows ? `, ${pulledRows.toLocaleString()} pulled` : ''}${durSec ? ` (${durSec})` : ''}`;
+        } else if (st.lastError && st.configured) {
+            detailsEl.textContent = st.lastError;
+        } else {
+            detailsEl.textContent = st.autoSync ? 'Auto-sync active on write & reconnect' : 'Manual sync mode';
+        }
+    }
+
+    if (totalRowsEl) totalRowsEl.textContent = totalRows.toLocaleString();
+    if (totalTablesEl) totalTablesEl.textContent = syncedTables.toLocaleString();
+    if (pendingEl) {
+        pendingEl.textContent = pending.toLocaleString();
+        pendingEl.style.color = pending > 0 ? '#f59e0b' : '#10b981';
+    }
+
+    const breakdown = Array.isArray(st.tableBreakdown) ? st.tableBreakdown : [];
+    if (activeCntEl) {
+        activeCntEl.textContent = `${breakdown.length} active / ${syncedTables} total`;
+    }
+
+    if (breakdownList) {
+        if (!breakdown.length) {
+            breakdownList.innerHTML = `<div style="font-size:0.72rem;color:var(--text-muted);padding:0.25rem 0;">All ${syncedTables} tables synced (${totalRows.toLocaleString()} records)</div>`;
+        } else {
+            const pendingMap = new Map();
+            if (Array.isArray(st.pendingByTable)) {
+                st.pendingByTable.forEach(p => pendingMap.set(p.table_name, Number(p.count || 0)));
+            }
+            breakdownList.innerHTML = breakdown.map(item => {
+                const tbl = String(item.table_name || '');
+                const rows = Number(item.rows || 0);
+                const pend = pendingMap.get(tbl) || 0;
+                const pendTag = pend > 0
+                    ? `<span style="font-size:0.62rem;padding:0.05rem 0.35rem;border-radius:999px;background:rgba(245,158,11,0.16);color:#d97706;font-weight:700;margin-left:0.35rem;">+${pend} pending</span>`
+                    : '';
+                return `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.28rem 0.45rem;border-radius:6px;background:var(--bg-main);font-size:0.72rem;">
+                        <span style="font-family:monospace;color:var(--text-primary);font-weight:600;display:inline-flex;align-items:center;">
+                            ${escapeDbkHtml(tbl)}${pendTag}
+                        </span>
+                        <span style="font-weight:700;color:#10b981;">${rows.toLocaleString()} row${rows === 1 ? '' : 's'}</span>
+                    </div>`;
+            }).join('');
+        }
+    }
+}
+
+function toggleHybridDbDropdown(event) {
+    if (event) event.stopPropagation();
+    const dd = document.getElementById('hybridDbDropdown');
+    const chev = document.getElementById('hybridDbChevron');
+    if (!dd) {
+        openSupabaseSyncSettings();
+        return;
+    }
+    const isHidden = dd.style.display === 'none' || !dd.style.display;
+    if (isHidden) {
+        dd.style.display = 'block';
+        if (chev) chev.style.transform = 'rotate(180deg)';
+        loadSupabaseSyncStatus(false);
+        _dbkSetIcons();
+    } else {
+        closeHybridDbDropdown();
+    }
+}
+
+function closeHybridDbDropdown() {
+    const dd = document.getElementById('hybridDbDropdown');
+    const chev = document.getElementById('hybridDbChevron');
+    if (dd) dd.style.display = 'none';
+    if (chev) chev.style.transform = 'rotate(0deg)';
 }
 
 function openSupabaseSyncSettings() {
@@ -1304,6 +1468,12 @@ async function runSupabaseSync(mode = 'push') {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => loadSupabaseSyncStatus(false), 800);
     setInterval(() => loadSupabaseSyncStatus(false), 25000);
+});
+document.addEventListener('click', (e) => {
+    const container = document.getElementById('hybridDbTopbarContainer');
+    if (container && !container.contains(e.target)) {
+        closeHybridDbDropdown();
+    }
 });
 window.addEventListener('online', () => {
     setTimeout(() => loadSupabaseSyncStatus(true), 1000);

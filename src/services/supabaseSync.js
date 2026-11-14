@@ -524,6 +524,9 @@ async function syncDirtyTablesLive() {
         _onlineState.online = true;
         _onlineState.supabaseReachable = true;
         _onlineState.lastSyncAt = new Date().toISOString();
+        if (_onlineState.lastSyncSummary) {
+            _onlineState.lastSyncSummary.syncedAt = _onlineState.lastSyncAt;
+        }
     } catch (err) {
         _onlineState.online = false;
         _onlineState.supabaseReachable = false;
@@ -662,6 +665,8 @@ async function getSyncStatus(forcePing = false) {
     let pendingOutboxCount = 0;
     let pendingByTable = [];
     let recentOutbox = [];
+    let tableBreakdown = [];
+    let totalLocalRows = 0;
 
     if (_sqliteDb) {
         try {
@@ -682,6 +687,16 @@ async function getSyncStatus(forcePing = false) {
                  ORDER BY id DESC
                  LIMIT 12`
             );
+
+            const unionSql = SYNC_TABLES_ORDERED
+                .map((t) => `SELECT '${t}' AS table_name, COUNT(*) AS rows FROM "${t}"`)
+                .join(' UNION ALL ');
+            const counts = await _sqliteDb.all(unionSql).catch(() => []);
+            totalLocalRows = counts.reduce((acc, r) => acc + Number(r.rows || 0), 0);
+            tableBreakdown = counts
+                .map((r) => ({ table_name: r.table_name, rows: Number(r.rows || 0) }))
+                .filter((r) => r.rows > 0)
+                .sort((a, b) => b.rows - a.rows);
 
             if (!_onlineState.lastSyncSummary) {
                 const row = await _sqliteDb.get(`SELECT value FROM global_settings WHERE key = 'supabase_last_sync'`);
@@ -716,6 +731,9 @@ async function getSyncStatus(forcePing = false) {
         lastSyncAt: _onlineState.lastSyncAt,
         lastSyncSummary: _onlineState.lastSyncSummary,
         lastError: _onlineState.lastError,
+        totalSyncedTables: SYNC_TABLES_ORDERED.length,
+        totalLocalRows,
+        tableBreakdown,
         pendingOutboxCount,
         pendingByTable,
         recentOutbox

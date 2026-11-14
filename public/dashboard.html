@@ -11258,15 +11258,94 @@
                 </div>
 
                 <div class="top-bar-right">
-                    <!-- Hybrid Database Status & Quick Sync Pill -->
-                    <div id="hybridDbTopbarWrap" style="display:flex;align-items:center;gap:0.35rem;padding:0.22rem 0.55rem;border-radius:999px;border:1px solid var(--border-color);background:var(--bg-card);font-size:0.74rem;font-weight:600;color:var(--text-main);cursor:pointer;white-space:nowrap;height:32px;transition:all 0.18s ease;" onclick="openSupabaseSyncSettings()" title="Click to configure Supabase + SQLite3 Hybrid Sync">
-                        <span id="hybridDbStatusDot" style="width:8px;height:8px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.18);flex-shrink:0;"></span>
-                        <span id="hybridDbStatusText">SQLite3 Local</span>
-                        <span id="hybridDbPendingBadge" style="display:none;padding:0.08rem 0.42rem;border-radius:999px;background:rgba(245,158,11,0.16);color:#d97706;font-size:0.68rem;font-weight:700;">0 pending</span>
-                        <button type="button" id="hybridDbQuickSyncBtn" onclick="triggerQuickSupabaseSync(event)" title="Sync local SQLite3 data to Supabase Online now" style="display:inline-flex;align-items:center;gap:0.22rem;padding:0.16rem 0.48rem;margin-left:0.15rem;border-radius:999px;border:1px solid rgba(16,185,129,0.35);background:rgba(16,185,129,0.12);color:#059669;font-size:0.69rem;font-weight:700;cursor:pointer;">
-                            <i data-lucide="refresh-cw" style="width:11px;height:11px;"></i>
-                            <span>Sync</span>
-                        </button>
+                    <!-- Hybrid Database Status & Quick Sync Pill + Dropdown -->
+                    <div id="hybridDbTopbarContainer" style="position:relative;display:inline-flex;align-items:center;">
+                        <div id="hybridDbTopbarWrap" style="display:flex;align-items:center;gap:0.35rem;padding:0.22rem 0.55rem;border-radius:999px;border:1px solid var(--border-color);background:var(--bg-card);font-size:0.74rem;font-weight:600;color:var(--text-main);cursor:pointer;white-space:nowrap;height:32px;transition:all 0.18s ease;" onclick="toggleHybridDbDropdown(event)" title="Click to view last sync time, date & synced data details">
+                            <span id="hybridDbStatusDot" style="width:8px;height:8px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.18);flex-shrink:0;"></span>
+                            <span id="hybridDbStatusText">SQLite3 Local</span>
+                            <i data-lucide="chevron-down" id="hybridDbChevron" style="width:12px;height:12px;opacity:0.65;transition:transform 0.18s ease;"></i>
+                            <span id="hybridDbPendingBadge" style="display:none;padding:0.08rem 0.42rem;border-radius:999px;background:rgba(245,158,11,0.16);color:#d97706;font-size:0.68rem;font-weight:700;">0 pending</span>
+                            <button type="button" id="hybridDbQuickSyncBtn" onclick="triggerQuickSupabaseSync(event)" title="Sync local SQLite3 data to Supabase Online now" style="display:inline-flex;align-items:center;gap:0.22rem;padding:0.16rem 0.48rem;margin-left:0.15rem;border-radius:999px;border:1px solid rgba(16,185,129,0.35);background:rgba(16,185,129,0.12);color:#059669;font-size:0.69rem;font-weight:700;cursor:pointer;">
+                                <i data-lucide="refresh-cw" style="width:11px;height:11px;"></i>
+                                <span>Sync</span>
+                            </button>
+                        </div>
+
+                        <!-- Hybrid Database Sync Details Dropdown -->
+                        <div id="hybridDbDropdown" onclick="event.stopPropagation()" style="display:none;position:absolute;top:calc(100% + 8px);right:0;width:365px;max-width:calc(100vw - 24px);background:var(--bg-card);border:1px solid var(--border-color);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,0.22);z-index:9999;overflow:hidden;color:var(--text-main);">
+                            <!-- Header -->
+                            <div style="padding:0.85rem 1rem;border-bottom:1px solid var(--border-color);background:linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.05));display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;">
+                                <div style="min-width:0;">
+                                    <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.2rem;">
+                                        <span id="hddStatusBadge" style="font-size:0.63rem;font-weight:800;padding:0.12rem 0.48rem;border-radius:999px;background:rgba(16,185,129,0.15);color:#10b981;letter-spacing:0.04em;text-transform:uppercase;">HYBRID ONLINE</span>
+                                        <span id="hddLatencyBadge" style="font-size:0.66rem;font-weight:600;color:var(--text-muted);font-family:monospace;">-- ms</span>
+                                    </div>
+                                    <div id="hddEngineTitle" style="font-size:0.84rem;font-weight:800;color:var(--text-primary);">Supabase Cloud + Local SQLite3</div>
+                                    <div id="hddHostSub" style="font-size:0.69rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:290px;margin-top:0.1rem;">aws-1-ap-northeast-2.pooler.supabase.com</div>
+                                </div>
+                                <button type="button" onclick="loadSupabaseSyncStatus(true)" title="Refresh status" style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);flex-shrink:0;">
+                                    <i data-lucide="rotate-cw" style="width:13px;height:13px;"></i>
+                                </button>
+                            </div>
+
+                            <!-- Last Sync Date & Time Block -->
+                            <div style="padding:0.75rem 1rem;border-bottom:1px solid var(--border-color);background:var(--bg-main);">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;">
+                                    <span style="font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);display:inline-flex;align-items:center;gap:0.3rem;">
+                                        <i data-lucide="calendar-clock" style="width:12px;height:12px;color:#3b82f6;"></i>
+                                        Last Sync Date & Time
+                                    </span>
+                                    <span id="hddLastSyncRelative" style="font-size:0.68rem;font-weight:700;color:#10b981;">--</span>
+                                </div>
+                                <div id="hddLastSyncDateTime" style="font-size:0.86rem;font-weight:800;color:var(--text-primary);font-family:monospace;">Not synced yet</div>
+                                <div id="hddLastSyncDetails" style="font-size:0.71rem;color:var(--text-muted);margin-top:0.18rem;">Waiting for initial sync...</div>
+                            </div>
+
+                            <!-- Synced Data KPIs -->
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.45rem;padding:0.75rem 1rem;border-bottom:1px solid var(--border-color);">
+                                <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;padding:0.45rem 0.55rem;text-align:center;">
+                                    <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Synced Rows</div>
+                                    <div id="hddTotalRows" style="font-size:0.92rem;font-weight:800;color:#10b981;margin-top:0.1rem;">0</div>
+                                </div>
+                                <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;padding:0.45rem 0.55rem;text-align:center;">
+                                    <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Tables</div>
+                                    <div id="hddTotalTables" style="font-size:0.92rem;font-weight:800;color:#3b82f6;margin-top:0.1rem;">51</div>
+                                </div>
+                                <div style="background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;padding:0.45rem 0.55rem;text-align:center;">
+                                    <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Offline Queue</div>
+                                    <div id="hddPendingQueue" style="font-size:0.92rem;font-weight:800;color:#10b981;margin-top:0.1rem;">0</div>
+                                </div>
+                            </div>
+
+                            <!-- Synced Data Breakdown by Table -->
+                            <div style="padding:0.65rem 1rem;border-bottom:1px solid var(--border-color);">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+                                    <span style="font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);">Synced Data Breakdown (Active Tables)</span>
+                                    <span id="hddActiveTablesCount" style="font-size:0.66rem;color:var(--text-muted);font-weight:600;">0 tables with data</span>
+                                </div>
+                                <div id="hddTableBreakdownList" style="max-height:135px;overflow-y:auto;display:flex;flex-direction:column;gap:0.25rem;padding-right:0.15rem;">
+                                    <div style="font-size:0.72rem;color:var(--text-muted);padding:0.35rem 0;">Loading synced data...</div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Actions -->
+                            <div style="padding:0.65rem 0.9rem;background:var(--bg-main);display:flex;align-items:center;justify-content:space-between;gap:0.4rem;">
+                                <div style="display:flex;align-items:center;gap:0.35rem;">
+                                    <button type="button" onclick="runSupabaseSync('bidirectional')" style="display:inline-flex;align-items:center;gap:0.28rem;padding:0.36rem 0.65rem;border-radius:8px;border:none;background:#10b981;color:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">
+                                        <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+                                        2-Way Sync
+                                    </button>
+                                    <button type="button" onclick="runSupabaseSync('push')" style="display:inline-flex;align-items:center;gap:0.28rem;padding:0.36rem 0.6rem;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-primary);font-size:0.72rem;font-weight:600;cursor:pointer;">
+                                        <i data-lucide="upload-cloud" style="width:12px;height:12px;color:#3b82f6;"></i>
+                                        Push
+                                    </button>
+                                </div>
+                                <button type="button" onclick="closeHybridDbDropdown(); openSupabaseSyncSettings();" style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.36rem 0.55rem;border-radius:8px;border:1px solid var(--border-color);background:transparent;color:var(--text-muted);font-size:0.71rem;font-weight:600;cursor:pointer;">
+                                    <i data-lucide="settings" style="width:12px;height:12px;"></i>
+                                    Settings
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Local DateTime -->
