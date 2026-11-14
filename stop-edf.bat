@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
-title Stop EDF Server ^& Cloudflare Tunnel
+title Stop EDF Server and Cloudflare Tunnel
 cd /d "%~dp0"
 
 set "PORT=3001"
