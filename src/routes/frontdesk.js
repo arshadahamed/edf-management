@@ -2,39 +2,25 @@ const express = require('express');
 const router  = express.Router();
 const multer  = require('multer');
 const path    = require('path');
-const fs      = require('fs');
 const { authenticateToken } = require('../middleware/authMiddleware');
-
-/* ── Upload directories ── */
-const galleryDir = path.join(__dirname, '../../public/uploads/gallery');
-const logoDir    = path.join(__dirname, '../../public/uploads/logo');
-if (!fs.existsSync(galleryDir)) fs.mkdirSync(galleryDir, { recursive: true });
-if (!fs.existsSync(logoDir))    fs.mkdirSync(logoDir,    { recursive: true });
+const storageSvc = require('../services/storage');
 
 const imgFilter = (_req, file, cb) => {
     const ok = /jpeg|jpg|png|webp|gif|svg/.test(path.extname(file.originalname).toLowerCase());
     cb(ok ? null : new Error('Images only'), ok);
 };
 
-/* Gallery multer */
-const galleryStorage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, galleryDir),
-    filename:    (_req, file,  cb) => {
-        const safe = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, 'gallery-' + safe + path.extname(file.originalname).toLowerCase());
-    }
-});
-const upload = multer({ storage: galleryStorage, limits: { fileSize: 10 * 1024 * 1024 }, fileFilter: imgFilter });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 }, fileFilter: imgFilter });
+const uploadLogo = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imgFilter });
 
-/* Logo multer — fixed filename so browser cache busts via query string */
-const logoStorage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, logoDir),
-    filename:    (_req, file,  cb) => {
-        const ts = Date.now();
-        cb(null, 'logo-' + ts + path.extname(file.originalname).toLowerCase());
-    }
-});
-const uploadLogo = multer({ storage: logoStorage, limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imgFilter });
+function makeGalleryFilename(originalName) {
+    const safe = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    return 'gallery-' + safe + path.extname(originalName || '').toLowerCase();
+}
+
+function makeLogoFilename(originalName) {
+    return 'logo-' + Date.now() + path.extname(originalName || '').toLowerCase();
+}
 
 function requireAdmin(req, res, next) {
     if (!['admin','super_user'].includes(req.user?.role)) {
@@ -77,12 +63,15 @@ module.exports = (db) => {
         try {
             if (!req.file) return res.status(400).json({ message: 'No image uploaded' });
             const { caption, detail, category, display_year } = req.body;
+            const storedFilename = makeGalleryFilename(req.file.originalname);
+            await storageSvc.saveBuffer(`uploads/gallery/${storedFilename}`, req.file.buffer, req.file.mimetype);
+
             const maxOrder = await db.get('SELECT MAX(sort_order) as m FROM gallery_images');
             const sortOrder = (maxOrder?.m ?? -1) + 1;
             const result = await db.run(
                 `INSERT INTO gallery_images (filename, original_name, caption, detail, category, display_year, sort_order, uploaded_by)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [req.file.filename, req.file.originalname, caption || '', detail || '',
+                [storedFilename, req.file.originalname, caption || '', detail || '',
                  category || 'community', display_year || '', sortOrder, req.user.id]
             );
             const image = await db.get('SELECT * FROM gallery_images WHERE id = ?', [result.lastID]);
@@ -128,13 +117,12 @@ module.exports = (db) => {
             const image = await db.get('SELECT filename FROM gallery_images WHERE id = ?', [req.params.id]);
             if (!image) return res.status(404).json({ message: 'Image not found in database' });
             
-            // Delete file from disk if it exists
-            const filePath = path.join(galleryDir, image.filename);
+            // Delete file from storage if it exists
             try {
-                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                await storageSvc.deleteFile(`uploads/gallery/${image.filename}`);
             } catch (fsErr) {
-                console.error("Warning: Could not delete physical file:", fsErr);
-                // Proceed to delete from db even if file is locked
+                console.error("Warning: Could not delete stored gallery file:", fsErr);
+                // Proceed to delete from db even if storage deletion fails
             }
             
             await db.run('DELETE FROM gallery_images WHERE id = ?', [req.params.id]);
@@ -203,14 +191,16 @@ module.exports = (db) => {
         try {
             if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
-            // Delete old logo file from disk
+            // Delete old logo file from storage
             const old = await db.get(
                 `SELECT content_value FROM site_content WHERE page='site' AND content_key='logo.filename'`
             );
-            if (old) {
-                const oldPath = path.join(logoDir, old.content_value);
-                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+            if (old && old.content_value) {
+                try { await storageSvc.deleteFile(`uploads/logo/${old.content_value}`); } catch (_) {}
             }
+
+            const storedFilename = makeLogoFilename(req.file.originalname);
+            await storageSvc.saveBuffer(`uploads/logo/${storedFilename}`, req.file.buffer, req.file.mimetype);
 
             // Persist new filename in site_content
             await db.run(
@@ -218,9 +208,9 @@ module.exports = (db) => {
                  VALUES ('site','logo.filename',?,?)
                  ON CONFLICT(page, content_key)
                  DO UPDATE SET content_value=excluded.content_value, updated_by=excluded.updated_by, updated_at=datetime('now')`,
-                [req.file.filename, req.user.id]
+                [storedFilename, req.user.id]
             );
-            res.json({ message: 'Logo updated', url: `/uploads/logo/${req.file.filename}` });
+            res.json({ message: 'Logo updated', url: `/uploads/logo/${storedFilename}` });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Upload failed' });
@@ -234,8 +224,9 @@ module.exports = (db) => {
                 `SELECT content_value FROM site_content WHERE page='site' AND content_key='logo.filename'`
             );
             if (row) {
-                const filePath = path.join(logoDir, row.content_value);
-                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                if (row.content_value) {
+                    try { await storageSvc.deleteFile(`uploads/logo/${row.content_value}`); } catch (_) {}
+                }
                 await db.run(`DELETE FROM site_content WHERE page='site' AND content_key='logo.filename'`);
             }
             res.json({ message: 'Logo removed' });

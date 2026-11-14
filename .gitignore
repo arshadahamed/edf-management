@@ -1,5 +1,6 @@
 .worktrees/
 .codex/
+.vercel/
 node_modules/
 .env
 src/db/database.sqlite

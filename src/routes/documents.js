@@ -2,11 +2,8 @@ const express = require('express');
 const router  = express.Router();
 const multer  = require('multer');
 const path    = require('path');
-const fs      = require('fs');
 const { authenticateToken } = require('../middleware/authMiddleware');
-
-const documentsDir = path.join(__dirname, '../../public/uploads/documents');
-if (!fs.existsSync(documentsDir)) fs.mkdirSync(documentsDir, { recursive: true });
+const storageSvc = require('../services/storage');
 
 function requireAdmin(req, res, next) {
     if (!['admin', 'super_user'].includes(req.user?.role)) {
@@ -15,17 +12,9 @@ function requireAdmin(req, res, next) {
     next();
 }
 
-const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, documentsDir),
-    filename: (_req, file, cb) => {
-        const safe = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, 'doc-' + safe + path.extname(file.originalname).toLowerCase());
-    }
-});
-
 const upload = multer({
-    storage,
-    limits: { fileSize: 200 * 1024 * 1024 }, // 200 MB max
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (_req, file, cb) => {
         const blocked = /\.exe$|\.sh$|\.bat$|\.cmd$|\.ps1$/i;
         if (blocked.test(file.originalname)) {
@@ -34,6 +23,11 @@ const upload = multer({
         cb(null, true);
     }
 });
+
+function makeDocFilename(originalName) {
+    const safe = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    return 'doc-' + safe + path.extname(originalName || '').toLowerCase();
+}
 
 function detectCategory(mimeType, filename) {
     if (!mimeType) return 'other';
@@ -112,10 +106,13 @@ module.exports = (db) => {
                 const cleanVis = ['internal', 'board_only', 'restricted'].includes(visibility) ? visibility : 'internal';
                 const pinnedVal = (is_pinned === '1' || is_pinned === 1 || is_pinned === true || is_pinned === 'true') ? 1 : 0;
 
+                const storedFilename = makeDocFilename(req.file.originalname);
+                await storageSvc.saveBuffer(`uploads/documents/${storedFilename}`, req.file.buffer, req.file.mimetype);
+
                 const result = await db.run(
                     `INSERT INTO documents (original_name, filename, category, description, file_size, mime_type, uploaded_by, folder, visibility, is_pinned)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [display_name || req.file.originalname, req.file.filename, cat,
+                    [display_name || req.file.originalname, storedFilename, cat,
                      description || '', req.file.size, req.file.mimetype, req.user.id, cleanFolder, cleanVis, pinnedVal]
                 );
                 const doc = await db.get(
@@ -173,8 +170,7 @@ module.exports = (db) => {
             const placeholders = ids.map(() => '?').join(',');
             const docs = await db.all(`SELECT id, filename FROM documents WHERE id IN (${placeholders})`, ids);
             for (const d of docs) {
-                const filePath = path.join(documentsDir, d.filename);
-                try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch {}
+                try { await storageSvc.deleteFile(`uploads/documents/${d.filename}`); } catch {}
             }
             await db.run(`DELETE FROM documents WHERE id IN (${placeholders})`, ids);
             res.json({ deleted: docs.length, message: `Deleted ${docs.length} file(s)` });
@@ -188,8 +184,7 @@ module.exports = (db) => {
         try {
             const doc = await db.get('SELECT filename FROM documents WHERE id = ?', [req.params.id]);
             if (!doc) return res.status(404).json({ message: 'Not found' });
-            const filePath = path.join(documentsDir, doc.filename);
-            try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch {}
+            try { await storageSvc.deleteFile(`uploads/documents/${doc.filename}`); } catch {}
             await db.run('DELETE FROM documents WHERE id = ?', [req.params.id]);
             res.json({ message: 'Deleted' });
         } catch (err) {
@@ -202,11 +197,11 @@ module.exports = (db) => {
         try {
             const doc = await db.get('SELECT * FROM documents WHERE id = ?', [req.params.id]);
             if (!doc) return res.status(404).json({ message: 'Not found' });
-            const filePath = path.join(documentsDir, doc.filename);
-            if (!fs.existsSync(filePath)) return res.status(404).json({ message: 'File missing on disk' });
+            const buffer = await storageSvc.readBuffer(`uploads/documents/${doc.filename}`);
+            if (!buffer) return res.status(404).json({ message: 'File missing in storage' });
             res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(doc.original_name)}"`);
             res.setHeader('Content-Type', doc.mime_type || 'application/octet-stream');
-            res.sendFile(filePath);
+            res.send(buffer);
         } catch (err) {
             res.status(500).json({ message: 'Preview failed' });
         }
@@ -217,11 +212,11 @@ module.exports = (db) => {
         try {
             const doc = await db.get('SELECT * FROM documents WHERE id = ?', [req.params.id]);
             if (!doc) return res.status(404).json({ message: 'Not found' });
-            const filePath = path.join(documentsDir, doc.filename);
-            if (!fs.existsSync(filePath)) return res.status(404).json({ message: 'File missing on disk' });
+            const buffer = await storageSvc.readBuffer(`uploads/documents/${doc.filename}`);
+            if (!buffer) return res.status(404).json({ message: 'File missing in storage' });
             res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(doc.original_name)}"`);
             res.setHeader('Content-Type', doc.mime_type || 'application/octet-stream');
-            res.sendFile(filePath);
+            res.send(buffer);
         } catch (err) {
             res.status(500).json({ message: 'Download failed' });
         }

@@ -6,12 +6,10 @@ const os = require('os');
 const crypto = require('crypto');
 const multer = require('multer');
 const { authenticateToken } = require('../middleware/authMiddleware');
+const storageSvc = require('../services/storage');
 
 const DB_PATH = path.join(__dirname, '../db/database.sqlite');
 const BACKUP_DIR = path.join(__dirname, '../../backups');
-if (!fs.existsSync(BACKUP_DIR)) {
-    fs.mkdirSync(BACKUP_DIR, { recursive: true });
-}
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -239,6 +237,14 @@ const OPERATIONAL_CLEAN_TABLES = [
 // Global insert order when restoring across multiple modules
 const GLOBAL_RESTORE_ORDER = BACKUP_MODULES.flatMap(m => m.tables);
 
+function snapshotRelPath(filename) {
+    const clean = path.basename(String(filename || ''));
+    if (!clean || clean === '.' || clean === '..') {
+        throw new Error('Invalid snapshot file path');
+    }
+    return `backups/${clean}`;
+}
+
 function safeSnapshotPath(filename) {
     const clean = path.basename(String(filename || ''));
     const full = path.resolve(BACKUP_DIR, clean);
@@ -249,6 +255,44 @@ function safeSnapshotPath(filename) {
 
 function getFileSizeSafe(p) {
     try { return fs.existsSync(p) ? fs.statSync(p).size : 0; } catch (_) { return 0; }
+}
+
+async function runConcurrent(items, limit, worker) {
+    const out = new Array(items.length);
+    let idx = 0;
+    const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+        while (idx < items.length) {
+            const current = idx++;
+            out[current] = await worker(items[current], current);
+        }
+    });
+    await Promise.all(runners);
+    return out;
+}
+
+async function countTablesFast(db, tableNames) {
+    const counts = {};
+    const CHUNK = 15;
+    for (let i = 0; i < tableNames.length; i += CHUNK) {
+        const slice = tableNames.slice(i, i + CHUNK);
+        try {
+            const unionSql = slice.map((t) => `SELECT '${t}' AS tbl, COUNT(*) AS c FROM [${t}]`).join(' UNION ALL ');
+            const rows = await db.all(unionSql);
+            for (const r of rows) {
+                counts[r.tbl] = Number(r.c || 0);
+            }
+        } catch (_) {
+            for (const tbl of slice) {
+                try {
+                    const row = await db.get(`SELECT COUNT(*) AS c FROM [${tbl}]`);
+                    counts[tbl] = Number(row?.c || 0);
+                } catch {
+                    counts[tbl] = 0;
+                }
+            }
+        }
+    }
+    return counts;
 }
 
 function normalizeLegacyPayload(raw) {
@@ -284,6 +328,31 @@ function normalizeLegacyPayload(raw) {
 }
 
 module.exports = (db) => {
+    async function hasSequenceTable() {
+        const row = await db.get(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='sqlite_sequence'"
+        ).catch(() => null);
+        return !!row;
+    }
+
+    async function wipeTablesInTx(tx, tableList, collectCounts = false, hasSeq = false) {
+        const counts = {};
+        for (const tbl of tableList) {
+            if (collectCounts) {
+                const row = await tx.get(`SELECT COUNT(*) AS c FROM [${tbl}]`);
+                counts[tbl] = Number(row?.c || 0);
+            }
+            if (tbl === 'members') {
+                await tx.run('UPDATE members SET sibling_id = NULL WHERE sibling_id IS NOT NULL').catch(() => {});
+            }
+            await tx.run(`DELETE FROM [${tbl}]`);
+            if (hasSeq) {
+                await tx.run('DELETE FROM sqlite_sequence WHERE name = ?', [tbl]).catch(() => {});
+            }
+        }
+        return counts;
+    }
+
     async function existingTableSet() {
         const rows = await db.all(
             "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
@@ -357,11 +426,13 @@ module.exports = (db) => {
         const tableCounts = {};
         let totalRows = 0;
 
-        for (const tbl of targetTables) {
+        await runConcurrent(targetTables, 6, async (tbl) => {
             const rows = await db.all(`SELECT * FROM [${tbl}]`);
             tablesData[tbl] = rows;
             tableCounts[tbl] = rows.length;
-            totalRows += rows.length;
+        });
+        for (const tbl of targetTables) {
+            totalRows += tableCounts[tbl] || 0;
         }
 
         const uid = `bkp_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`;
@@ -385,9 +456,12 @@ module.exports = (db) => {
         const jsonStr = JSON.stringify(envelope, null, 2);
         const checksum = crypto.createHash('sha256').update(jsonStr, 'utf8').digest('hex');
         const filename = `${uid}.json`;
-        const filePath = safeSnapshotPath(filename);
-        fs.writeFileSync(filePath, jsonStr, 'utf8');
-        const fileSize = fs.statSync(filePath).size;
+        const saved = await storageSvc.saveBuffer(
+            snapshotRelPath(filename),
+            Buffer.from(jsonStr, 'utf8'),
+            'application/json; charset=utf-8'
+        );
+        const fileSize = saved.size;
 
         const ins = await db.run(
             `INSERT INTO backup_snapshots (
@@ -425,16 +499,8 @@ module.exports = (db) => {
     router.get('/overview', authenticateToken, requireSettingsAccess, async (req, res) => {
         try {
             const liveTables = await existingTableSet();
-            const tableCounts = {};
-            for (const tbl of liveTables) {
-                if (tbl === 'backup_snapshots') continue;
-                try {
-                    const row = await db.get(`SELECT COUNT(*) AS c FROM [${tbl}]`);
-                    tableCounts[tbl] = Number(row?.c || 0);
-                } catch (_) {
-                    tableCounts[tbl] = 0;
-                }
-            }
+            const countable = [...liveTables].filter((t) => t !== 'backup_snapshots');
+            const tableCounts = await countTablesFast(db, countable);
 
             let operationalRows = 0;
             let configRows = 0;
@@ -469,11 +535,20 @@ module.exports = (db) => {
                 };
             });
 
-            const dbSize = getFileSizeSafe(DB_PATH);
-            const walSize = getFileSizeSafe(DB_PATH + '-wal');
-            const shmSize = getFileSizeSafe(DB_PATH + '-shm');
-            const verRow = await db.get('SELECT sqlite_version() AS v');
-            const journalRow = await db.get('PRAGMA journal_mode');
+            let dbSize = 0;
+            let walSize = 0;
+            let shmSize = 0;
+            if (db.isRemote) {
+                const pc = await db.get('PRAGMA page_count').catch(() => null);
+                const ps = await db.get('PRAGMA page_size').catch(() => null);
+                dbSize = Number(pc?.page_count || 0) * Number(ps?.page_size || 0);
+            } else {
+                dbSize = getFileSizeSafe(DB_PATH);
+                walSize = getFileSizeSafe(DB_PATH + '-wal');
+                shmSize = getFileSizeSafe(DB_PATH + '-shm');
+            }
+            const verRow = await db.get('SELECT sqlite_version() AS v').catch(() => null);
+            const journalRow = db.isRemote ? null : await db.get('PRAGMA journal_mode').catch(() => null);
 
             const snapStats = await db.get(
                 `SELECT COUNT(*) AS count, COALESCE(SUM(file_size), 0) AS totalBytes,
@@ -485,13 +560,15 @@ module.exports = (db) => {
 
             res.json({
                 database: {
-                    path: 'src/db/database.sqlite',
+                    path: db.isRemote ? 'Turso Cloud (libSQL)' : 'src/db/database.sqlite',
+                    engine: db.engine || 'sqlite',
+                    storageMode: storageSvc.isCloudStorage() ? 'vercel-blob' : 'local-disk',
                     sizeBytes: dbSize,
                     walBytes: walSize,
                     shmBytes: shmSize,
                     totalDiskBytes: dbSize + walSize + shmSize,
-                    sqliteVersion: verRow?.v || 'unknown',
-                    journalMode: journalRow?.journal_mode || 'delete',
+                    sqliteVersion: verRow?.v || 'libsql',
+                    journalMode: db.isRemote ? 'turso-cloud' : (journalRow?.journal_mode || 'delete'),
                     tablesCount: liveTables.size - (liveTables.has('backup_snapshots') ? 1 : 0)
                 },
                 totals: {
@@ -531,7 +608,9 @@ module.exports = (db) => {
                 let tableCounts = {};
                 try { includes = JSON.parse(r.includes_json || '[]'); } catch (_) {}
                 try { tableCounts = JSON.parse(r.table_counts_json || '{}'); } catch (_) {}
-                const onDisk = fs.existsSync(safeSnapshotPath(r.filename));
+                const onDisk = storageSvc.isCloudStorage()
+                    ? Number(r.file_size || 0) > 0
+                    : fs.existsSync(safeSnapshotPath(r.filename));
                 return {
                     ...r,
                     includes,
@@ -582,6 +661,11 @@ module.exports = (db) => {
 
     // ── GET /api/backups/export/sqlite — download atomic SQLite snapshot ────
     router.get('/export/sqlite', authenticateToken, requireSettingsAccess, async (req, res) => {
+        if (db.isRemote) {
+            return res.status(400).json({
+                message: 'Raw .sqlite export is only available on local file-based SQLite. On Turso Cloud, use Full JSON Snapshot Export instead.'
+            });
+        }
         const tmpFile = path.join(os.tmpdir(), `edf-db-${Date.now()}-${crypto.randomBytes(3).toString('hex')}.sqlite`);
         try {
             const escapedTmp = tmpFile.replace(/'/g, "''");
@@ -644,12 +728,12 @@ module.exports = (db) => {
             const snap = await db.get('SELECT * FROM backup_snapshots WHERE id = ?', [idNum]);
             if (!snap) return res.status(404).json({ message: 'Backup snapshot not found' });
 
-            const filePath = safeSnapshotPath(snap.filename);
-            if (!fs.existsSync(filePath)) {
-                return res.status(404).json({ message: 'Backup archive file missing from disk' });
+            const buf = await storageSvc.readBuffer(snapshotRelPath(snap.filename));
+            if (!buf) {
+                return res.status(404).json({ message: 'Backup archive file missing from storage' });
             }
 
-            const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            const parsed = JSON.parse(buf.toString('utf8'));
             const tablesObj = normalizeLegacyPayload(parsed);
 
             const tableSummaries = Object.entries(tablesObj).map(([table, rows]) => ({
@@ -689,9 +773,9 @@ module.exports = (db) => {
             const snap = await db.get('SELECT * FROM backup_snapshots WHERE id = ?', [parseInt(req.params.id, 10)]);
             if (!snap) return res.status(404).json({ message: 'Backup snapshot not found' });
 
-            const filePath = safeSnapshotPath(snap.filename);
-            if (!fs.existsSync(filePath)) {
-                return res.status(404).json({ message: 'Backup archive file missing from disk' });
+            const buf = await storageSvc.readBuffer(snapshotRelPath(snap.filename));
+            if (!buf) {
+                return res.status(404).json({ message: 'Backup archive file missing from storage' });
             }
 
             const slug = String(snap.name || 'edf-backup')
@@ -699,7 +783,9 @@ module.exports = (db) => {
                 .replace(/[^a-z0-9_-]+/g, '-')
                 .replace(/^-|-$/g, '') || 'edf-backup';
             const dlName = `${slug}-${snap.uid}.json`;
-            res.download(filePath, dlName);
+            res.setHeader('Content-Type', 'application/json; charset=utf-8');
+            res.setHeader('Content-Disposition', `attachment; filename="${dlName}"`);
+            res.send(buf);
         } catch (err) {
             console.error('Download snapshot error:', err);
             res.status(500).json({ message: 'Failed to download backup' });
@@ -747,16 +833,19 @@ module.exports = (db) => {
                 [nextName, nextNotes, nextLocked, idNum]
             );
 
-            // Sync updated name/notes into archive file envelope too if file exists
-            try {
-                const filePath = safeSnapshotPath(existing.filename);
-                if (fs.existsSync(filePath)) {
-                    const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                    parsed.name = nextName;
-                    parsed.notes = nextNotes;
-                    fs.writeFileSync(filePath, JSON.stringify(parsed, null, 2), 'utf8');
-                }
-            } catch (_) {}
+            // Sync updated name/notes into archive file envelope too if name or notes changed
+            if (nextName !== existing.name || nextNotes !== (existing.notes || '')) {
+                try {
+                    const rel = snapshotRelPath(existing.filename);
+                    const buf = await storageSvc.readBuffer(rel);
+                    if (buf) {
+                        const parsed = JSON.parse(buf.toString('utf8'));
+                        parsed.name = nextName;
+                        parsed.notes = nextNotes;
+                        await storageSvc.saveBuffer(rel, Buffer.from(JSON.stringify(parsed, null, 2), 'utf8'), 'application/json; charset=utf-8');
+                    }
+                } catch (_) {}
+            }
 
             const updated = await db.get('SELECT * FROM backup_snapshots WHERE id = ?', [idNum]);
             await logActivity(req, 'update_backup', idNum, `Updated snapshot "${nextName}" (locked=${nextLocked})`);
@@ -781,8 +870,7 @@ module.exports = (db) => {
             }
 
             try {
-                const filePath = safeSnapshotPath(existing.filename);
-                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                await storageSvc.deleteFile(snapshotRelPath(existing.filename));
             } catch (_) {}
 
             await db.run('DELETE FROM backup_snapshots WHERE id = ?', [idNum]);
@@ -854,9 +942,12 @@ module.exports = (db) => {
             const jsonStr = JSON.stringify(envelope, null, 2);
             const checksum = crypto.createHash('sha256').update(jsonStr, 'utf8').digest('hex');
             const filename = `${uid}.json`;
-            const filePath = safeSnapshotPath(filename);
-            fs.writeFileSync(filePath, jsonStr, 'utf8');
-            const fileSize = fs.statSync(filePath).size;
+            const saved = await storageSvc.saveBuffer(
+                snapshotRelPath(filename),
+                Buffer.from(jsonStr, 'utf8'),
+                'application/json; charset=utf-8'
+            );
+            const fileSize = saved.size;
 
             const ins = await db.run(
                 `INSERT INTO backup_snapshots (
@@ -907,12 +998,12 @@ module.exports = (db) => {
             const snap = await db.get('SELECT * FROM backup_snapshots WHERE id = ?', [idNum]);
             if (!snap) return res.status(404).json({ message: 'Backup snapshot not found' });
 
-            const filePath = safeSnapshotPath(snap.filename);
-            if (!fs.existsSync(filePath)) {
-                return res.status(404).json({ message: 'Backup archive file missing from disk' });
+            const buf = await storageSvc.readBuffer(snapshotRelPath(snap.filename));
+            if (!buf) {
+                return res.status(404).json({ message: 'Backup archive file missing from storage' });
             }
 
-            const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            const parsed = JSON.parse(buf.toString('utf8'));
             const tablesObj = normalizeLegacyPayload(parsed);
             const liveTables = await existingTableSet();
 
@@ -945,64 +1036,78 @@ module.exports = (db) => {
                 });
             }
 
+            const tableColsMap = {};
+            await runConcurrent(allowedTables, 6, async (tbl) => {
+                const colsInfo = await db.all(`PRAGMA table_info([${tbl}])`);
+                tableColsMap[tbl] = colsInfo.map(c => c.name);
+            });
+            const hasSeq = await hasSequenceTable();
+
             const restoredCounts = {};
             let totalInserted = 0;
 
-            await db.run('PRAGMA foreign_keys = OFF');
-            await db.run('BEGIN IMMEDIATE');
+            if (!db.isRemote) {
+                await db.run('PRAGMA foreign_keys = OFF');
+            }
             try {
-                // In replace mode, clear target tables cleanly in reverse order first
-                if (mode === 'replace') {
-                    for (const tbl of [...allowedTables].reverse()) {
-                        await db.run(`DELETE FROM [${tbl}]`);
-                        await db.run('DELETE FROM sqlite_sequence WHERE name = ?', [tbl]).catch(() => {});
+                await db.withTransaction(async (tx) => {
+                    // In replace mode, clear target tables cleanly in reverse order first
+                    if (mode === 'replace') {
+                        await wipeTablesInTx(tx, [...allowedTables].reverse(), false, hasSeq);
                     }
-                }
 
-                // Insert restored rows using schema column intersection
-                for (const tbl of allowedTables) {
-                    const rows = tablesObj[tbl];
-                    if (!Array.isArray(rows) || rows.length === 0) {
-                        restoredCounts[tbl] = 0;
-                        continue;
-                    }
-                    const colsInfo = await db.all(`PRAGMA table_info([${tbl}])`);
-                    const validCols = colsInfo.map(c => c.name);
-                    const verb = mode === 'merge' ? 'INSERT OR IGNORE' : 'INSERT OR REPLACE';
-
-                    let insertedForTable = 0;
-                    for (const row of rows) {
-                        if (!row || typeof row !== 'object') continue;
-                        const rowCols = validCols.filter(c => Object.prototype.hasOwnProperty.call(row, c));
-                        if (!rowCols.length) continue;
-                        const colSql = rowCols.map(c => `[${c}]`).join(', ');
-                        const phSql = rowCols.map(() => '?').join(', ');
-                        const vals = rowCols.map(c => row[c]);
-                        const resIns = await db.run(`${verb} INTO [${tbl}] (${colSql}) VALUES (${phSql})`, vals);
-                        if (resIns && (resIns.changes || mode === 'replace')) {
-                            insertedForTable += Number(resIns.changes || 0);
+                    // Insert restored rows using schema column intersection and batched writes
+                    for (const tbl of allowedTables) {
+                        const rows = tablesObj[tbl];
+                        if (!Array.isArray(rows) || rows.length === 0) {
+                            restoredCounts[tbl] = 0;
+                            continue;
                         }
-                    }
+                        const validCols = tableColsMap[tbl] || [];
+                        const verb = mode === 'merge' ? 'INSERT OR IGNORE' : 'INSERT OR REPLACE';
+                        const stmts = [];
 
-                    // Keep sqlite_sequence synced with MAX(id)
-                    if (validCols.includes('id')) {
-                        const maxRow = await db.get(`SELECT MAX(id) AS m FROM [${tbl}]`);
-                        if (maxRow && maxRow.m) {
-                            await db.run('DELETE FROM sqlite_sequence WHERE name = ?', [tbl]).catch(() => {});
-                            await db.run('INSERT INTO sqlite_sequence (name, seq) VALUES (?, ?)', [tbl, maxRow.m]).catch(() => {});
+                        for (const row of rows) {
+                            if (!row || typeof row !== 'object') continue;
+                            const rowCols = validCols.filter(c => Object.prototype.hasOwnProperty.call(row, c));
+                            if (!rowCols.length) continue;
+                            const colSql = rowCols.map(c => `[${c}]`).join(', ');
+                            const phSql = rowCols.map(() => '?').join(', ');
+                            const vals = rowCols.map(c => row[c]);
+                            stmts.push({
+                                sql: `${verb} INTO [${tbl}] (${colSql}) VALUES (${phSql})`,
+                                args: vals
+                            });
                         }
+
+                        let insertedForTable = 0;
+                        if (stmts.length > 0) {
+                            const batchResults = await tx.batch(stmts);
+                            for (const r of batchResults) {
+                                const c = r?.changes ?? r?.rowsAffected ?? 0;
+                                if (c || mode === 'replace') {
+                                    insertedForTable += Number(c || 0);
+                                }
+                            }
+                        }
+
+                        // Keep sqlite_sequence synced with MAX(id)
+                        if (hasSeq && validCols.includes('id')) {
+                            const maxRow = await tx.get(`SELECT MAX(id) AS m FROM [${tbl}]`);
+                            if (maxRow && maxRow.m) {
+                                await tx.run('DELETE FROM sqlite_sequence WHERE name = ?', [tbl]).catch(() => {});
+                                await tx.run('INSERT INTO sqlite_sequence (name, seq) VALUES (?, ?)', [tbl, maxRow.m]).catch(() => {});
+                            }
+                        }
+
+                        restoredCounts[tbl] = insertedForTable;
+                        totalInserted += insertedForTable;
                     }
-
-                    restoredCounts[tbl] = insertedForTable;
-                    totalInserted += insertedForTable;
-                }
-
-                await db.run('COMMIT');
-            } catch (txErr) {
-                await db.run('ROLLBACK').catch(() => {});
-                throw txErr;
+                });
             } finally {
-                await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+                if (!db.isRemote) {
+                    await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+                }
             }
 
             await logActivity(req, 'restore_backup', snap.id, `Restored ${totalInserted} rows (${mode}) from "${snap.name}"`);
@@ -1047,20 +1152,21 @@ module.exports = (db) => {
                 });
             }
 
-            const counts = {};
-            let removed = 0;
-            await db.run('PRAGMA foreign_keys = OFF');
-            try {
-                for (const tbl of targetTables) {
-                    const row = await db.get(`SELECT COUNT(*) AS c FROM [${tbl}]`);
-                    counts[tbl] = Number(row?.c || 0);
-                    removed += counts[tbl];
-                    await db.run(`DELETE FROM [${tbl}]`);
-                    await db.run('DELETE FROM sqlite_sequence WHERE name = ?', [tbl]).catch(() => {});
-                }
-            } finally {
-                await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+            const hasSeq = await hasSequenceTable();
+            let counts = {};
+            if (!db.isRemote) {
+                await db.run('PRAGMA foreign_keys = OFF');
             }
+            try {
+                await db.withTransaction(async (tx) => {
+                    counts = await wipeTablesInTx(tx, targetTables, true, hasSeq);
+                });
+            } finally {
+                if (!db.isRemote) {
+                    await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+                }
+            }
+            const removed = Object.values(counts).reduce((s, c) => s + Number(c || 0), 0);
 
             await logActivity(req, 'purge_module', mod.key, `Cleared module ${mod.label} (${removed} rows removed)`);
             res.json({
@@ -1131,41 +1237,45 @@ module.exports = (db) => {
                 });
             }
 
-            const counts = {};
-            await db.run('PRAGMA foreign_keys = OFF');
+            const hasSeq = await hasSequenceTable();
+            let counts = {};
+            if (!db.isRemote) {
+                await db.run('PRAGMA foreign_keys = OFF');
+            }
             try {
-                for (const tbl of toWipe) {
-                    const row = await db.get(`SELECT COUNT(*) AS c FROM [${tbl}]`);
-                    counts[tbl] = Number(row?.c || 0);
-                    await db.run(`DELETE FROM [${tbl}]`);
-                    await db.run('DELETE FROM sqlite_sequence WHERE name = ?', [tbl]).catch(() => {});
-                }
+                await db.withTransaction(async (tx) => {
+                    counts = await wipeTablesInTx(tx, toWipe, true, hasSeq);
 
-                if (include_non_admin_users && liveTables.has('users')) {
-                    const currentAdminId = Number(req.user?.id || 1);
-                    const nonAdmins = await db.all(
-                        "SELECT id FROM users WHERE id != ? AND role != 'admin'",
-                        [currentAdminId]
-                    );
-                    if (nonAdmins.length > 0) {
-                        const ids = nonAdmins.map(u => u.id);
-                        const ph = ids.map(() => '?').join(',');
-                        await db.run(`DELETE FROM user_permissions WHERE user_id IN (${ph})`, ids).catch(() => {});
-                        await db.run(`DELETE FROM users WHERE id IN (${ph})`, ids);
-                        counts.non_admin_users = nonAdmins.length;
+                    if (include_non_admin_users && liveTables.has('users')) {
+                        const currentAdminId = Number(req.user?.id || 1);
+                        const nonAdmins = await tx.all(
+                            "SELECT id FROM users WHERE id != ? AND role != 'admin'",
+                            [currentAdminId]
+                        );
+                        if (nonAdmins.length > 0) {
+                            const ids = nonAdmins.map(u => u.id);
+                            const ph = ids.map(() => '?').join(',');
+                            await tx.run(`DELETE FROM user_permissions WHERE user_id IN (${ph})`, ids).catch(() => {});
+                            await tx.run(`DELETE FROM users WHERE id IN (${ph})`, ids);
+                            counts.non_admin_users = nonAdmins.length;
+                        }
                     }
-                }
 
-                // Keep seed guard active so server restarts never re-inject demo Madrasa rows
-                await db.run(
-                    `INSERT INTO global_settings (key, value) VALUES ('madrasa_seeded', '1')
-                     ON CONFLICT(key) DO UPDATE SET value = '1', updated_at = CURRENT_TIMESTAMP`
-                );
+                    // Keep seed guard active so server restarts never re-inject demo Madrasa rows
+                    await tx.run(
+                        `INSERT INTO global_settings (key, value) VALUES ('madrasa_seeded', '1')
+                         ON CONFLICT(key) DO UPDATE SET value = '1', updated_at = CURRENT_TIMESTAMP`
+                    );
+                });
             } finally {
-                await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+                if (!db.isRemote) {
+                    await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+                }
             }
 
-            await db.run('VACUUM').catch(() => {});
+            if (!db.isRemote) {
+                await db.run('VACUUM').catch(() => {});
+            }
 
             const totalRemoved = Object.values(counts).reduce((s, c) => s + Number(c || 0), 0);
             res.json({
@@ -1184,24 +1294,37 @@ module.exports = (db) => {
     router.post('/maintenance', authenticateToken, requireStrictAdmin, async (req, res) => {
         try {
             const action = String(req.body?.action || 'both').toLowerCase();
-            const sizeBefore = getFileSizeSafe(DB_PATH);
+            const getSizeNow = async () => {
+                if (db.isRemote) {
+                    const pc = await db.get('PRAGMA page_count').catch(() => null);
+                    const ps = await db.get('PRAGMA page_size').catch(() => null);
+                    return Number(pc?.page_count || 0) * Number(ps?.page_size || 0);
+                }
+                return getFileSizeSafe(DB_PATH);
+            };
+            const sizeBefore = await getSizeNow();
 
             let integrity = 'skipped';
             if (action === 'integrity' || action === 'both') {
-                const chk = await db.get('PRAGMA integrity_check');
+                const chk = await db.get('PRAGMA integrity_check').catch(() => ({ integrity_check: db.isRemote ? 'ok (managed)' : 'unknown' }));
                 integrity = chk?.integrity_check || 'ok';
             }
 
+            let vacuumNote = '';
             if (action === 'vacuum' || action === 'both') {
-                await db.run('VACUUM');
+                if (db.isRemote) {
+                    vacuumNote = ' (Turso Cloud manages storage compaction automatically)';
+                } else {
+                    await db.run('VACUUM');
+                }
             }
 
-            const sizeAfter = getFileSizeSafe(DB_PATH);
+            const sizeAfter = await getSizeNow();
             const reclaimed = Math.max(0, sizeBefore - sizeAfter);
 
             await logActivity(req, 'db_maintenance', action, `Integrity=${integrity}, before=${sizeBefore}, after=${sizeAfter}`);
             res.json({
-                message: `Database maintenance completed (Integrity: ${integrity})`,
+                message: `Database maintenance completed (Integrity: ${integrity})${vacuumNote}`,
                 integrity,
                 sizeBefore,
                 sizeAfter,

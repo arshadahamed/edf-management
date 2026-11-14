@@ -1,47 +1,58 @@
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { initDb } = require('./src/db/database');
+const storageSvc = require('./src/services/storage');
 
-const app = express();
 const PORT = process.env.PORT || 3000;
-// Trust the reverse proxy (required when running behind a proxy)
-app.set('trust proxy', 1);
+const PUBLIC_DIR = fs.existsSync(path.join(process.cwd(), 'public'))
+    ? path.join(process.cwd(), 'public')
+    : path.join(__dirname, 'public');
 
-// Security headers
-app.use(helmet({ contentSecurityPolicy: false }));
+let appPromise = null;
 
-// Rate limiting
-const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, message: { message: 'Too many attempts. Try again in 15 minutes.' } });
-app.use('/api/auth/login', authLimiter);
-app.use('/api', apiLimiter);
+/**
+ * Lazily initializes DB schema and builds the Express app singleton once per process/lambda instance.
+ */
+async function createApp() {
+    if (appPromise) return appPromise;
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(cors());
-
-// Initialize DB and start server
-async function startServer() {
-    try {
+    appPromise = (async () => {
         const db = await initDb();
-        console.log('Database initialized successfully.');
+        console.log(`Database initialized successfully (${db.engine || 'sqlite'}).`);
 
-        // Routes
-        const authRoutes = require('./src/routes/auth')(db);
-        const statsRoutes = require('./src/routes/stats')(db);
-        const edfRoutes = require('./src/routes/edf')(db);
+        const app = express();
+        app.set('trust proxy', 1);
+
+        // Security headers
+        app.use(helmet({ contentSecurityPolicy: false }));
+
+        // Rate limiting
+        const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
+        const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, message: { message: 'Too many attempts. Try again in 15 minutes.' } });
+        app.use('/api/auth/login', authLimiter);
+        app.use('/api', apiLimiter);
+
+        // Body & cookie parsers
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: true }));
+        app.use(cookieParser());
+        app.use(cors());
+
+        // Routes & Guards
+        const authRoutes      = require('./src/routes/auth')(db);
+        const statsRoutes     = require('./src/routes/stats')(db);
+        const edfRoutes       = require('./src/routes/edf')(db);
         const inventoryRoutes = require('./src/routes/inventory')(db);
-        const programsRoutes = require('./src/routes/programs')(db);
-        const formsRoutes = require('./src/routes/forms')(db);
-        const logsRoutes = require('./src/routes/logs')(db);
-        const ramadanRoutes = require('./src/routes/ramadan')(db);
+        const programsRoutes  = require('./src/routes/programs')(db);
+        const formsRoutes     = require('./src/routes/forms')(db);
+        const logsRoutes      = require('./src/routes/logs')(db);
+        const ramadanRoutes   = require('./src/routes/ramadan')(db);
         const adminRoutes     = require('./src/routes/admin')(db);
         const settingsRoutes  = require('./src/routes/settings')(db);
         const backupsModule   = require('./src/routes/backups')(db);
@@ -49,17 +60,51 @@ async function startServer() {
         const documentsRoutes = require('./src/routes/documents')(db);
         const smsRoutes       = require('./src/routes/sms')(db);
         const madrasaRoutes   = require('./src/routes/madrasa')(db);
-        const activityLogger    = require('./src/middleware/activityLogger')(db);
-        const userGuard         = require('./src/middleware/userGuard')(db);
-        const permissionGuard   = require('./src/middleware/permissionGuard')(db);
-        const maintenanceGuard  = require('./src/middleware/maintenanceGuard')(db);
+        const activityLogger  = require('./src/middleware/activityLogger')(db);
+        const userGuard       = require('./src/middleware/userGuard')(db);
+        const permissionGuard = require('./src/middleware/permissionGuard')(db);
+        const maintenanceGuard = require('./src/middleware/maintenanceGuard')(db);
 
-        // maintenanceGuard MUST come before express.static so that requests for
-        // index.html, gallery.html, about.html etc. are intercepted first.
+        // maintenanceGuard MUST come before express.static so page requests are intercepted first.
         app.use(maintenanceGuard);
 
-        // Static files served after the maintenance check
-        app.use(express.static(path.join(__dirname, 'public')));
+        // Static files served locally / from bundled public directory
+        app.use(express.static(PUBLIC_DIR));
+
+        // Cloud storage fallback for dynamic uploads (/uploads/* and /images/beneficiaries/*)
+        app.use(['/uploads', '/images/beneficiaries'], async (req, res, next) => {
+            if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+            if (!storageSvc.isCloudStorage()) return next();
+
+            const reqPath = `${req.baseUrl || ''}${req.path || ''}`;
+            // Never expose private documents via public URL paths (use /api/documents/:id/preview|download)
+            if (reqPath.startsWith('/uploads/documents/')) return next();
+
+            const relPath = storageSvc.relPathFromPublicUrl(reqPath);
+            if (!relPath || (!relPath.startsWith('uploads/') && !relPath.startsWith('images/beneficiaries/'))) {
+                return next();
+            }
+
+            try {
+                const meta = await storageSvc.getBlobMeta(relPath);
+                if (!meta || !meta.url) return next();
+
+                if ((process.env.BLOB_ACCESS || 'public') === 'private') {
+                    const buf = await storageSvc.readBuffer(relPath);
+                    if (!buf) return next();
+                    res.setHeader('Content-Type', meta.contentType || 'application/octet-stream');
+                    res.setHeader('Cache-Control', 'private, max-age=3600');
+                    return res.send(buf);
+                }
+
+                res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+                return res.redirect(302, meta.url);
+            } catch (err) {
+                console.error('Cloud asset fallback error:', err);
+                return next();
+            }
+        });
+
         app.use('/api', activityLogger);   // Log all /api requests
         app.use('/api', userGuard);        // Block/force-logout check + last_seen update
         app.use('/api', permissionGuard);  // Per-module permission enforcement
@@ -71,7 +116,7 @@ async function startServer() {
         app.use('/api/forms', formsRoutes);
         app.use('/api/logs', logsRoutes);
         app.use('/api/ramadan', ramadanRoutes);
-        app.use('/api/admin',  adminRoutes);
+        app.use('/api/admin', adminRoutes);
         app.use('/api/settings', settingsRoutes);
         app.use('/api/backups', express.json({ limit: '50mb' }), backupsModule.router);
         app.use('/api/frontdesk', frontdeskRoutes);
@@ -81,23 +126,23 @@ async function startServer() {
 
         // Serve HTML files
         app.get('/', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public', 'index.html'));
+            res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
         });
 
         app.get('/login', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public', 'login.html'));
+            res.sendFile(path.join(PUBLIC_DIR, 'login.html'));
         });
 
         app.get('/gallery', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
+            res.sendFile(path.join(PUBLIC_DIR, 'gallery.html'));
         });
 
         app.get('/about', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public', 'about.html'));
+            res.sendFile(path.join(PUBLIC_DIR, 'about.html'));
         });
 
         app.get('/maintenance', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public', 'maintenance.html'));
+            res.sendFile(path.join(PUBLIC_DIR, 'maintenance.html'));
         });
 
         app.get('/dashboard', (req, res) => {
@@ -106,30 +151,54 @@ async function startServer() {
                 return res.redirect('/login');
             }
 
-            // Set headers to prevent caching of the dashboard page
             res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
 
-            res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+            res.sendFile(path.join(PUBLIC_DIR, 'dashboard.html'));
         });
 
-        // 404 fallback — serves custom page with correct HTTP status
+        // 404 fallback
         app.use((req, res) => {
-            // API routes that don't exist get a JSON 404
             if (req.path.startsWith('/api/')) {
                 return res.status(404).json({ message: 'API endpoint not found.' });
             }
-            res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+            res.status(404).sendFile(path.join(PUBLIC_DIR, '404.html'));
         });
 
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
+        return app;
+    })().catch((err) => {
+        appPromise = null;
+        throw err;
+    });
+
+    return appPromise;
+}
+
+if (require.main === module) {
+    createApp()
+        .then((app) => {
+            app.listen(PORT, () => {
+                console.log(`Server is running on http://localhost:${PORT}`);
+            });
+        })
+        .catch((err) => {
+            console.error('Failed to initialize database:', err);
+            process.exit(1);
         });
+}
+
+async function handler(req, res) {
+    try {
+        const app = await createApp();
+        return app(req, res);
     } catch (err) {
-        console.error('Failed to initialize database:', err);
-        process.exit(1);
+        console.error('Request handler initialization error:', err);
+        if (!res.headersSent) {
+            return res.status(500).json({ message: 'Server initialization failed: ' + (err?.message || 'Unknown error') });
+        }
     }
 }
 
-startServer();
+handler.createApp = createApp;
+module.exports = handler;

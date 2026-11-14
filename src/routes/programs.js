@@ -4,8 +4,9 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 
 module.exports = (db) => {
 
-    // ── DB Migration (run once on startup) ───────────────────────────────────
+    // ── DB Migration (skipped when database schema is already up to date) ──
     const initMigrations = async () => {
+        if (db.schemaAlreadyCurrent) return;
         await db.exec(`
             CREATE TABLE IF NOT EXISTS program_applications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,

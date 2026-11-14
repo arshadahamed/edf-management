@@ -4,31 +4,34 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 
 module.exports = (db) => {
 
-    // Ensure extended columns exist on existing SQLite databases
-    (async () => {
-        const migrations = [
-            "ALTER TABLE ramadan_distributions ADD COLUMN package_type TEXT DEFAULT 'dry_ration'",
-            "ALTER TABLE ramadan_distributions ADD COLUMN hijri_year TEXT",
-            "ALTER TABLE ramadan_distributions ADD COLUMN collection_time TEXT",
-            "ALTER TABLE ramadan_distributions ADD COLUMN coordinator_name TEXT",
-            "ALTER TABLE ramadan_distributions ADD COLUMN coordinator_phone TEXT",
-            "ALTER TABLE ramadan_distributions ADD COLUMN target_quota INTEGER DEFAULT 0",
-            "ALTER TABLE ramadan_distributions ADD COLUMN package_items TEXT",
-            "ALTER TABLE ramadan_distributions ADD COLUMN allocated_shops TEXT",
-            "ALTER TABLE ramadan_tokens ADD COLUMN collector_name TEXT",
-            "ALTER TABLE ramadan_tokens ADD COLUMN collector_nic TEXT",
-            "ALTER TABLE ramadan_tokens ADD COLUMN allocated_shop TEXT",
-            "ALTER TABLE ramadan_tokens ADD COLUMN redeemed_at DATETIME",
-            "ALTER TABLE ramadan_tokens ADD COLUMN redeemed_by_shop TEXT",
-            "ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_at DATETIME",
-            "ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_by INTEGER",
-            "ALTER TABLE ramadan_tokens ADD COLUMN issued_at DATETIME",
-            "ALTER TABLE ramadan_tokens ADD COLUMN issued_by INTEGER"
-        ];
-        for (const sql of migrations) {
-            try { await db.run(sql); } catch (_) {}
-        }
-    })();
+    // Extended columns are managed by database.js schema initialization;
+    // only check legacy SQLite files if schema was freshly migrated here.
+    if (!db.schemaAlreadyCurrent) {
+        (async () => {
+            const migrations = [
+                "ALTER TABLE ramadan_distributions ADD COLUMN package_type TEXT DEFAULT 'dry_ration'",
+                "ALTER TABLE ramadan_distributions ADD COLUMN hijri_year TEXT",
+                "ALTER TABLE ramadan_distributions ADD COLUMN collection_time TEXT",
+                "ALTER TABLE ramadan_distributions ADD COLUMN coordinator_name TEXT",
+                "ALTER TABLE ramadan_distributions ADD COLUMN coordinator_phone TEXT",
+                "ALTER TABLE ramadan_distributions ADD COLUMN target_quota INTEGER DEFAULT 0",
+                "ALTER TABLE ramadan_distributions ADD COLUMN package_items TEXT",
+                "ALTER TABLE ramadan_distributions ADD COLUMN allocated_shops TEXT",
+                "ALTER TABLE ramadan_tokens ADD COLUMN collector_name TEXT",
+                "ALTER TABLE ramadan_tokens ADD COLUMN collector_nic TEXT",
+                "ALTER TABLE ramadan_tokens ADD COLUMN allocated_shop TEXT",
+                "ALTER TABLE ramadan_tokens ADD COLUMN redeemed_at DATETIME",
+                "ALTER TABLE ramadan_tokens ADD COLUMN redeemed_by_shop TEXT",
+                "ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_at DATETIME",
+                "ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_by INTEGER",
+                "ALTER TABLE ramadan_tokens ADD COLUMN issued_at DATETIME",
+                "ALTER TABLE ramadan_tokens ADD COLUMN issued_by INTEGER"
+            ];
+            for (const sql of migrations) {
+                try { await db.run(sql); } catch (_) {}
+            }
+        })();
+    }
 
     // Helper: Safely compute next sequence number for a distribution's tokens
     async function getNextTokenSeq(distId) {

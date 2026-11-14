@@ -1,24 +1,12 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/authMiddleware');
-
-const invImageDir = path.join(__dirname, '../../public/uploads/inventory');
-if (!fs.existsSync(invImageDir)) fs.mkdirSync(invImageDir, { recursive: true });
-
-const invImageStorage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, invImageDir),
-    filename: (_req, file, cb) => {
-        const ext = (path.extname(file.originalname) || '.jpg').toLowerCase();
-        const safe = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-        cb(null, safe);
-    }
-});
+const storageSvc = require('../services/storage');
 
 const invImageUpload = multer({
-    storage: invImageStorage,
+    storage: multer.memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (_req, file, cb) => {
         const ok = /^image\/(png|jpe?g|webp|gif|svg\+xml)$/i.test(file.mimetype || '')
@@ -30,10 +18,18 @@ const invImageUpload = multer({
 module.exports = (db) => {
     // UPLOAD ASSET IMAGE
     router.post('/upload-image', authenticateToken, (req, res) => {
-        invImageUpload.single('image')(req, res, (err) => {
+        invImageUpload.single('image')(req, res, async (err) => {
             if (err) return res.status(400).json({ message: err.message || 'Image upload failed' });
             if (!req.file) return res.status(400).json({ message: 'No image file uploaded' });
-            res.json({ image_url: `/uploads/inventory/${req.file.filename}` });
+            try {
+                const ext = (path.extname(req.file.originalname) || '.jpg').toLowerCase();
+                const safe = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+                await storageSvc.saveBuffer(`uploads/inventory/${safe}`, req.file.buffer, req.file.mimetype);
+                res.json({ image_url: `/uploads/inventory/${safe}` });
+            } catch (uploadErr) {
+                console.error('Inventory upload error:', uploadErr);
+                res.status(500).json({ message: 'Failed to store inventory image' });
+            }
         });
     });
 
@@ -243,26 +239,23 @@ module.exports = (db) => {
     router.post('/usage', authenticateToken, async (req, res) => {
         const { item_id, quantity_used, department } = req.body;
         try {
-            await db.run('BEGIN TRANSACTION');
-            
-            // Deduct quantity safely without dropping below zero
             const used = Math.max(1, parseInt(quantity_used, 10) || 1);
-            await db.run(
-                `UPDATE inventory_items SET quantity = MAX(0, COALESCE(quantity, 0) - ?), updated_at = CURRENT_TIMESTAMP WHERE id=?`,
-                [used, item_id]
-            );
+            await db.withTransaction(async (tx) => {
+                // Deduct quantity safely without dropping below zero
+                await tx.run(
+                    `UPDATE inventory_items SET quantity = MAX(0, COALESCE(quantity, 0) - ?), updated_at = CURRENT_TIMESTAMP WHERE id=?`,
+                    [used, item_id]
+                );
 
-            // Log usage
-            await db.run(
-                `INSERT INTO inventory_usage (item_id, quantity_used, department) VALUES (?, ?, ?)`,
-                [item_id, used, department || '']
-            );
-            
-            await db.run('COMMIT');
+                // Log usage
+                await tx.run(
+                    `INSERT INTO inventory_usage (item_id, quantity_used, department) VALUES (?, ?, ?)`,
+                    [item_id, used, department || '']
+                );
+            });
             res.status(201).json({ message: 'Usage recorded' });
-        } catch (err) { 
-            await db.run('ROLLBACK');
-            res.status(500).json({ message: err.message }); 
+        } catch (err) {
+            res.status(500).json({ message: err.message });
         }
     });
 

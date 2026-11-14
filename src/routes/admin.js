@@ -528,20 +528,35 @@ module.exports = (db) => {
             const existingRows = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
             const existingSet = new Set(existingRows.map(r => r.name));
             const operationalTables = candidateTables.filter(t => existingSet.has(t));
+            const hasSeqTable = existingSet.has('sqlite_sequence');
 
             const counts = {};
-            await db.run('PRAGMA foreign_keys = OFF');
-            for (const table of operationalTables) {
-                const row = await db.get(`SELECT COUNT(*) AS c FROM [${table}]`);
-                counts[table] = row ? row.c : 0;
-                await db.run(`DELETE FROM [${table}]`);
-                await db.run(`DELETE FROM sqlite_sequence WHERE name = ?`, [table]);
+            if (!db.isRemote) {
+                await db.run('PRAGMA foreign_keys = OFF');
             }
-            await db.run(
-                `INSERT INTO global_settings (key, value) VALUES ('madrasa_seeded', '1')
-                 ON CONFLICT(key) DO UPDATE SET value = '1', updated_at = CURRENT_TIMESTAMP`
-            );
-            await db.run('PRAGMA foreign_keys = ON');
+            try {
+                await db.withTransaction(async (tx) => {
+                    for (const table of operationalTables) {
+                        const row = await tx.get(`SELECT COUNT(*) AS c FROM [${table}]`);
+                        counts[table] = row ? Number(row.c || 0) : 0;
+                        if (table === 'members') {
+                            await tx.run('UPDATE members SET sibling_id = NULL WHERE sibling_id IS NOT NULL').catch(() => {});
+                        }
+                        await tx.run(`DELETE FROM [${table}]`);
+                        if (hasSeqTable) {
+                            await tx.run(`DELETE FROM sqlite_sequence WHERE name = ?`, [table]);
+                        }
+                    }
+                    await tx.run(
+                        `INSERT INTO global_settings (key, value) VALUES ('madrasa_seeded', '1')
+                         ON CONFLICT(key) DO UPDATE SET value = '1', updated_at = CURRENT_TIMESTAMP`
+                    );
+                });
+            } finally {
+                if (!db.isRemote) {
+                    await db.run('PRAGMA foreign_keys = ON').catch(() => {});
+                }
+            }
 
             const totalRows = Object.values(counts).reduce((s, c) => s + c, 0);
             res.json({
@@ -551,7 +566,6 @@ module.exports = (db) => {
             });
         } catch (err) {
             console.error(err);
-            await db.run('PRAGMA foreign_keys = ON').catch(() => {});
             res.status(500).json({ message: 'Failed to clear data: ' + err.message });
         }
     });

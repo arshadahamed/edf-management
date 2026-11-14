@@ -19,7 +19,7 @@ async function generateNextCode(db, table, column, prefix) {
 }
 
 function handleSqliteConstraint(res, err, duplicateMsg) {
-    if (err && /UNIQUE constraint failed/i.test(err.message || '')) {
+    if (err && (/UNIQUE constraint failed/i.test(err.message || '') || /SQLITE_CONSTRAINT_UNIQUE/i.test(err.code || ''))) {
         return res.status(409).json({ error: duplicateMsg });
     }
     console.error('[Madrasa API]', err);
@@ -572,9 +572,7 @@ module.exports = (db) => {
             if (!cls) return res.status(404).json({ error: 'Class not found' });
 
             const marker = req.user?.username || 'admin';
-            await db.run('BEGIN TRANSACTION');
-            let savedCount = 0;
-
+            const stmts = [];
             for (const rec of records) {
                 const studentId = parseInt(rec.student_id, 10);
                 if (!studentId) continue;
@@ -582,25 +580,29 @@ module.exports = (db) => {
                 const lessonNote = String(rec.lesson_note || '').trim();
                 const remarks = String(rec.remarks || '').trim();
 
-                await db.run(
-                    `INSERT INTO madrasa_attendance (class_id, student_id, attendance_date, status, lesson_note, remarks, marked_by)
-                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                     ON CONFLICT(class_id, student_id, attendance_date)
-                     DO UPDATE SET
-                        status = excluded.status,
-                        lesson_note = excluded.lesson_note,
-                        remarks = excluded.remarks,
-                        marked_by = excluded.marked_by,
-                        updated_at = CURRENT_TIMESTAMP`,
-                    [classId, studentId, date, status, lessonNote, remarks, marker]
-                );
-                savedCount++;
+                stmts.push({
+                    sql: `INSERT INTO madrasa_attendance (class_id, student_id, attendance_date, status, lesson_note, remarks, marked_by)
+                          VALUES (?, ?, ?, ?, ?, ?, ?)
+                          ON CONFLICT(class_id, student_id, attendance_date)
+                          DO UPDATE SET
+                             status = excluded.status,
+                             lesson_note = excluded.lesson_note,
+                             remarks = excluded.remarks,
+                             marked_by = excluded.marked_by,
+                             updated_at = CURRENT_TIMESTAMP`,
+                    args: [classId, studentId, date, status, lessonNote, remarks, marker]
+                });
             }
 
-            await db.run('COMMIT');
+            if (stmts.length > 0) {
+                await db.withTransaction(async (tx) => {
+                    await tx.batch(stmts);
+                });
+            }
+            const savedCount = stmts.length;
+
             res.json({ saved: savedCount, date, message: `Attendance saved for ${savedCount} student${savedCount === 1 ? '' : 's'}` });
         } catch (err) {
-            await db.run('ROLLBACK').catch(() => {});
             console.error('[Madrasa batch attendance]', err);
             res.status(500).json({ error: 'Failed to save batch attendance' });
         }

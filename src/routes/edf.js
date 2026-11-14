@@ -3,94 +3,64 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const { authenticateToken } = require('../middleware/authMiddleware');
+const storageSvc = require('../services/storage');
 
-// ── Multer — beneficiary photo uploads ──────────────────────────────────────
-const photoStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '../../public/images/beneficiaries')),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, `ben_${Date.now()}${ext}`);
-    }
-});
-const photoUpload = multer({
-    storage: photoStorage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
-    fileFilter: (req, file, cb) => {
-        if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) cb(null, true);
-        else cb(new Error('Only image files are allowed'));
-    }
-});
+const memStorage = multer.memoryStorage();
 
-// ── Multer — cheque & payment slip uploads ──────────────────────────────────
-const fs = require('fs');
-const chequeDir = path.join(__dirname, '../../public/uploads/cheques');
-if (!fs.existsSync(chequeDir)) fs.mkdirSync(chequeDir, { recursive: true });
+function makeUniqueFilename(prefix, originalName, fallbackExt = '.jpg') {
+    const ext = path.extname(originalName || '').toLowerCase() || fallbackExt;
+    return `${prefix}_${Date.now()}_${Math.round(Math.random() * 1E6)}${ext}`;
+}
 
-const chequeStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, chequeDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-        cb(null, `cheque_${Date.now()}_${Math.round(Math.random() * 1E6)}${ext}`);
-    }
-});
+function createImageUpload(maxMb = 5) {
+    return multer({
+        storage: memStorage,
+        limits: { fileSize: maxMb * 1024 * 1024 },
+        fileFilter: (_req, file, cb) => {
+            if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) cb(null, true);
+            else cb(new Error('Only image files are allowed'));
+        }
+    });
+}
+
+const photoUpload = createImageUpload(5);
+const memberPhotoUpload = createImageUpload(5);
+const volunteerPhotoUpload = createImageUpload(5);
+
 const chequeUpload = multer({
-    storage: chequeStorage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
-    fileFilter: (req, file, cb) => {
+    storage: memStorage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
         if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype) || file.mimetype === 'application/pdf') cb(null, true);
         else cb(new Error('Only image or PDF files are allowed'));
     }
 });
 
-// ── Multer — member profile photo uploads ───────────────────────────────────
-const memberPhotoDir = path.join(__dirname, '../../public/uploads/members');
-if (!fs.existsSync(memberPhotoDir)) fs.mkdirSync(memberPhotoDir, { recursive: true });
-
-const memberPhotoStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, memberPhotoDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-        cb(null, `member_${Date.now()}_${Math.round(Math.random() * 1E6)}${ext}`);
-    }
-});
-const memberPhotoUpload = multer({
-    storage: memberPhotoStorage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
-    fileFilter: (req, file, cb) => {
-        if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) cb(null, true);
-        else cb(new Error('Only image files are allowed'));
-    }
-});
-
-// ── Multer — volunteer badge photo uploads ──────────────────────────────────
-const volunteerPhotoDir = path.join(__dirname, '../../public/uploads/volunteers');
-if (!fs.existsSync(volunteerPhotoDir)) fs.mkdirSync(volunteerPhotoDir, { recursive: true });
-
-const volunteerPhotoStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, volunteerPhotoDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-        cb(null, `vol_${Date.now()}_${Math.round(Math.random() * 1E6)}${ext}`);
-    }
-});
-const volunteerPhotoUpload = multer({
-    storage: volunteerPhotoStorage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
-    fileFilter: (req, file, cb) => {
-        if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) cb(null, true);
-        else cb(new Error('Only image files are allowed'));
-    }
-});
+function handleStorageUpload(uploader, fieldName, folderRelPath, filenamePrefix, missingMsg, formatBody) {
+    return (req, res) => {
+        uploader.single(fieldName)(req, res, async (err) => {
+            if (err) return res.status(400).json({ message: err.message || 'Upload failed' });
+            if (!req.file) return res.status(400).json({ message: missingMsg });
+            try {
+                const storedFilename = makeUniqueFilename(filenamePrefix, req.file.originalname);
+                const relPath = `${folderRelPath}/${storedFilename}`;
+                await storageSvc.saveBuffer(relPath, req.file.buffer, req.file.mimetype);
+                res.json(formatBody(`/${relPath}`, storedFilename, req.file.originalname));
+            } catch (uploadErr) {
+                console.error('Upload storage error:', uploadErr);
+                res.status(500).json({ message: 'Failed to store uploaded file' });
+            }
+        });
+    };
+}
 
 module.exports = (db) => {
     // MEMBER PHOTO UPLOAD
-    router.post('/members/upload-photo', authenticateToken, (req, res) => {
-        memberPhotoUpload.single('photo')(req, res, (err) => {
-            if (err) return res.status(400).json({ message: err.message || 'Upload failed' });
-            if (!req.file) return res.status(400).json({ message: 'No image file provided' });
-            res.json({ photo_url: `/uploads/members/${req.file.filename}` });
-        });
-    });
+    router.post(
+        '/members/upload-photo',
+        authenticateToken,
+        handleStorageUpload(memberPhotoUpload, 'photo', 'uploads/members', 'member', 'No image file provided', (url) => ({ photo_url: url }))
+    );
 
     // MEMBER CRUD
     router.get('/members', authenticateToken, async (req, res) => {
@@ -336,13 +306,11 @@ module.exports = (db) => {
     });
 
     // FAMILY CRUD
-    router.post('/families/upload-photo', authenticateToken, (req, res) => {
-        memberPhotoUpload.single('photo')(req, res, (err) => {
-            if (err) return res.status(400).json({ message: err.message || 'Upload failed' });
-            if (!req.file) return res.status(400).json({ message: 'No image file provided' });
-            res.json({ photo_url: `/uploads/members/${req.file.filename}` });
-        });
-    });
+    router.post(
+        '/families/upload-photo',
+        authenticateToken,
+        handleStorageUpload(memberPhotoUpload, 'photo', 'uploads/members', 'member', 'No image file provided', (url) => ({ photo_url: url }))
+    );
 
     router.get('/families', authenticateToken, async (req, res) => {
         try {
@@ -688,14 +656,16 @@ module.exports = (db) => {
     });
 
     // Upload cheque or payment slip image
-    router.post('/subscriptions/upload-cheque', authenticateToken, (req, res) => {
-        chequeUpload.single('cheque')(req, res, (err) => {
-            if (err) return res.status(400).json({ message: err.message || 'Upload failed' });
-            if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
-            const fileUrl = `/uploads/cheques/${req.file.filename}`;
-            res.json({ success: true, fileUrl, filename: req.file.filename, originalName: req.file.originalname });
-        });
-    });
+    router.post(
+        '/subscriptions/upload-cheque',
+        authenticateToken,
+        handleStorageUpload(chequeUpload, 'cheque', 'uploads/cheques', 'cheque', 'No file uploaded', (url, filename, originalName) => ({
+            success: true,
+            fileUrl: url,
+            filename,
+            originalName
+        }))
+    );
 
     router.post('/subscriptions', authenticateToken, async (req, res) => {
         const {
@@ -1226,13 +1196,11 @@ module.exports = (db) => {
         return { deployments_count: cnt, total_hours: hrs };
     }
 
-    router.post('/volunteers/upload-photo', authenticateToken, (req, res) => {
-        volunteerPhotoUpload.single('photo')(req, res, (err) => {
-            if (err) return res.status(400).json({ message: err.message || 'Photo upload failed' });
-            if (!req.file) return res.status(400).json({ message: 'No image file provided' });
-            res.json({ photo_url: `/uploads/volunteers/${req.file.filename}` });
-        });
-    });
+    router.post(
+        '/volunteers/upload-photo',
+        authenticateToken,
+        handleStorageUpload(volunteerPhotoUpload, 'photo', 'uploads/volunteers', 'vol', 'No image file provided', (url) => ({ photo_url: url }))
+    );
 
     router.get('/volunteers', authenticateToken, async (req, res) => {
         try {
@@ -1650,11 +1618,11 @@ module.exports = (db) => {
     });
 
     // Photo upload endpoint
-    router.post('/beneficiaries/upload-photo', authenticateToken, photoUpload.single('photo'), (req, res) => {
-        if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
-        const publicPath = `/images/beneficiaries/${req.file.filename}`;
-        res.json({ photo_url: publicPath });
-    });
+    router.post(
+        '/beneficiaries/upload-photo',
+        authenticateToken,
+        handleStorageUpload(photoUpload, 'photo', 'images/beneficiaries', 'ben', 'No file uploaded', (url) => ({ photo_url: url }))
+    );
 
     // Whitelist of valid beneficiaries table columns (keeps dynamic queries safe)
     const BENEFICIARY_COLUMNS = new Set([

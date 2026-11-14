@@ -2,24 +2,18 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const { authenticateToken } = require('../middleware/authMiddleware');
+const storageSvc = require('../services/storage');
 
-const uploadDir = path.join(__dirname, '../../public/uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }
 });
-const upload = multer({ storage });
+
+function makeUploadFilename(fieldname, originalName) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    return fieldname + '-' + uniqueSuffix + path.extname(originalName || '');
+}
 
 function requireAdmin(req, res, next) {
     if (req.user.role !== 'admin' && req.user.role !== 'super_user') {
@@ -78,10 +72,16 @@ module.exports = (db) => {
             const toUpdate = {};
             
             if (files.logo && files.logo[0]) {
-                toUpdate.logo_url = '/uploads/' + files.logo[0].filename;
+                const file = files.logo[0];
+                const filename = makeUploadFilename(file.fieldname, file.originalname);
+                await storageSvc.saveBuffer(`uploads/${filename}`, file.buffer, file.mimetype);
+                toUpdate.logo_url = '/uploads/' + filename;
             }
             if (files.favicon && files.favicon[0]) {
-                toUpdate.favicon_url = '/uploads/' + files.favicon[0].filename;
+                const file = files.favicon[0];
+                const filename = makeUploadFilename(file.fieldname, file.originalname);
+                await storageSvc.saveBuffer(`uploads/${filename}`, file.buffer, file.mimetype);
+                toUpdate.favicon_url = '/uploads/' + filename;
             }
             
             // Allow storing brand & organization text settings cleanly

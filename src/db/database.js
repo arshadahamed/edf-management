@@ -1,140 +1,247 @@
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-async function initDb() {
-    const db = await open({
+const SCHEMA_VERSION = '2026-11-14-turso-v1';
+
+let cachedDbPromise = null;
+let cachedDbKey = null;
+
+function normalizeBindValue(val) {
+    if (val === undefined) return null;
+    if (typeof val === 'boolean') return val ? 1 : 0;
+    if (val instanceof Date) return val.toISOString();
+    if (typeof val === 'bigint') return Number(val);
+    return val;
+}
+
+function normalizeSqlArgs(args) {
+    if (!args || args.length === 0) return [];
+    let raw = args;
+    if (args.length === 1) {
+        const first = args[0];
+        if (first === undefined || first === null) return [];
+        if (Array.isArray(first)) {
+            raw = first;
+        } else if (typeof first === 'object' && !(first instanceof Date) && !Buffer.isBuffer(first)) {
+            const named = {};
+            for (const [k, v] of Object.entries(first)) {
+                named[k] = normalizeBindValue(v);
+            }
+            return named;
+        } else {
+            raw = [first];
+        }
+    }
+    return raw.map(normalizeBindValue);
+}
+
+function toPlainRow(columns, row) {
+    if (!row) return undefined;
+    const out = {};
+    if (Array.isArray(columns) && columns.length > 0) {
+        for (let i = 0; i < columns.length; i++) {
+            const col = columns[i];
+            const val = row[col] !== undefined ? row[col] : row[i];
+            out[col] = typeof val === 'bigint' ? Number(val) : val;
+        }
+        return out;
+    }
+    for (const [k, v] of Object.entries(row)) {
+        out[k] = typeof v === 'bigint' ? Number(v) : v;
+    }
+    return out;
+}
+
+function normalizeBatchStatements(statements) {
+    return (statements || []).map((item) => {
+        if (typeof item === 'string') return { sql: item, args: [] };
+        const rawArgs = item.args ?? item.params ?? [];
+        const args = Array.isArray(rawArgs) ? rawArgs.map(normalizeBindValue) : normalizeSqlArgs([rawArgs]);
+        return { sql: item.sql, args };
+    });
+}
+
+function createTursoExecutor(target, isTx = false) {
+    return {
+        isRemote: true,
+        engine: 'turso',
+        async get(sql, ...params) {
+            const rs = await target.execute({ sql, args: normalizeSqlArgs(params) });
+            return rs.rows && rs.rows.length > 0 ? toPlainRow(rs.columns, rs.rows[0]) : undefined;
+        },
+        async all(sql, ...params) {
+            const rs = await target.execute({ sql, args: normalizeSqlArgs(params) });
+            if (!rs.rows || rs.rows.length === 0) return [];
+            return rs.rows.map((r) => toPlainRow(rs.columns, r));
+        },
+        async run(sql, ...params) {
+            const rs = await target.execute({ sql, args: normalizeSqlArgs(params) });
+            const lastID = rs.lastInsertRowid !== undefined && rs.lastInsertRowid !== null
+                ? Number(rs.lastInsertRowid)
+                : 0;
+            const changes = rs.rowsAffected !== undefined && rs.rowsAffected !== null
+                ? Number(rs.rowsAffected)
+                : 0;
+            return { lastID, changes };
+        },
+        async exec(sql) {
+            if (!sql || !String(sql).trim()) return;
+            await target.executeMultiple(String(sql));
+        },
+        async batch(statements, chunkSize = 80) {
+            const normalized = normalizeBatchStatements(statements);
+            if (!normalized.length) return [];
+            const results = [];
+            for (let i = 0; i < normalized.length; i += chunkSize) {
+                const chunk = normalized.slice(i, i + chunkSize);
+                const chunkRes = isTx
+                    ? await target.batch(chunk)
+                    : await target.batch(chunk, 'write');
+                results.push(...chunkRes);
+            }
+            return results;
+        }
+    };
+}
+
+function wrapTursoClient(client) {
+    const base = createTursoExecutor(client, false);
+    base.rawClient = client;
+    base.close = () => client.close();
+    base.withTransaction = async (fn) => {
+        const tx = await client.transaction('write');
+        const txExec = createTursoExecutor(tx, true);
+        try {
+            const result = await fn(txExec);
+            await tx.commit();
+            return result;
+        } catch (err) {
+            try { await tx.rollback(); } catch (_) {}
+            throw err;
+        } finally {
+            try { tx.close(); } catch (_) {}
+        }
+    };
+    return base;
+}
+
+function wrapSqliteDb(rawDb) {
+    let txQueue = Promise.resolve();
+
+    function makeExec(target) {
+        return {
+            isRemote: false,
+            engine: 'sqlite',
+            get: (sql, ...params) => target.get(sql, ...params),
+            all: (sql, ...params) => target.all(sql, ...params),
+            run: (sql, ...params) => target.run(sql, ...params),
+            exec: (sql) => target.exec(sql),
+            async batch(statements) {
+                const normalized = normalizeBatchStatements(statements);
+                const results = [];
+                for (const st of normalized) {
+                    results.push(await target.run(st.sql, st.args));
+                }
+                return results;
+            }
+        };
+    }
+
+    const wrapped = makeExec(rawDb);
+    wrapped.rawClient = rawDb;
+    wrapped.close = () => rawDb.close();
+    wrapped.withTransaction = (fn) => {
+        const runTx = async () => {
+            await rawDb.run('BEGIN IMMEDIATE');
+            try {
+                const result = await fn(wrapped);
+                await rawDb.run('COMMIT');
+                return result;
+            } catch (err) {
+                try { await rawDb.run('ROLLBACK'); } catch (_) {}
+                throw err;
+            }
+        };
+        const next = txQueue.then(runTx, runTx);
+        txQueue = next.catch(() => {});
+        return next;
+    };
+    return wrapped;
+}
+
+/**
+ * Adds missing columns to an existing table by inspecting PRAGMA table_info once per table.
+ */
+async function ensureColumns(db, tableName, colDefs) {
+    const cols = await db.all(`PRAGMA table_info(${tableName})`);
+    const existing = new Set(cols.map((c) => c.name));
+    for (const [col, def] of colDefs) {
+        if (!existing.has(col)) {
+            await db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${col} ${def}`);
+            existing.add(col);
+        }
+    }
+}
+
+async function openConnection() {
+    const tursoUrl = process.env.TURSO_DATABASE_URL && process.env.TURSO_DATABASE_URL.trim();
+    if (tursoUrl) {
+        const { createClient } = require('@libsql/client/web');
+        const client = createClient({
+            url: tursoUrl,
+            authToken: process.env.TURSO_AUTH_TOKEN ? process.env.TURSO_AUTH_TOKEN.trim() : undefined,
+            intMode: 'number'
+        });
+        return wrapTursoClient(client);
+    }
+
+    const sqlite3 = require('sqlite3');
+    const { open } = require('sqlite');
+    const rawDb = await open({
         filename: path.join(__dirname, 'database.sqlite'),
         driver: sqlite3.Database
     });
+    await rawDb.run('PRAGMA foreign_keys = ON');
+    return wrapSqliteDb(rawDb);
+}
 
-    await db.run('PRAGMA foreign_keys = ON');
+async function initDb() {
+    const dbKey = (process.env.TURSO_DATABASE_URL && process.env.TURSO_DATABASE_URL.trim())
+        || path.join(__dirname, 'database.sqlite');
+    if (cachedDbPromise && cachedDbKey === dbKey) {
+        return cachedDbPromise;
+    }
 
-    // Migrate users table: add phone and bio columns if they don't exist
-    try { await db.run("ALTER TABLE users ADD COLUMN phone TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE users ADD COLUMN bio TEXT"); } catch (_) {}
+    cachedDbKey = dbKey;
+    cachedDbPromise = _initDbInternal().catch((err) => {
+        cachedDbPromise = null;
+        throw err;
+    });
+    return cachedDbPromise;
+}
 
-    // User management: status, session tracking, blocking
-    try { await db.run("ALTER TABLE users ADD COLUMN status TEXT DEFAULT 'active'"); } catch (_) {}
-    try { await db.run("ALTER TABLE users ADD COLUMN last_login DATETIME"); } catch (_) {}
-    try { await db.run("ALTER TABLE users ADD COLUMN last_seen DATETIME"); } catch (_) {}
-    try { await db.run("ALTER TABLE users ADD COLUMN force_logout_at DATETIME"); } catch (_) {}
-    try { await db.run("ALTER TABLE users ADD COLUMN blocked_by INTEGER REFERENCES users(id)"); } catch (_) {}
+function resetDbCache() {
+    cachedDbPromise = null;
+    cachedDbKey = null;
+}
 
-    // Add nic_number to members, member_relatives, and beneficiaries if they don't exist
-    try { await db.run("ALTER TABLE members ADD COLUMN nic_number TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE member_relatives ADD COLUMN nic_number TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN nic_number TEXT"); } catch (_) {}
+async function _initDbInternal() {
+    const db = await openConnection();
 
-    // Migrate members table: add all columns that may be missing in older databases
-    try { await db.run("ALTER TABLE members ADD COLUMN address TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN city TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN gender TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN age INTEGER"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN monthly_income REAL DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN join_date DATE DEFAULT CURRENT_DATE"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN marital_status TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN bank_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN bank_branch TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN account_number TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN previous_balance REAL DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN blood_group TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN occupation TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN sibling_id INTEGER"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN member_type TEXT DEFAULT 'executive'"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN monthly_subscription REAL DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN status TEXT DEFAULT 'active'"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN photo_url TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN membership_no TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN dob DATE"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN whatsapp TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN designation TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN account_holder_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN emergency_contact_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN emergency_contact_phone TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE members ADD COLUMN notes TEXT"); } catch (_) {}
-
-    // Migrate subscriptions table: support partial payments and payment methods
-    try { await db.run("ALTER TABLE subscriptions ADD COLUMN payment_method TEXT DEFAULT 'cash'"); } catch (_) {}
-    try { await db.run("ALTER TABLE subscriptions ADD COLUMN notes TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE subscriptions ADD COLUMN paid_amount REAL"); } catch (_) {}
-    try { await db.run("ALTER TABLE subscriptions ADD COLUMN is_advance INTEGER DEFAULT 0"); } catch (_) {}
-
-    // Migrate member_relatives table
-    try { await db.run("ALTER TABLE member_relatives ADD COLUMN gender TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE member_relatives ADD COLUMN age INTEGER"); } catch (_) {}
-    try { await db.run("ALTER TABLE member_relatives ADD COLUMN occupation TEXT"); } catch (_) {}
-
-    // Migrate beneficiaries table: add columns added in later schema updates
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN male_head_age INTEGER"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN female_head_special_qualifications TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN guardian_if_divorced TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN assessment_notes TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN rejection_reason TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiaries ADD COLUMN photo_url TEXT"); } catch (_) {}
-
-    // Add gender to child sub-tables
-    try { await db.run("ALTER TABLE beneficiary_children_study ADD COLUMN gender TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiary_children_dropout ADD COLUMN gender TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiary_children_university ADD COLUMN gender TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE beneficiary_children_abroad ADD COLUMN gender TEXT"); } catch (_) {}
-
-    // Migrate families table: add extended household, vulnerability, and demographic columns
-    try { await db.run("ALTER TABLE families ADD COLUMN family_code TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN nic_number TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN head_gender TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN head_dob DATE"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN head_age INTEGER"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN head_occupation TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN marital_status TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN spouse_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN spouse_nic TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN spouse_occupation TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN whatsapp TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN city TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN gn_division TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN adults_count INTEGER DEFAULT 1"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN children_count INTEGER DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN elderly_count INTEGER DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN disabled_count INTEGER DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN dependents_json TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN monthly_income REAL DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN monthly_expenses REAL DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN housing_type TEXT DEFAULT 'own'"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN aid_category TEXT DEFAULT 'general'"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN vulnerability_tags TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN bank_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN bank_branch TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN account_number TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN account_holder_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN priority_score INTEGER DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN verified_by TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN verification_date DATE"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN notes TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE families ADD COLUMN photo_url TEXT"); } catch (_) {}
-
-    // Migrate family_donations table: support payment method, reference no, and distributor
-    try { await db.run("ALTER TABLE family_donations ADD COLUMN payment_method TEXT DEFAULT 'cash'"); } catch (_) {}
-    try { await db.run("ALTER TABLE family_donations ADD COLUMN reference_no TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE family_donations ADD COLUMN distributed_by TEXT"); } catch (_) {}
-
-    // Migrate ramadan_distributions & ramadan_tokens tables: extended campaign, shop allocation & collector fields
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN package_type TEXT DEFAULT 'dry_ration'"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN hijri_year TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN collection_time TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN coordinator_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN coordinator_phone TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN target_quota INTEGER DEFAULT 0"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN package_items TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_distributions ADD COLUMN allocated_shops TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN collector_name TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN collector_nic TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN allocated_shop TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN redeemed_at DATETIME"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN redeemed_by_shop TEXT"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_at DATETIME"); } catch (_) {}
-    try { await db.run("ALTER TABLE ramadan_tokens ADD COLUMN shop_collected_by INTEGER"); } catch (_) {}
+    // Fast path for warm/cold serverless restarts after initial schema setup
+    let schemaAlreadyCurrent = false;
+    try {
+        const verRow = await db.get("SELECT value FROM global_settings WHERE key = 'edf_schema_version'");
+        if (verRow && verRow.value === SCHEMA_VERSION) {
+            schemaAlreadyCurrent = true;
+        }
+    } catch (_) {
+        // Fresh database before global_settings exists
+    }
+    db.schemaAlreadyCurrent = schemaAlreadyCurrent;
+    if (schemaAlreadyCurrent) {
+        return db;
+    }
 
     await db.exec(`
         CREATE TABLE IF NOT EXISTS users (
@@ -523,57 +630,7 @@ async function initDb() {
         );
     `);
 
-    // Add form_template_id to courses if it doesn't exist
-    try {
-        await db.run('ALTER TABLE courses ADD COLUMN form_template_id INTEGER REFERENCES form_templates(id)');
-    } catch (e) {
-        // Column probably already exists
-    }
-
-    // Subscriptions payment channel details migrations
-    const subMigrations = [
-        "ALTER TABLE subscriptions ADD COLUMN reference_number TEXT",
-        "ALTER TABLE subscriptions ADD COLUMN bank_name TEXT",
-        "ALTER TABLE subscriptions ADD COLUMN bank_code TEXT",
-        "ALTER TABLE subscriptions ADD COLUMN cheque_date DATE",
-        "ALTER TABLE subscriptions ADD COLUMN cheque_image TEXT",
-        "ALTER TABLE subscription_payments ADD COLUMN bank_name TEXT",
-        "ALTER TABLE subscription_payments ADD COLUMN bank_code TEXT",
-        "ALTER TABLE subscription_payments ADD COLUMN cheque_date DATE",
-        "ALTER TABLE subscription_payments ADD COLUMN cheque_image TEXT"
-    ];
-    for (const sql of subMigrations) {
-        try {
-            await db.run(sql);
-        } catch (_) {
-            // column already exists
-        }
-    }
-
-    const docMigrations = [
-        "ALTER TABLE documents ADD COLUMN folder TEXT DEFAULT 'General'",
-        "ALTER TABLE documents ADD COLUMN visibility TEXT DEFAULT 'internal'",
-        "ALTER TABLE documents ADD COLUMN is_pinned INTEGER DEFAULT 0"
-    ];
-    for (const sql of docMigrations) {
-        try {
-            await db.run(sql);
-        } catch (_) {
-            // column already exists
-        }
-    }
-
-    const invMigrations = [
-        "ALTER TABLE inventory_items ADD COLUMN location TEXT DEFAULT ''",
-        "ALTER TABLE inventory_items ADD COLUMN image_url TEXT DEFAULT ''"
-    ];
-    for (const sql of invMigrations) {
-        try {
-            await db.run(sql);
-        } catch (_) {
-            // column already exists
-        }
-    }
+    // Column migrations are applied cleanly after all tables are created.
 
     // Ramadan distributions and tokens tables
     await db.exec(`
@@ -1027,12 +1084,290 @@ async function initDb() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
+
+        CREATE TABLE IF NOT EXISTS program_applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id INTEGER NOT NULL,
+            batch_id INTEGER,
+            application_no TEXT,
+            applicant_name TEXT NOT NULL,
+            applicant_phone TEXT,
+            whatsapp_number TEXT,
+            applicant_email TEXT,
+            applicant_dob DATE,
+            applicant_age INTEGER,
+            applicant_gender TEXT,
+            applicant_address TEXT,
+            city TEXT,
+            guardian_name TEXT,
+            guardian_phone TEXT,
+            emergency_contact TEXT,
+            nic_number TEXT,
+            education_level TEXT,
+            occupation TEXT,
+            monthly_family_income REAL DEFAULT 0,
+            beneficiary_id INTEGER,
+            fee_status TEXT DEFAULT 'free',
+            fee_paid REAL DEFAULT 0,
+            attendance_pct INTEGER DEFAULT 0,
+            grade_result TEXT DEFAULT 'pending',
+            certificate_issued INTEGER DEFAULT 0,
+            certificate_no TEXT,
+            motivation TEXT,
+            notes TEXT,
+            status TEXT DEFAULT 'pending',
+            custom_data TEXT,
+            reviewed_by TEXT,
+            reviewed_at DATETIME,
+            applied_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+            FOREIGN KEY (batch_id) REFERENCES batches(id) ON DELETE SET NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS volunteer_activities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            volunteer_id INTEGER NOT NULL REFERENCES volunteers(id) ON DELETE CASCADE,
+            activity_title TEXT NOT NULL,
+            activity_type TEXT DEFAULT 'Field Relief',
+            activity_date DATE NOT NULL,
+            hours_served REAL DEFAULT 0,
+            location TEXT DEFAULT '',
+            coordinator TEXT DEFAULT '',
+            notes TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
     `);
 
-    // Volunteer Force Extended Registry & Activity Deployment Logs
-    const volCols = await db.all('PRAGMA table_info(volunteers)');
-    const volColNames = new Set(volCols.map(c => c.name));
-    const volMigrations = [
+    await ensureAllColumnMigrations(db);
+    await db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_no ON volunteers(volunteer_no) WHERE volunteer_no IS NOT NULL`);
+
+    await db.run(
+        `INSERT OR REPLACE INTO global_settings (key, value) VALUES ('edf_schema_version', ?)`,
+        [SCHEMA_VERSION]
+    );
+
+    return db;
+}
+
+async function ensureAllColumnMigrations(db) {
+    await ensureColumns(db, 'users', [
+        ['phone', 'TEXT'],
+        ['bio', 'TEXT'],
+        ['status', "TEXT DEFAULT 'active'"],
+        ['last_login', 'DATETIME'],
+        ['last_seen', 'DATETIME'],
+        ['force_logout_at', 'DATETIME'],
+        ['blocked_by', 'INTEGER REFERENCES users(id)']
+    ]);
+
+    await ensureColumns(db, 'members', [
+        ['nic_number', 'TEXT'],
+        ['address', 'TEXT'],
+        ['city', 'TEXT'],
+        ['gender', 'TEXT'],
+        ['age', 'INTEGER'],
+        ['monthly_income', 'REAL DEFAULT 0'],
+        ['join_date', 'DATE DEFAULT CURRENT_DATE'],
+        ['marital_status', 'TEXT'],
+        ['bank_name', 'TEXT'],
+        ['bank_branch', 'TEXT'],
+        ['account_number', 'TEXT'],
+        ['previous_balance', 'REAL DEFAULT 0'],
+        ['blood_group', 'TEXT'],
+        ['occupation', 'TEXT'],
+        ['sibling_id', 'INTEGER'],
+        ['member_type', "TEXT DEFAULT 'executive'"],
+        ['monthly_subscription', 'REAL DEFAULT 0'],
+        ['status', "TEXT DEFAULT 'active'"],
+        ['photo_url', 'TEXT'],
+        ['membership_no', 'TEXT'],
+        ['dob', 'DATE'],
+        ['whatsapp', 'TEXT'],
+        ['designation', 'TEXT'],
+        ['account_holder_name', 'TEXT'],
+        ['emergency_contact_name', 'TEXT'],
+        ['emergency_contact_phone', 'TEXT'],
+        ['notes', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'member_relatives', [
+        ['nic_number', 'TEXT'],
+        ['gender', 'TEXT'],
+        ['age', 'INTEGER'],
+        ['occupation', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'subscriptions', [
+        ['payment_method', "TEXT DEFAULT 'cash'"],
+        ['notes', 'TEXT'],
+        ['paid_amount', 'REAL'],
+        ['is_advance', 'INTEGER DEFAULT 0'],
+        ['reference_number', 'TEXT'],
+        ['bank_name', 'TEXT'],
+        ['bank_code', 'TEXT'],
+        ['cheque_date', 'DATE'],
+        ['cheque_image', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'subscription_payments', [
+        ['bank_name', 'TEXT'],
+        ['bank_code', 'TEXT'],
+        ['cheque_date', 'DATE'],
+        ['cheque_image', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'beneficiaries', [
+        ['nic_number', 'TEXT'],
+        ['male_head_age', 'INTEGER'],
+        ['female_head_special_qualifications', 'TEXT'],
+        ['guardian_if_divorced', 'TEXT'],
+        ['assessment_notes', 'TEXT'],
+        ['rejection_reason', 'TEXT'],
+        ['photo_url', 'TEXT']
+    ]);
+
+    for (const childTbl of [
+        'beneficiary_children_study',
+        'beneficiary_children_dropout',
+        'beneficiary_children_university',
+        'beneficiary_children_abroad'
+    ]) {
+        await ensureColumns(db, childTbl, [['gender', 'TEXT']]);
+    }
+
+    await ensureColumns(db, 'families', [
+        ['family_code', 'TEXT'],
+        ['nic_number', 'TEXT'],
+        ['head_gender', 'TEXT'],
+        ['head_dob', 'DATE'],
+        ['head_age', 'INTEGER'],
+        ['head_occupation', 'TEXT'],
+        ['marital_status', 'TEXT'],
+        ['spouse_name', 'TEXT'],
+        ['spouse_nic', 'TEXT'],
+        ['spouse_occupation', 'TEXT'],
+        ['whatsapp', 'TEXT'],
+        ['city', 'TEXT'],
+        ['gn_division', 'TEXT'],
+        ['adults_count', 'INTEGER DEFAULT 1'],
+        ['children_count', 'INTEGER DEFAULT 0'],
+        ['elderly_count', 'INTEGER DEFAULT 0'],
+        ['disabled_count', 'INTEGER DEFAULT 0'],
+        ['dependents_json', 'TEXT'],
+        ['monthly_income', 'REAL DEFAULT 0'],
+        ['monthly_expenses', 'REAL DEFAULT 0'],
+        ['housing_type', "TEXT DEFAULT 'own'"],
+        ['aid_category', "TEXT DEFAULT 'general'"],
+        ['vulnerability_tags', 'TEXT'],
+        ['bank_name', 'TEXT'],
+        ['bank_branch', 'TEXT'],
+        ['account_number', 'TEXT'],
+        ['account_holder_name', 'TEXT'],
+        ['priority_score', 'INTEGER DEFAULT 0'],
+        ['verified_by', 'TEXT'],
+        ['verification_date', 'DATE'],
+        ['notes', 'TEXT'],
+        ['photo_url', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'family_donations', [
+        ['payment_method', "TEXT DEFAULT 'cash'"],
+        ['reference_no', 'TEXT'],
+        ['distributed_by', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'ramadan_distributions', [
+        ['package_type', "TEXT DEFAULT 'dry_ration'"],
+        ['hijri_year', 'TEXT'],
+        ['collection_time', 'TEXT'],
+        ['coordinator_name', 'TEXT'],
+        ['coordinator_phone', 'TEXT'],
+        ['target_quota', 'INTEGER DEFAULT 0'],
+        ['package_items', 'TEXT'],
+        ['allocated_shops', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'ramadan_tokens', [
+        ['collector_name', 'TEXT'],
+        ['collector_nic', 'TEXT'],
+        ['allocated_shop', 'TEXT'],
+        ['redeemed_at', 'DATETIME'],
+        ['redeemed_by_shop', 'TEXT'],
+        ['shop_collected_at', 'DATETIME'],
+        ['shop_collected_by', 'INTEGER'],
+        ['issued_at', 'DATETIME'],
+        ['issued_by', 'INTEGER']
+    ]);
+
+    await ensureColumns(db, 'documents', [
+        ['folder', "TEXT DEFAULT 'General'"],
+        ['visibility', "TEXT DEFAULT 'internal'"],
+        ['is_pinned', 'INTEGER DEFAULT 0']
+    ]);
+
+    await ensureColumns(db, 'inventory_items', [
+        ['location', "TEXT DEFAULT ''"],
+        ['image_url', "TEXT DEFAULT ''"]
+    ]);
+
+    await ensureColumns(db, 'courses', [
+        ['form_template_id', 'INTEGER REFERENCES form_templates(id)'],
+        ['description', 'TEXT'],
+        ['max_capacity', 'INTEGER DEFAULT 30'],
+        ['fee', 'REAL DEFAULT 0'],
+        ['location', 'TEXT'],
+        ['duration_weeks', 'INTEGER DEFAULT 8'],
+        ['duration_type', "TEXT DEFAULT 'weeks'"],
+        ['program_code', 'TEXT'],
+        ['level', "TEXT DEFAULT 'all_levels'"],
+        ['delivery_mode', "TEXT DEFAULT 'in_person'"],
+        ['language', "TEXT DEFAULT 'Tamil & Sinhala'"],
+        ['schedule_days', 'TEXT'],
+        ['schedule_time', 'TEXT'],
+        ['coordinator_name', 'TEXT'],
+        ['coordinator_phone', 'TEXT'],
+        ['certification', "TEXT DEFAULT 'certificate'"],
+        ['scholarship_available', 'INTEGER DEFAULT 1'],
+        ['prerequisites', 'TEXT'],
+        ['syllabus_topics', 'TEXT'],
+        ['materials_provided', 'TEXT'],
+        ['start_date', 'DATE'],
+        ['application_deadline', 'DATE']
+    ]);
+
+    await ensureColumns(db, 'batches', [
+        ['max_seats', 'INTEGER DEFAULT 30'],
+        ['location', 'TEXT'],
+        ['batch_code', 'TEXT'],
+        ['instructor_phone', 'TEXT'],
+        ['schedule_days', 'TEXT'],
+        ['schedule_time', 'TEXT'],
+        ['delivery_mode', "TEXT DEFAULT 'in_person'"],
+        ['notes', 'TEXT']
+    ]);
+
+    await ensureColumns(db, 'program_applications', [
+        ['custom_data', 'TEXT'],
+        ['application_no', 'TEXT'],
+        ['whatsapp_number', 'TEXT'],
+        ['applicant_dob', 'DATE'],
+        ['city', 'TEXT'],
+        ['emergency_contact', 'TEXT'],
+        ['occupation', 'TEXT'],
+        ['monthly_family_income', 'REAL DEFAULT 0'],
+        ['beneficiary_id', 'INTEGER'],
+        ['fee_status', "TEXT DEFAULT 'free'"],
+        ['fee_paid', 'REAL DEFAULT 0'],
+        ['attendance_pct', 'INTEGER DEFAULT 0'],
+        ['grade_result', "TEXT DEFAULT 'pending'"],
+        ['certificate_issued', 'INTEGER DEFAULT 0'],
+        ['certificate_no', 'TEXT'],
+        ['motivation', 'TEXT'],
+        ['reviewed_by', 'TEXT'],
+        ['reviewed_at', 'DATETIME']
+    ]);
+
+    await ensureColumns(db, 'volunteers', [
         ['volunteer_no', 'TEXT'],
         ['nic_number', 'TEXT'],
         ['whatsapp', 'TEXT'],
@@ -1053,30 +1388,7 @@ async function initDb() {
         ['photo_url', 'TEXT'],
         ['notes', 'TEXT'],
         ['updated_at', 'DATETIME']
-    ];
-    for (const [col, def] of volMigrations) {
-        if (!volColNames.has(col)) {
-            await db.exec(`ALTER TABLE volunteers ADD COLUMN ${col} ${def}`);
-        }
-    }
-    await db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_volunteers_no ON volunteers(volunteer_no) WHERE volunteer_no IS NOT NULL`);
-
-    await db.exec(`
-        CREATE TABLE IF NOT EXISTS volunteer_activities (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            volunteer_id INTEGER NOT NULL REFERENCES volunteers(id) ON DELETE CASCADE,
-            activity_title TEXT NOT NULL,
-            activity_type TEXT DEFAULT 'Field Relief',
-            activity_date DATE NOT NULL,
-            hours_served REAL DEFAULT 0,
-            location TEXT DEFAULT '',
-            coordinator TEXT DEFAULT '',
-            notes TEXT DEFAULT '',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    `);
-
-    return db;
+    ]);
 }
 
-module.exports = { initDb };
+module.exports = { initDb, resetDbCache, wrapTursoClient, wrapSqliteDb };
