@@ -1587,10 +1587,72 @@
     });
   }
 
+  let _lottieViewportObserver = null;
+
+  function _mountLottieSlot(slot) {
+    if (slot._edfLottieAnim) return slot._edfLottieAnim;
+    const hasLottie = typeof window.lottie !== 'undefined' && typeof window.lottie.loadAnimation === 'function';
+    const iconName = slot.getAttribute('data-lottie-icon');
+    const animData = LOTTIE_ICONS[iconName];
+    if (!hasLottie || !animData) return null;
+
+    const prefersReduced =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const triggerMode = slot.getAttribute('data-lottie-trigger') || 'hover';
+    const isAlwaysLoop = _shouldAlwaysLoop(slot, prefersReduced);
+
+    slot.innerHTML = '';
+    const dataClone = JSON.parse(JSON.stringify(animData));
+    const anim = window.lottie.loadAnimation({
+      container: slot,
+      renderer: 'svg',
+      loop: true,
+      autoplay: isAlwaysLoop,
+      animationData: dataClone,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid meet',
+        progressiveLoad: true
+      }
+    });
+    slot._edfLottieAnim = anim;
+
+    const restFrame = 18;
+    if (!isAlwaysLoop) {
+      anim.goToAndStop(restFrame, true);
+    } else {
+      anim.setSpeed(triggerMode === 'loop' ? 0.8 : 0.9);
+    }
+    return anim;
+  }
+
+  function _ensureViewportObserver() {
+    if (_lottieViewportObserver || !('IntersectionObserver' in window)) return _lottieViewportObserver;
+    const prefersReduced =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    _lottieViewportObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const slot = entry.target;
+          if (entry.isIntersecting) {
+            const anim = _mountLottieSlot(slot);
+            if (anim && _shouldAlwaysLoop(slot, prefersReduced)) {
+              anim.play();
+            }
+          } else if (slot._edfLottieAnim) {
+            slot._edfLottieAnim.pause();
+          }
+        });
+      },
+      { rootMargin: '160px 0px' }
+    );
+    return _lottieViewportObserver;
+  }
+
   function initEdfLottieIcons() {
     const prefersReduced =
       window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const hasLottie = typeof window.lottie !== 'undefined' && typeof window.lottie.loadAnimation === 'function';
+    const observer = _ensureViewportObserver();
 
     document.querySelectorAll('[data-lottie-icon]').forEach((slot) => {
       if (slot.dataset.lottieBound === '1') return;
@@ -1598,50 +1660,34 @@
 
       const iconName = slot.getAttribute('data-lottie-icon');
       const animData = LOTTIE_ICONS[iconName];
-      const triggerMode = slot.getAttribute('data-lottie-trigger') || 'hover';
 
-      if (slot._edfLottieAnim && typeof slot._edfLottieAnim.destroy === 'function') {
-        try { slot._edfLottieAnim.destroy(); } catch (_) {}
-        slot._edfLottieAnim = null;
-        slot.innerHTML = '';
-      }
-
-      if (!hasLottie || !animData) {
+      // Render lightweight crisp SVG immediately so First Contentful Paint is 0ms
+      if (!slot._edfLottieAnim) {
         slot.innerHTML = FALLBACK_SVGS[iconName] || FALLBACK_SVGS.sparkles;
-        return;
       }
 
-      // Deep clone animationData per instance to avoid cross-instance mutation in lottie-web
-      const dataClone = JSON.parse(JSON.stringify(animData));
+      if (!hasLottie || !animData) return;
+
       const isAlwaysLoop = _shouldAlwaysLoop(slot, prefersReduced);
-
-      const anim = window.lottie.loadAnimation({
-        container: slot,
-        renderer: 'svg',
-        loop: true,
-        autoplay: isAlwaysLoop,
-        animationData: dataClone,
-        rendererSettings: {
-          preserveAspectRatio: 'xMidYMid meet',
-          progressiveLoad: false
+      if (isAlwaysLoop) {
+        if (observer) {
+          observer.observe(slot);
+        } else {
+          _mountLottieSlot(slot);
         }
-      });
-      slot._edfLottieAnim = anim;
-
-      const restFrame = 18;
-      if (!isAlwaysLoop) {
-        anim.goToAndStop(restFrame, true);
-      } else {
-        anim.setSpeed(triggerMode === 'loop' ? 0.8 : 0.9);
+      } else if (observer) {
+        observer.observe(slot);
       }
 
       if (prefersReduced || slot.dataset.lottieHoverBound === '1') return;
       slot.dataset.lottieHoverBound = '1';
 
+      const restFrame = 18;
       const interactiveParent = slot.closest('a, button, .sb-search-wrap, .mem-kpi-card, .um-kpi-card, .mem-tier-card, .mem-card, .inv-kpi-card, .bh-cat-tile, .bh-section-card, .vol-kpi-card, .vol-step-tab, .vol-card, .vv-tab-btn, .vol-wing-tile') || slot;
       const playOnInteract = (speed) => {
-        const activeAnim = slot._edfLottieAnim;
-        if (!activeAnim || document.documentElement.classList.contains('no-transitions')) return;
+        if (document.documentElement.classList.contains('no-transitions')) return;
+        const activeAnim = slot._edfLottieAnim || _mountLottieSlot(slot);
+        if (!activeAnim) return;
         activeAnim.setSpeed(speed);
         if (!_shouldAlwaysLoop(slot, prefersReduced)) {
           activeAnim.goToAndPlay(0, true);
@@ -1656,10 +1702,10 @@
           activeAnim.goToAndStop(restFrame, true);
         }
       };
-      interactiveParent.addEventListener('mouseenter', () => playOnInteract(1.35));
-      interactiveParent.addEventListener('focusin', () => playOnInteract(1.25));
-      interactiveParent.addEventListener('mouseleave', stopOnLeave);
-      interactiveParent.addEventListener('focusout', stopOnLeave);
+      interactiveParent.addEventListener('mouseenter', () => playOnInteract(1.35), { passive: true });
+      interactiveParent.addEventListener('focusin', () => playOnInteract(1.25), { passive: true });
+      interactiveParent.addEventListener('mouseleave', stopOnLeave, { passive: true });
+      interactiveParent.addEventListener('focusout', stopOnLeave, { passive: true });
     });
   }
 

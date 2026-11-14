@@ -1,57 +1,52 @@
-const jwt = require('jsonwebtoken');
+const path = require('path');
 
-module.exports = (db) => {
-    let cache = { on: false, at: 0 };
+let _cachedVal = null;
+let _cacheExpiry = 0;
+const CACHE_TTL = 30000; // 30 seconds
 
+const BYPASS_EXACT = new Set([
+    '/login', '/login.html',
+    '/dashboard', '/dashboard.html',
+    '/maintenance.html',
+    '/404.html'
+]);
+
+const BYPASS_PREFIX = ['/api/', '/css/', '/js/', '/uploads/', '/vendor/', '/images/'];
+const STATIC_EXT = /\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp|map)$/i;
+
+module.exports = function maintenanceGuard(db) {
     async function isMaintenanceOn() {
-        if (Date.now() - cache.at < 5000) return cache.on;
+        const now = Date.now();
+        if (_cachedVal !== null && now < _cacheExpiry) return _cachedVal;
         try {
             const row = await db.get("SELECT value FROM global_settings WHERE key = 'maintenance_mode'");
-            cache = { on: row?.value === '1', at: Date.now() };
-        } catch (_) {
-            cache.at = Date.now(); // retry in 5s on error
+            _cachedVal = row ? row.value === 'true' : false;
+        } catch {
+            _cachedVal = false;
         }
-        return cache.on;
+        _cacheExpiry = now + CACHE_TTL;
+        return _cachedVal;
     }
 
-    const STATIC_EXT = /\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|map|webp|avif)$/i;
-
-    return async (req, res, next) => {
-        if (!(await isMaintenanceOn())) return next();
-
+    return async function (req, res, next) {
         const p = req.path;
 
-        // Always allow the maintenance page and its assets
-        if (p === '/maintenance' || p === '/maintenance.html') return next();
+        // If maintenance mode is toggled via settings API, invalidate cache immediately
+        if (req.method !== 'GET' && p.startsWith('/api/settings')) {
+            _cachedVal = null;
+            _cacheExpiry = 0;
+        }
 
-        // Allow the login page so admins can sign in
-        if (p === '/login' || p === '/login.html') return next();
-
-        // Allow static assets (CSS, JS, images) so maintenance page renders correctly
+        // Fast bypass for all static files, API routes, login & dashboard before touching DB
         if (STATIC_EXT.test(p)) return next();
+        if (BYPASS_EXACT.has(p)) return next();
+        if (BYPASS_PREFIX.some(prefix => p.startsWith(prefix))) return next();
 
-        // Allow auth API and the public maintenance-status endpoint
-        if (p.startsWith('/api/auth/') || p === '/api/settings/maintenance') return next();
+        if (!(await isMaintenanceOn())) return next();
 
-        // Admins bypass maintenance mode
-        const token =
-            req.cookies?.token ||
-            (req.headers.authorization?.startsWith('Bearer ')
-                ? req.headers.authorization.slice(7)
-                : null);
-        if (token) {
-            try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                if (decoded.role === 'admin' || decoded.role === 'super_user') return next();
-            } catch (_) { /* invalid / expired */ }
-        }
-
-        // Block API calls with 503
-        if (p.startsWith('/api/')) {
-            return res.status(503).json({ message: 'System is under maintenance. Please check back soon.', maintenance: true });
-        }
-
-        // Redirect all other requests to the maintenance page
-        return res.redirect('/maintenance');
+        // Redirect all other visitors to the maintenance page
+        return res.status(503).sendFile(
+            path.join(__dirname, '../../public/maintenance.html')
+        );
     };
 };

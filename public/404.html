@@ -20,52 +20,14 @@
     href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@500;600;700;800&family=Cinzel:wght@600;700;800;900&family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
     rel="stylesheet">
 
-  <!-- Font Awesome 6.5.1 CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Local Font Awesome 6 -->
+  <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
 
-  <!-- Lucide Icons (Shadcn/UI Official Icon Library) -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons (Deferred) -->
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            emerald: {
-              950: '#041c15',
-              900: '#062c22',
-              850: '#083529',
-              800: '#0a3d30',
-              700: '#0f5241',
-              600: '#146b54',
-              500: '#10b981',
-              100: '#e6f7f2',
-              50: '#f0fbf7',
-            },
-            amber: {
-              450: '#d4af37',
-              550: '#b8861c',
-            },
-            parchment: {
-              DEFAULT: '#faf8f5',
-              dark: '#f3eee3',
-            }
-          },
-          fontFamily: {
-            serif: ['"Playfair Display"', 'Cinzel', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-            arabic: ['Amiri', 'serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          }
-        }
-      }
-    };
-  </script>
+  <!-- Pre-compiled Minified Tailwind CSS (Eliminates Runtime Compiler Delay) -->
+  <link rel="stylesheet" href="/css/tailwind-public.min.css?v=1.0" />
 
   <!-- Bespoke NGO & Shadcn/UI Design System -->
   <link rel="stylesheet" href="/css/landing-ngo.css">

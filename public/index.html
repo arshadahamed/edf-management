@@ -29,55 +29,20 @@
     href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@500;600;700;800&family=Cinzel:wght@600;700;800;900&family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
     rel="stylesheet">
 
-  <!-- Font Awesome 6.5.1 CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Preload Primary Hero Visual -->
+  <link rel="preload" as="image" href="/images/hero-storyboard/act1-solidarity.jpg" fetchpriority="high">
 
-  <!-- Lucide Icons (Shadcn/UI Official Icon Library) -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Local Font Awesome 6 -->
+  <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
+
+  <!-- Lucide Icons (Deferred) -->
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 
   <!-- Swiper 11 CSS CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            emerald: {
-              950: '#041c15',
-              900: '#062c22',
-              850: '#083529',
-              800: '#0a3d30',
-              700: '#0f5241',
-              600: '#146b54',
-              500: '#10b981',
-              100: '#e6f7f2',
-              50: '#f0fbf7',
-            },
-            amber: {
-              450: '#d4af37',
-              550: '#b8861c',
-            },
-            parchment: {
-              DEFAULT: '#faf8f5',
-              dark: '#f3eee3',
-            }
-          },
-          fontFamily: {
-            serif: ['"Playfair Display"', 'Cinzel', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-            arabic: ['Amiri', 'serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          }
-        }
-      }
-    };
-  </script>
+  <!-- Pre-compiled Minified Tailwind CSS (Eliminates Runtime Compiler Delay) -->
+  <link rel="stylesheet" href="/css/tailwind-public.min.css?v=1.0" />
 
   <!-- Bespoke NGO & Shadcn/UI Design System -->
   <link rel="stylesheet" href="/css/landing-ngo.css?v=3.4">
@@ -641,7 +606,7 @@
             <!-- Interactive 3D WebGL Coverflow & Field Impact Viewport -->
             <div id="hero-sb-viewport">
               <div id="hero-sb-fallback-layer">
-                <img id="hero-sb-fallback-img" src="/images/hero-storyboard/act1-solidarity.jpg" alt="EDF Galgamuwa community charity volunteers organizing aid and education plans" loading="eager">
+                <img id="hero-sb-fallback-img" src="/images/hero-storyboard/act1-solidarity.jpg" alt="EDF Galgamuwa community charity volunteers organizing aid and education plans" loading="eager" fetchpriority="high" decoding="async">
               </div>
 
               <canvas id="hero-storyboard-3d-canvas"></canvas>
@@ -690,7 +655,7 @@
             <div id="hero-sb-rail" class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-emerald-950/95 border-t border-emerald-800/80">
               <button type="button" class="hero-sb-thumb is-active p-1.5" data-act="0">
                 <div class="relative aspect-[16/9] rounded-lg overflow-hidden mb-1.5">
-                  <img src="/images/hero-storyboard/act1-solidarity.jpg" alt="Charity assessment and family coordination" class="w-full h-full object-cover">
+                  <img src="/images/hero-storyboard/act1-solidarity.jpg" alt="Charity assessment and family coordination" class="w-full h-full object-cover" decoding="async">
                   <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-950/85 border border-amber-400/40 text-[9px] font-mono font-bold text-amber-300">01</span>
                 </div>
                 <div class="text-[11px] font-bold text-white truncate px-0.5" data-i18n="hero.sb1Short">Verified Needs</div>
@@ -699,7 +664,7 @@
 
               <button type="button" class="hero-sb-thumb p-1.5" data-act="1">
                 <div class="relative aspect-[16/9] rounded-lg overflow-hidden mb-1.5">
-                  <img src="/images/hero-storyboard/act2-relief.jpg" alt="Food packs and home healthcare relief" class="w-full h-full object-cover">
+                  <img src="/images/hero-storyboard/act2-relief.jpg" alt="Food packs and home healthcare relief" class="w-full h-full object-cover" loading="lazy" decoding="async">
                   <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-950/85 border border-emerald-700/60 text-[9px] font-mono font-bold text-emerald-200">02</span>
                 </div>
                 <div class="text-[11px] font-bold text-emerald-100 truncate px-0.5" data-i18n="hero.sb2Short">Shelter &amp; Aid</div>
@@ -708,7 +673,7 @@
 
               <button type="button" class="hero-sb-thumb p-1.5" data-act="2">
                 <div class="relative aspect-[16/9] rounded-lg overflow-hidden mb-1.5">
-                  <img src="/images/hero-storyboard/act3-guild.jpg" alt="Education classes and tailoring empowerment" class="w-full h-full object-cover">
+                  <img src="/images/hero-storyboard/act3-guild.jpg" alt="Education classes and tailoring empowerment" class="w-full h-full object-cover" loading="lazy" decoding="async">
                   <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-950/85 border border-emerald-700/60 text-[9px] font-mono font-bold text-emerald-200">03</span>
                 </div>
                 <div class="text-[11px] font-bold text-emerald-100 truncate px-0.5" data-i18n="hero.sb3Short">Education &amp; Trade</div>
@@ -717,7 +682,7 @@
 
               <button type="button" class="hero-sb-thumb p-1.5" data-act="3">
                 <div class="relative aspect-[16/9] rounded-lg overflow-hidden mb-1.5">
-                  <img src="/images/hero-storyboard/act4-dignity.jpg" alt="Resilient self-reliant educated family" class="w-full h-full object-cover">
+                  <img src="/images/hero-storyboard/act4-dignity.jpg" alt="Resilient self-reliant educated family" class="w-full h-full object-cover" loading="lazy" decoding="async">
                   <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-emerald-950/85 border border-emerald-700/60 text-[9px] font-mono font-bold text-emerald-200">04</span>
                 </div>
                 <div class="text-[11px] font-bold text-emerald-100 truncate px-0.5" data-i18n="hero.sb4Short">Self-Reliance</div>
@@ -2550,22 +2515,22 @@
   <!-- ═══════════════════════════════════════════════════════════════════════
        16. THIRD-PARTY LIBRARIES: GSAP + THREE.JS + SWIPER + CONFETTI + I18N
   ═══════════════════════════════════════════════════════════════════════════ -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" defer></script>
 
   <!-- Free Lottie Animated Icons Engine -->
-  <script src="/js/edf-lottie-icons.js?v=3.3"></script>
+  <script src="/js/edf-lottie-icons.js?v=3.4" defer></script>
   <!-- Multilingual Localization (EN / AR / TA / SI) -->
-  <script src="/js/landing-i18n.js?v=3.3"></script>
+  <script src="/js/landing-i18n.js?v=3.4" defer></script>
   <!-- WebGL 3D & GSAP Choreography -->
-  <script src="/js/landing-3d-ngo.js?v=3.3"></script>
+  <script src="/js/landing-3d-ngo.js?v=3.4" defer></script>
   <!-- Client-side NGO Logic & Shadcn Interactions -->
-  <script src="/js/landing-ngo.js?v=3.3"></script>
+  <script src="/js/landing-ngo.js?v=3.4" defer></script>
 </body>
 
 </html>

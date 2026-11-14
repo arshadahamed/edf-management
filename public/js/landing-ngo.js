@@ -552,42 +552,35 @@
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // 5. CMS & FRONTDESK API INTEGRATION (Logo, Content, Partners, Gallery)
+  // 5. CMS & FRONTDESK API INTEGRATION (Single Batched Bootstrap Request)
   // ──────────────────────────────────────────────────────────────────────────
-  fetch('/api/frontdesk/logo')
-    .then((r) => r.json())
-    .then((data) => {
-      if (data && data.url) {
-        document.querySelectorAll('.brand-logo-img').forEach((img) => {
-          img.src = data.url;
-        });
-      }
-    })
-    .catch(() => {});
+  function applyLogoUrl(url) {
+    if (!url) return;
+    document.querySelectorAll('.brand-logo-img').forEach((img) => {
+      img.src = url;
+    });
+  }
 
-  fetch('/api/frontdesk/content/homepage')
-    .then((r) => r.json())
-    .then((d) => {
-      if (!d || typeof d !== 'object') return;
-      const setVal = (id, key) => {
-        if (d[key]) {
-          const el = document.getElementById(id);
-          if (el) el.textContent = d[key];
-        }
-      };
-      setVal('hero-pill-text', 'hero.founding');
-      setVal('hero-sub', 'hero.sub');
-      setVal('cta-donate-text', 'hero.cta');
-      setVal('hstat-1-val', 'stat1.val');
-      setVal('hstat-1-lbl', 'stat1.lbl');
-      setVal('hstat-2-val', 'stat2.val');
-      setVal('hstat-2-lbl', 'stat2.lbl');
-      setVal('hstat-3-val', 'stat3.val');
-      setVal('hstat-3-lbl', 'stat3.lbl');
-      setVal('join-sub-text', 'join.sub');
-      setVal('join-member-count', 'join.count');
-    })
-    .catch(() => {});
+  function applyHomepageContent(d) {
+    if (!d || typeof d !== 'object') return;
+    const setVal = (id, key) => {
+      if (d[key]) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = d[key];
+      }
+    };
+    setVal('hero-pill-text', 'hero.founding');
+    setVal('hero-sub', 'hero.sub');
+    setVal('cta-donate-text', 'hero.cta');
+    setVal('hstat-1-val', 'stat1.val');
+    setVal('hstat-1-lbl', 'stat1.lbl');
+    setVal('hstat-2-val', 'stat2.val');
+    setVal('hstat-2-lbl', 'stat2.lbl');
+    setVal('hstat-3-val', 'stat3.val');
+    setVal('hstat-3-lbl', 'stat3.lbl');
+    setVal('join-sub-text', 'join.sub');
+    setVal('join-member-count', 'join.count');
+  }
 
   const DEFAULT_PARTNERS = [
     { name: 'Local Government — Galgamuwa' },
@@ -613,12 +606,6 @@
   }
 
   renderPartners(DEFAULT_PARTNERS);
-  fetch('/api/frontdesk/partners')
-    .then((r) => r.json())
-    .then((partners) => {
-      if (Array.isArray(partners) && partners.length) renderPartners(partners);
-    })
-    .catch(() => {});
 
   const DEFAULT_GALLERY = [
     {
@@ -683,7 +670,7 @@
       return `
         <div class="gallery-card group relative overflow-hidden rounded-2xl bg-emerald-950 shadow-md border border-emerald-900/15 cursor-pointer transform transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl" data-index="${idx}">
           <div class="aspect-4/3 w-full overflow-hidden bg-emerald-950/40 relative">
-            <img src="${imgSrc}" alt="${caption}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=800&q=80'">
+            <img src="${imgSrc}" alt="${caption}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=800&q=80'">
             <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/30 to-transparent opacity-85 group-hover:opacity-95 transition-opacity"></div>
             <div class="absolute top-3 left-3">
               <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-900/80 backdrop-blur-md text-amber-300 border border-amber-400/30">
@@ -719,15 +706,23 @@
     });
   }
 
-  fetch('/api/frontdesk/gallery')
-    .then((r) => r.json())
-    .then((imgs) => {
-      if (Array.isArray(imgs) && imgs.length > 0) {
-        currentGalleryItems = imgs;
+  // Render default gallery immediately without waiting on network
+  renderGalleryGrid('all');
+
+  // Single batched bootstrap fetch for Logo + Homepage CMS + Partners + Gallery
+  fetch('/api/frontdesk/bootstrap')
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((boot) => {
+      if (!boot || typeof boot !== 'object') return;
+      if (boot.logoUrl) applyLogoUrl(boot.logoUrl);
+      if (boot.homepage) applyHomepageContent(boot.homepage);
+      if (Array.isArray(boot.partners) && boot.partners.length) renderPartners(boot.partners);
+      if (Array.isArray(boot.gallery) && boot.gallery.length) {
+        currentGalleryItems = boot.gallery;
+        renderGalleryGrid('all');
       }
-      renderGalleryGrid('all');
     })
-    .catch(() => renderGalleryGrid('all'));
+    .catch(() => {});
 
   document.querySelectorAll('.gal-filter-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -1065,29 +1060,35 @@
     }
   };
 
+  let scrollTicking = false;
   window.addEventListener('scroll', () => {
-    const top = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollRatio = docHeight > 0 ? Math.min(1, Math.max(0, top / docHeight)) : 0;
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      scrollTicking = false;
+      const top = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollRatio = docHeight > 0 ? Math.min(1, Math.max(0, top / docHeight)) : 0;
 
-    if (navbar) {
-      navbar.classList.toggle('navbar-floating', top > 36);
-    }
+      if (navbar) {
+        navbar.classList.toggle('navbar-floating', top > 36);
+      }
 
-    if (navScrollFill) {
-      navScrollFill.style.width = (scrollRatio * 100).toFixed(1) + '%';
-    }
+      if (navScrollFill) {
+        navScrollFill.style.width = (scrollRatio * 100).toFixed(1) + '%';
+      }
 
-    if (backToTop) {
-      backToTop.classList.toggle('visible', top > 380);
-    }
+      if (backToTop) {
+        backToTop.classList.toggle('visible', top > 380);
+      }
 
-    if (bttRing) {
-      const len = 125.6; // 2 * PI * 20
-      bttRing.style.strokeDashoffset = String(len * (1 - scrollRatio));
-    }
+      if (bttRing) {
+        const len = 125.6; // 2 * PI * 20
+        bttRing.style.strokeDashoffset = String(len * (1 - scrollRatio));
+      }
 
-    updateScrollSpyNav();
+      updateScrollSpyNav();
+    });
   }, { passive: true });
   setTimeout(updateScrollSpyNav, 120);
 

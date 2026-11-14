@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -31,6 +32,41 @@ async function createApp() {
 
         // Security headers
         app.use(helmet({ contentSecurityPolicy: false }));
+
+        // Built-in Gzip compression for HTML, CSS, JS, JSON & SVG (critical for Cloudflare Tunnel & local speed)
+        app.use((req, res, next) => {
+            const acceptEncoding = req.headers['accept-encoding'] || '';
+            if (!/\bgzip\b/i.test(acceptEncoding) || req.method === 'HEAD') return next();
+
+            // Intercept sendFile / send / json for compressible text responses
+            const origSend = res.send.bind(res);
+            res.send = function (body) {
+                if (res.headersSent || res.getHeader('Content-Encoding')) {
+                    return origSend(body);
+                }
+                const cType = String(res.getHeader('Content-Type') || '');
+                const isCompressible = /text\/|javascript|json|xml|svg/i.test(cType);
+                if (!isCompressible || !body) return origSend(body);
+
+                const buf = Buffer.isBuffer(body)
+                    ? body
+                    : typeof body === 'string'
+                        ? Buffer.from(body, 'utf8')
+                        : null;
+                if (!buf || buf.length < 1024) return origSend(body);
+
+                try {
+                    const gz = zlib.gzipSync(buf, { level: zlib.constants.Z_BEST_SPEED });
+                    res.setHeader('Content-Encoding', 'gzip');
+                    res.setHeader('Vary', 'Accept-Encoding');
+                    res.removeHeader('Content-Length');
+                    return origSend(gz);
+                } catch (_) {
+                    return origSend(body);
+                }
+            };
+            next();
+        });
 
         // Rate limiting
         const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
@@ -68,8 +104,16 @@ async function createApp() {
         // maintenanceGuard MUST come before express.static so page requests are intercepted first.
         app.use(maintenanceGuard);
 
-        // Static files served locally / from bundled public directory
-        app.use(express.static(PUBLIC_DIR));
+        // Static files served locally / from bundled public directory with fast browser caching for CSS/JS/images/vendor
+        app.use(express.static(PUBLIC_DIR, {
+            etag: true,
+            lastModified: true,
+            setHeaders: (res, filePath) => {
+                if (/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|webp)$/i.test(filePath)) {
+                    res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+                }
+            }
+        }));
 
         // Cloud storage fallback for dynamic uploads (/uploads/* and /images/beneficiaries/*)
         app.use(['/uploads', '/images/beneficiaries'], async (req, res, next) => {
@@ -178,9 +222,51 @@ async function createApp() {
 if (require.main === module) {
     createApp()
         .then((app) => {
-            app.listen(PORT, () => {
-                console.log(`Server is running on http://localhost:${PORT}`);
-            });
+            const os = require('os');
+            const net = require('net');
+            const http = require('http');
+            const https = require('https');
+
+            const certPath = process.env.SSL_CERT_PATH || path.join(os.homedir(), '.cloudflared', 'localhost-cert.pem');
+            const keyPath = process.env.SSL_KEY_PATH || path.join(os.homedir(), '.cloudflared', 'localhost-key.pem');
+
+            if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+                const httpServer = http.createServer(app);
+                const httpsServer = https.createServer({
+                    key: fs.readFileSync(keyPath),
+                    cert: fs.readFileSync(certPath)
+                }, app);
+
+                // Multiplex both HTTP and HTTPS on the same PORT (so both http://localhost:3000 and https://localhost:3000 work)
+                const muxServer = net.createServer((socket) => {
+                    socket.once('readable', () => {
+                        const chunk = socket.read(1);
+                        if (!chunk) return;
+                        socket.unshift(chunk);
+                        // 0x16 (22) is TLS handshake record type
+                        const target = chunk[0] === 0x16 ? httpsServer : httpServer;
+                        target.emit('connection', socket);
+                    });
+                    socket.on('error', () => {});
+                });
+
+                muxServer.on('error', (err) => {
+                    console.error(`Failed to bind port ${PORT}:`, err.message);
+                    process.exit(1);
+                });
+
+                muxServer.listen(PORT, () => {
+                    console.log(`Server is running on http://localhost:${PORT} and https://localhost:${PORT}`);
+                });
+            } else {
+                app.listen(PORT, (err) => {
+                    if (err) {
+                        console.error(`Failed to bind port ${PORT}:`, err.message);
+                        process.exit(1);
+                    }
+                    console.log(`Server is running on http://localhost:${PORT}`);
+                });
+            }
         })
         .catch((err) => {
             console.error('Failed to initialize database:', err);

@@ -328,7 +328,13 @@
       return;
     }
 
-    if (prefersReducedMotion || preloader.dataset.skipRequested === '1') {
+    let alreadySeen = false;
+    try {
+      alreadySeen = sessionStorage.getItem('edf_pl_seen') === '1';
+      if (!alreadySeen) sessionStorage.setItem('edf_pl_seen', '1');
+    } catch (_) {}
+
+    if (alreadySeen || prefersReducedMotion || preloader.dataset.skipRequested === '1') {
       preloader.dataset.done = '1';
       preloader.style.display = 'none';
       runHeroEntrance();
@@ -364,10 +370,10 @@
     if (hasGSAP) {
       const introTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       introTl
-        .fromTo('.pl-mandala-wrap', { scale: 0.72, opacity: 0, rotate: -16 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.65, ease: 'back.out(1.45)' })
-        .fromTo('.pl-calligraphy', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, '-=0.4')
-        .fromTo('.pl-title, .pl-subtitle', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.48, stagger: 0.07 }, '-=0.35')
-        .fromTo('.pl-telemetry-card', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45 }, '-=0.3');
+        .fromTo('.pl-mandala-wrap', { scale: 0.72, opacity: 0, rotate: -16 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.35, ease: 'back.out(1.45)' })
+        .fromTo('.pl-calligraphy', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 }, '-=0.25')
+        .fromTo('.pl-title, .pl-subtitle', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.04 }, '-=0.25')
+        .fromTo('.pl-telemetry-card', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 }, '-=0.2');
     }
 
     const hidePreloaderDom = () => {
@@ -391,7 +397,7 @@
       safetyHideTimer = setTimeout(() => {
         hidePreloaderDom();
         runHeroEntrance();
-      }, 950);
+      }, 550);
 
       if (hasGSAP) {
         const exitTl = gsap.timeline({
@@ -403,17 +409,17 @@
         exitTl
           .to('.pl-center-stage, .pl-top-bar', {
             opacity: 0,
-            y: -22,
+            y: -16,
             scale: 0.96,
-            duration: 0.38,
+            duration: 0.22,
             ease: 'power2.in'
-          }, 0.08)
+          }, 0.02)
           .to(preloader, {
             yPercent: -100,
-            duration: 0.68,
-            ease: 'power4.inOut'
-          }, 0.16)
-          .add(() => runHeroEntrance(), 0.42);
+            duration: 0.38,
+            ease: 'power3.inOut'
+          }, 0.08)
+          .add(() => runHeroEntrance(), 0.18);
       } else {
         hidePreloaderDom();
         runHeroEntrance();
@@ -427,8 +433,8 @@
 
     if (hasGSAP) {
       progressTween = gsap.to(plState, {
-        value: 76,
-        duration: 0.85,
+        value: 88,
+        duration: 0.25,
         ease: 'power2.out',
         onUpdate: () => syncUI(plState.value)
       });
@@ -438,18 +444,14 @@
         if (progressTween) progressTween.kill();
         progressTween = gsap.to(plState, {
           value: 100,
-          duration: 0.45,
-          ease: 'power3.inOut',
+          duration: 0.2,
+          ease: 'power2.out',
           onUpdate: () => syncUI(plState.value),
           onComplete: finishPreloader
         });
       };
 
-      if (document.readyState === 'complete') {
-        setTimeout(completeRamp, 550);
-      } else {
-        window.addEventListener('load', () => setTimeout(completeRamp, 220), { once: true });
-      }
+      setTimeout(completeRamp, 120);
     } else {
       finishPreloader();
     }
@@ -457,7 +459,7 @@
     // Hard failsafe so preloader never hangs even if external assets stall
     setTimeout(() => {
       finishPreloader();
-    }, 2400);
+    }, 750);
   })();
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -815,8 +817,8 @@
     });
 
     let isVisible = true;
+    let heroRafId = 0;
     let heroScrollProgress = 0;
-    observeVisibility(canvas, (v) => { isVisible = v; });
 
     // Scroll-coupled depth zoom & tilt on Hero Sanctuary
     if (hasScrollTrigger && document.getElementById('hero-sanctuary')) {
@@ -860,8 +862,11 @@
 
     const clock = new THREE.Clock();
     function animate() {
-      requestAnimationFrame(animate);
-      if (!isVisible) return;
+      if (!isVisible || document.hidden) {
+        heroRafId = 0;
+        return;
+      }
+      heroRafId = requestAnimationFrame(animate);
 
       const t = clock.getElapsedTime();
 
@@ -880,6 +885,11 @@
 
       renderer.render(scene, camera);
     }
+
+    observeVisibility(canvas, (v) => {
+      isVisible = v;
+      if (v && !heroRafId) animate();
+    });
     animate();
   })();
 
@@ -1297,25 +1307,35 @@
           glowRim.position.z = -0.04;
           grp.add(glowRim);
 
-          // Crisp Islamic Peoples Artwork Plane
-          const tex = loader.load(
-            src,
-            () => {
-              texturesLoaded++;
-              if (texturesLoaded >= 1 && !webglReady) {
-                webglReady = true;
-                canvas.classList.add('is-ready');
-                if (fallbackLayer) fallbackLayer.style.opacity = '0';
-                updateThreePanelTargets(true);
-              }
-            },
-            undefined,
-            () => {}
-          );
-          tex.encoding = THREE.sRGBEncoding;
-          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          // Crisp Islamic Peoples Artwork Plane (Act 1 immediate, Acts 2-4 staggered)
+          const artMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true });
+          const loadPanelTex = () => {
+            const tex = loader.load(
+              src,
+              () => {
+                texturesLoaded++;
+                artMat.map = tex;
+                artMat.needsUpdate = true;
+                if (i === 0 && !webglReady) {
+                  webglReady = true;
+                  canvas.classList.add('is-ready');
+                  if (fallbackLayer) fallbackLayer.style.opacity = '0';
+                  updateThreePanelTargets(true);
+                  if (threeVisible && !sbRafId) renderStoryboard3D();
+                }
+              },
+              undefined,
+              () => {}
+            );
+            tex.encoding = THREE.sRGBEncoding;
+            tex.minFilter = THREE.LinearMipmapLinearFilter;
+          };
+          if (i === 0) {
+            loadPanelTex();
+          } else {
+            setTimeout(loadPanelTex, i * 180);
+          }
 
-          const artMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
           const artPlane = new THREE.Mesh(new THREE.PlaneGeometry(3.52, 1.98), artMat);
           artPlane.position.z = 0.015;
           grp.add(artPlane);
@@ -1352,13 +1372,15 @@
         );
         sbRoot.add(arcParticles);
 
-        observeVisibility(viewport, (v) => { threeVisible = v; });
-
+        let sbRafId = 0;
         const sbClock = new THREE.Clock();
         const tmpPt = new THREE.Vector3();
         function renderStoryboard3D() {
-          requestAnimationFrame(renderStoryboard3D);
-          if (!threeVisible || !webglReady) return;
+          if (!threeVisible || !webglReady || document.hidden) {
+            sbRafId = 0;
+            return;
+          }
+          sbRafId = requestAnimationFrame(renderStoryboard3D);
 
           const t = sbClock.getElapsedTime();
           sbRoot.rotation.y += (hoverTiltY + dragOffsetY - sbRoot.rotation.y) * 0.08;
@@ -1382,6 +1404,11 @@
 
           sbRenderer.render(sbScene, sbCamera);
         }
+
+        observeVisibility(viewport, (v) => {
+          threeVisible = v;
+          if (v && webglReady && !sbRafId) renderStoryboard3D();
+        });
         renderStoryboard3D();
       } catch (e) {
         // Fallback HTML layer remains sharp if WebGL context cannot initialize
@@ -1728,7 +1755,7 @@
     }, { passive: true });
 
     let isUpliftVisible = false;
-    observeVisibility(canvas, (v) => { isUpliftVisible = v; });
+    let upliftRafId = 0;
 
     const clock = new THREE.Clock();
     const lowColor = new THREE.Color(0x0f766e);
@@ -1737,8 +1764,11 @@
     const highEmissive = new THREE.Color(0x996e17);
 
     function renderUplift() {
-      requestAnimationFrame(renderUplift);
-      if (!isUpliftVisible) return;
+      if (!isUpliftVisible || document.hidden) {
+        upliftRafId = 0;
+        return;
+      }
+      upliftRafId = requestAnimationFrame(renderUplift);
 
       const t = clock.getElapsedTime();
       smoothProgress += (targetScrollProgress - smoothProgress) * 0.08;
@@ -1792,7 +1822,10 @@
 
       renderer.render(scene, camera);
     }
-    renderUplift();
+    observeVisibility(canvas, (v) => {
+      isUpliftVisible = v;
+      if (v && !upliftRafId) renderUplift();
+    });
   })();
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -1844,16 +1877,23 @@
     scene.add(stars);
 
     let isVisible = false;
-    observeVisibility(canvas, (v) => { isVisible = v; });
+    let zakatRafId = 0;
 
     function tick() {
-      requestAnimationFrame(tick);
-      if (!isVisible) return;
+      if (!isVisible || document.hidden) {
+        zakatRafId = 0;
+        return;
+      }
+      zakatRafId = requestAnimationFrame(tick);
       stars.rotation.y += 0.0009;
       stars.rotation.x += 0.0003;
       renderer.render(scene, camera);
     }
-    tick();
+
+    observeVisibility(canvas, (v) => {
+      isVisible = v;
+      if (v && !zakatRafId) tick();
+    });
   })();
 
   // ──────────────────────────────────────────────────────────────────────────

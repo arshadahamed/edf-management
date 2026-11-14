@@ -29,7 +29,57 @@ function requireAdmin(req, res, next) {
     next();
 }
 
+let _bootstrapCache = null;
+let _bootstrapExpiry = 0;
+const BOOTSTRAP_TTL = 30000; // 30s cache
+
 module.exports = (db) => {
+
+    // Auto-invalidate bootstrap cache on any non-GET mutation
+    router.use((req, _res, next) => {
+        if (req.method !== 'GET') {
+            _bootstrapCache = null;
+            _bootstrapExpiry = 0;
+        }
+        next();
+    });
+
+    /* ════════════════════════════════════════════
+       BATCHED LANDING PAGE BOOTSTRAP (1 Request Instead of 4)
+    ════════════════════════════════════════════ */
+    router.get('/bootstrap', async (_req, res) => {
+        try {
+            const now = Date.now();
+            if (_bootstrapCache && now < _bootstrapExpiry) {
+                res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=60');
+                return res.json(_bootstrapCache);
+            }
+
+            const [logoRow, homepageRows, partners, gallery] = await Promise.all([
+                db.get(`SELECT content_value FROM site_content WHERE page='site' AND content_key='logo.filename'`).catch(() => null),
+                db.all(`SELECT content_key, content_value FROM site_content WHERE page='homepage'`).catch(() => []),
+                db.all(`SELECT * FROM partner_orgs WHERE is_active=1 ORDER BY sort_order ASC`).catch(() => []),
+                db.all(`SELECT * FROM gallery_images WHERE is_active=1 ORDER BY sort_order ASC, created_at DESC`).catch(() => [])
+            ]);
+
+            const homepage = {};
+            (homepageRows || []).forEach(r => { homepage[r.content_key] = r.content_value; });
+
+            _bootstrapCache = {
+                logoUrl: logoRow ? `/uploads/logo/${logoRow.content_value}` : null,
+                homepage,
+                partners: partners || [],
+                gallery: gallery || []
+            };
+            _bootstrapExpiry = now + BOOTSTRAP_TTL;
+
+            res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=60');
+            res.json(_bootstrapCache);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Failed to load frontdesk bootstrap' });
+        }
+    });
 
     /* ════════════════════════════════════════════
        GALLERY IMAGES

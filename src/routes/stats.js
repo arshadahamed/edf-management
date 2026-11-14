@@ -1,102 +1,169 @@
 const express = require('express');
-const router = express.Router();
 const { authenticateToken } = require('../middleware/authMiddleware');
 
+let _statsCache = null;
+let _statsCacheExpiry = 0;
+const STATS_CACHE_TTL = 12000; // 12 seconds
+
 module.exports = (db) => {
-    // Get all transactions (for Transactions view)
-    router.get('/transactions', authenticateToken, async (req, res) => {
+    const router = express.Router();
+
+    const safeGet = async (sql, params = [], fallback = {}) => {
         try {
-            const transactions = await db.all('SELECT * FROM transactions ORDER BY date DESC');
-            res.json(transactions);
+            return (await db.get(sql, params)) || fallback;
+        } catch {
+            return fallback;
+        }
+    };
+
+    const safeAll = async (sql, params = [], fallback = []) => {
+        try {
+            return (await db.all(sql, params)) || fallback;
+        } catch {
+            return fallback;
+        }
+    };
+
+    // GET /api/stats/public - Public impact numbers (no auth required)
+    let _publicCache = null;
+    let _publicExpiry = 0;
+    router.get('/public', async (_req, res) => {
+        try {
+            const now = Date.now();
+            if (_publicCache && now < _publicExpiry) {
+                return res.json(_publicCache);
+            }
+            const [familyCount, memberCount, benActive] = await Promise.all([
+                safeGet("SELECT COUNT(*) as count FROM families", [], { count: 0 }),
+                safeGet("SELECT COUNT(*) as count FROM members WHERE status = 'active'", [], { count: 0 }),
+                safeGet("SELECT COUNT(*) as count FROM beneficiaries WHERE status = 'active'", [], { count: 0 })
+            ]);
+            _publicCache = {
+                familiesHelped: familyCount.count || 0,
+                activeMembers: memberCount.count || 0,
+                activeBeneficiaries: benActive.count || 0
+            };
+            _publicExpiry = now + 30000;
+            res.json(_publicCache);
         } catch (err) {
-            res.status(500).json({ message: err.message });
+            console.error(err);
+            res.status(500).json({ message: 'Error fetching public stats' });
         }
     });
 
-    // Delete a specific transaction
-    router.delete('/transactions/:id', authenticateToken, async (req, res) => {
-        try {
-            await db.run('DELETE FROM transactions WHERE id=?', [req.params.id]);
-            res.json({ message: 'Transaction deleted' });
-        } catch (err) {
-            res.status(500).json({ message: err.message });
-        }
-    });
-
-    // Get stats for dashboard Overview Command Center
+    // GET /api/stats/stats - Comprehensive Dashboard Overview Intelligence
     router.get('/stats', authenticateToken, async (req, res) => {
-        const safeGet = (sql, params = [], fallback = {}) =>
-            db.get(sql, params).then(r => r || fallback).catch(() => fallback);
-        const safeAll = (sql, params = []) =>
-            db.all(sql, params).catch(() => []);
-
         try {
+            const nowMs = Date.now();
+            if (!req.query.refresh && _statsCache && nowMs < _statsCacheExpiry) {
+                return res.json(_statsCache);
+            }
+
             const now = new Date();
             const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-            // Build chronological last 6 months keys ('YYYY-MM')
+            // Build last 6 months YYYY-MM keys (oldest -> newest)
             const monthBuckets = [];
             for (let i = 5; i >= 0; i--) {
                 const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                monthBuckets.push({
-                    month: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
-                    label: d.toLocaleString('en-US', { month: 'short' }),
-                    income: 0,
-                    expense: 0
-                });
+                const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                monthBuckets.push({ month: ym, label, income: 0, expense: 0 });
             }
-            const sixMonthsStart = `${monthBuckets[0].month}-01`;
+            const oldestMonth = monthBuckets[0].month;
 
             const [
-                donationStats, expenseStats,
+                txSummary,
                 familyCount,
-                benTotal, benActive, benPending,
-                memberCount, memberActive, memberFounders, memberExecutives, memberExpectedSub,
-                subMonthStats,
+                benSummary,
+                memberSummary,
                 volunteerCount,
-                courseCount, courseActive,
-                batchTotal, batchActive,
-                appTotal, appPending, appApproved,
-                externalDonations,
-                rdActive, rdTokensTotal, rdCollected, rdPending, rdActiveCampaign,
-                invSummary, invLowStock, invActiveLoans, invOverdueLoans,
+                courseSummary,
+                rdCampaignSummary,
+                rdTokenSummary,
+                subMonthStats,
+                batchSummary,
+                appSummary,
+                invSummary,
+                loanSummary,
                 pendingBenList,
-                monthlyTxRows, expenseByCat, incomeByCat,
+                monthlyTxRows,
+                expenseByCat,
+                incomeByCat,
                 recentTransactions,
                 recentActivity
             ] = await Promise.all([
-                safeGet("SELECT COALESCE(SUM(amount),0) AS total FROM transactions WHERE category IN ('donation','subscription') AND type='income'", [], { total: 0 }),
-                safeGet("SELECT COALESCE(SUM(amount),0) AS total FROM transactions WHERE type='expense'", [], { total: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM families", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM beneficiaries", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM beneficiaries WHERE LOWER(status)='active'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM beneficiaries WHERE LOWER(status)='pending'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM members", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM members WHERE LOWER(status)='active'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM members WHERE LOWER(status)='active' AND member_type='founder'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM members WHERE LOWER(status)='active' AND member_type='executive'", [], { count: 0 }),
-                safeGet("SELECT COALESCE(SUM(COALESCE(monthly_subscription,0)),0) AS expected, COUNT(CASE WHEN COALESCE(monthly_subscription,0) > 0 THEN 1 END) AS expectedCount FROM members WHERE LOWER(status)='active'", [], { expected: 0, expectedCount: 0 }),
-                safeGet("SELECT COALESCE(SUM(COALESCE(paid_amount, amount, 0)),0) AS collected, COUNT(DISTINCT member_id) AS paidCount FROM subscriptions WHERE month = ?", [currentMonth], { collected: 0, paidCount: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM volunteers WHERE LOWER(status)='active'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM courses", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM courses WHERE LOWER(status)='active'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM batches", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM batches WHERE LOWER(status)='active'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM program_applications", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM program_applications WHERE LOWER(status)='pending'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM program_applications WHERE LOWER(status) IN ('approved','enrolled','accepted')", [], { count: 0 }),
-                safeGet("SELECT COALESCE(SUM(amount),0) AS total FROM external_donations", [], { total: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM ramadan_distributions WHERE LOWER(status)='active'", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM ramadan_tokens", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM ramadan_tokens WHERE LOWER(status) IN ('collected','redeemed')", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM ramadan_tokens WHERE LOWER(status)='pending'", [], { count: 0 }),
-                safeGet("SELECT id, year, title, hijri_year, collection_date, collection_location, voucher_value FROM ramadan_distributions WHERE LOWER(status)='active' ORDER BY year DESC, id DESC LIMIT 1", [], null),
-                safeGet("SELECT COUNT(*) AS totalItems, COALESCE(SUM(COALESCE(quantity,1)),0) AS totalQuantity, COUNT(CASE WHEN library_type IS NOT NULL OR LOWER(COALESCE(category,'')) LIKE '%book%' THEN 1 END) AS bookCount FROM inventory_items", [], { totalItems: 0, totalQuantity: 0, bookCount: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM inventory_items WHERE COALESCE(quantity,0) <= COALESCE(min_threshold,0) AND COALESCE(min_threshold,0) > 0", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM inventory_loans WHERE return_date IS NULL", [], { count: 0 }),
-                safeGet("SELECT COUNT(*) AS count FROM inventory_loans WHERE return_date IS NULL AND expected_return_date IS NOT NULL AND date(expected_return_date) < date('now')", [], { count: 0 }),
-                safeAll("SELECT id, application_number, COALESCE(male_head_name, female_head_name, 'Applicant') AS name, home_town, created_at FROM beneficiaries WHERE LOWER(status)='pending' ORDER BY id DESC LIMIT 4"),
-                safeAll("SELECT strftime('%Y-%m', date) AS ym, type, COALESCE(SUM(amount),0) AS total FROM transactions WHERE date(date) >= date(?) GROUP BY ym, type", [sixMonthsStart]),
+                safeGet(`
+                    SELECT
+                        COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) AS totalDonations,
+                        COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) AS totalExpenses,
+                        COALESCE(SUM(CASE WHEN type = 'income' AND category = 'donation' THEN amount ELSE 0 END), 0) AS externalDonations
+                    FROM transactions
+                `, [], { totalDonations: 0, totalExpenses: 0, externalDonations: 0 }),
+                safeGet("SELECT COUNT(*) as count FROM families", [], { count: 0 }),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS total,
+                        COALESCE(SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END), 0) AS active,
+                        COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) AS pending
+                    FROM beneficiaries
+                `, [], { total: 0, active: 0, pending: 0 }),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS total,
+                        COALESCE(SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END), 0) AS active,
+                        COALESCE(SUM(CASE WHEN category = 'Founder' AND status = 'active' THEN 1 ELSE 0 END), 0) AS founders,
+                        COALESCE(SUM(CASE WHEN category = 'Executive' AND status = 'active' THEN 1 ELSE 0 END), 0) AS executives,
+                        COALESCE(SUM(CASE WHEN status = 'active' AND COALESCE(monthly_sub, 0) > 0 THEN monthly_sub ELSE 0 END), 0) AS expected,
+                        COALESCE(SUM(CASE WHEN status = 'active' AND COALESCE(monthly_sub, 0) > 0 THEN 1 ELSE 0 END), 0) AS expectedCount
+                    FROM members
+                `, [], { total: 0, active: 0, founders: 0, executives: 0, expected: 0, expectedCount: 0 }),
+                safeGet("SELECT COUNT(*) as count FROM volunteers WHERE status = 'active'", [], { count: 0 }),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS total,
+                        COALESCE(SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END), 0) AS active
+                    FROM courses
+                `, [], { total: 0, active: 0 }),
+                safeGet("SELECT id, year, name, pack_items, pack_value, status, (SELECT COUNT(*) FROM ramadan_campaigns WHERE status = 'active') AS activeCount FROM ramadan_campaigns WHERE status = 'active' ORDER BY id DESC LIMIT 1", [], null),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS total,
+                        COALESCE(SUM(CASE WHEN status = 'collected' THEN 1 ELSE 0 END), 0) AS collected,
+                        COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) AS pending
+                    FROM ramadan_tokens
+                `, [], { total: 0, collected: 0, pending: 0 }),
+                safeGet("SELECT COALESCE(SUM(amount), 0) as collected, COUNT(DISTINCT member_id) as paidCount FROM member_subscriptions WHERE month = ?", [currentMonth], { collected: 0, paidCount: 0 }),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS total,
+                        COALESCE(SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END), 0) AS active
+                    FROM batches
+                `, [], { total: 0, active: 0 }),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS total,
+                        COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) AS pending,
+                        COALESCE(SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END), 0) AS approved
+                    FROM program_applications
+                `, [], { total: 0, pending: 0, approved: 0 }),
+                safeGet(`
+                    SELECT
+                        COUNT(*) AS totalItems,
+                        COALESCE(SUM(quantity), 0) AS totalQuantity,
+                        COALESCE(SUM(CASE WHEN category = 'books' THEN 1 ELSE 0 END), 0) AS bookCount,
+                        COALESCE(SUM(CASE WHEN quantity <= COALESCE(min_stock, 2) THEN 1 ELSE 0 END), 0) AS lowStockCount
+                    FROM inventory_items
+                    WHERE status != 'disposed'
+                `, [], { totalItems: 0, totalQuantity: 0, bookCount: 0, lowStockCount: 0 }),
+                safeGet(`
+                    SELECT
+                        COALESCE(SUM(CASE WHEN status = 'borrowed' THEN 1 ELSE 0 END), 0) AS activeLoans,
+                        COALESCE(SUM(CASE WHEN status = 'borrowed' AND due_date IS NOT NULL AND due_date != '' AND date(due_date) < date('now') THEN 1 ELSE 0 END), 0) AS overdueLoans
+                    FROM inventory_loans
+                `, [], { activeLoans: 0, overdueLoans: 0 }),
+                safeAll("SELECT id, name, category, area, created_at FROM beneficiaries WHERE status = 'pending' ORDER BY id DESC LIMIT 5"),
+                safeAll("SELECT substr(date, 1, 7) AS ym, type, COALESCE(SUM(amount), 0) AS total FROM transactions WHERE substr(date, 1, 7) >= ? GROUP BY ym, type", [oldestMonth]),
                 safeAll("SELECT COALESCE(NULLIF(TRIM(category),''), 'other') AS category, COALESCE(SUM(amount),0) AS total FROM transactions WHERE type='expense' GROUP BY category ORDER BY total DESC LIMIT 6"),
                 safeAll("SELECT COALESCE(NULLIF(TRIM(category),''), 'other') AS category, COALESCE(SUM(amount),0) AS total FROM transactions WHERE type='income' GROUP BY category ORDER BY total DESC LIMIT 6"),
                 safeAll("SELECT * FROM transactions ORDER BY date DESC, id DESC LIMIT 15"),
@@ -112,34 +179,34 @@ module.exports = (db) => {
                 else if (row.type === 'expense') target.expense = Number(row.total) || 0;
             }
 
-            const expectedMonthly = Number(memberExpectedSub.expected) || 0;
+            const expectedMonthly = Number(memberSummary.expected) || 0;
             const collectedThisMonth = Number(subMonthStats.collected) || 0;
             const paidMembersCount = Number(subMonthStats.paidCount) || 0;
-            const expectedMembersCount = Number(memberExpectedSub.expectedCount) || 0;
+            const expectedMembersCount = Number(memberSummary.expectedCount) || 0;
             const subCollectionPct = expectedMonthly > 0
                 ? Math.min(100, Math.round((collectedThisMonth / expectedMonthly) * 100))
                 : (paidMembersCount > 0 ? 100 : 0);
 
-            res.json({
-                totalDonations:      donationStats.total,
-                totalExpenses:       expenseStats.total,
-                netBalance:          donationStats.total - expenseStats.total,
+            const payload = {
+                totalDonations:      txSummary.totalDonations,
+                totalExpenses:       txSummary.totalExpenses,
+                netBalance:          txSummary.totalDonations - txSummary.totalExpenses,
                 familyCount:         familyCount.count,
-                beneficiaryCount:    benTotal.count,
-                beneficiaryActive:   benActive.count,
-                beneficiaryPending:  benPending.count,
-                memberCount:         memberCount.count,
-                memberActive:        memberActive.count,
-                memberFounders:      memberFounders.count,
-                memberExecutives:    memberExecutives.count,
+                beneficiaryCount:    benSummary.total,
+                beneficiaryActive:   benSummary.active,
+                beneficiaryPending:  benSummary.pending,
+                memberCount:         memberSummary.total,
+                memberActive:        memberSummary.active,
+                memberFounders:      memberSummary.founders,
+                memberExecutives:    memberSummary.executives,
                 volunteerCount:      volunteerCount.count,
-                courseCount:         courseCount.count,
-                courseActive:        courseActive.count,
-                externalDonations:   externalDonations.total,
-                ramadanActive:       rdActive.count,
-                ramadanTokensTotal:  rdTokensTotal.count,
-                ramadanCollected:    rdCollected.count,
-                ramadanPending:      rdPending.count,
+                courseCount:         courseSummary.total,
+                courseActive:        courseSummary.active,
+                externalDonations:   txSummary.externalDonations,
+                ramadanActive:       rdCampaignSummary ? (rdCampaignSummary.activeCount || 1) : 0,
+                ramadanTokensTotal:  rdTokenSummary.total,
+                ramadanCollected:    rdTokenSummary.collected,
+                ramadanPending:      rdTokenSummary.pending,
                 recentTransactions,
                 subscriptionPulse: {
                     currentMonth,
@@ -153,34 +220,38 @@ module.exports = (db) => {
                 expenseBreakdown: expenseByCat,
                 incomeBreakdown: incomeByCat,
                 programsSummary: {
-                    totalCourses: courseCount.count,
-                    activeCourses: courseActive.count,
-                    totalBatches: batchTotal.count,
-                    activeBatches: batchActive.count,
-                    totalApplications: appTotal.count,
-                    pendingApplications: appPending.count,
-                    approvedApplications: appApproved.count
+                    totalCourses: courseSummary.total,
+                    activeCourses: courseSummary.active,
+                    totalBatches: batchSummary.total,
+                    activeBatches: batchSummary.active,
+                    totalApplications: appSummary.total,
+                    pendingApplications: appSummary.pending,
+                    approvedApplications: appSummary.approved
                 },
                 inventorySummary: {
                     totalItems: invSummary.totalItems || 0,
                     totalQuantity: invSummary.totalQuantity || 0,
                     bookCount: invSummary.bookCount || 0,
-                    lowStockCount: invLowStock.count || 0,
-                    activeLoans: invActiveLoans.count || 0,
-                    overdueLoans: invOverdueLoans.count || 0
+                    lowStockCount: invSummary.lowStockCount || 0,
+                    activeLoans: loanSummary.activeLoans || 0,
+                    overdueLoans: loanSummary.overdueLoans || 0
                 },
-                ramadanSummary: rdActiveCampaign || null,
+                ramadanSummary: rdCampaignSummary || null,
                 actionQueue: {
-                    pendingBeneficiaries: benPending.count || 0,
-                    pendingProgramApps: appPending.count || 0,
-                    pendingRamadanTokens: rdPending.count || 0,
-                    lowStockInventory: invLowStock.count || 0,
-                    overdueLoans: invOverdueLoans.count || 0,
+                    pendingBeneficiaries: benSummary.pending || 0,
+                    pendingProgramApps: appSummary.pending || 0,
+                    pendingRamadanTokens: rdTokenSummary.pending || 0,
+                    lowStockInventory: invSummary.lowStockCount || 0,
+                    overdueLoans: loanSummary.overdueLoans || 0,
                     unpaidSubMembersThisMonth: Math.max(0, expectedMembersCount - paidMembersCount),
                     pendingBeneficiarySamples: pendingBenList
                 },
                 recentActivity
-            });
+            };
+
+            _statsCache = payload;
+            _statsCacheExpiry = Date.now() + STATS_CACHE_TTL;
+            res.json(payload);
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Server error fetching stats' });
