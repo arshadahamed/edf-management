@@ -10,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 const { initDb } = require('./src/db/database');
 const storageSvc = require('./src/services/storage');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const PUBLIC_DIR = fs.existsSync(path.join(process.cwd(), 'public'))
     ? path.join(process.cwd(), 'public')
     : path.join(__dirname, 'public');
