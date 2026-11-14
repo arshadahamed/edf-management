@@ -98,7 +98,18 @@ function maskDbUrl(url) {
 }
 
 function getConfiguredDbUrl() {
-    return (process.env.SUPABASE_DB_URL || '').trim();
+    let url = (process.env.SUPABASE_DB_URL || '').trim();
+    if (!url && fs.existsSync(ENV_PATH)) {
+        try {
+            const raw = fs.readFileSync(ENV_PATH, 'utf8');
+            const m = raw.match(/^\s*SUPABASE_DB_URL\s*=\s*(.+?)\s*$/m);
+            if (m && m[1]) {
+                url = m[1].trim().replace(/^["']|["']$/g, '');
+                if (url) process.env.SUPABASE_DB_URL = url;
+            }
+        } catch (_) {}
+    }
+    return url;
 }
 
 function updateEnvFile(updates) {
@@ -157,7 +168,7 @@ function getOrCreatePool(customUrl) {
         connectionString: url,
         ssl: { rejectUnauthorized: false },
         max: 4,
-        connectionTimeoutMillis: 4500,
+        connectionTimeoutMillis: 10000,
         idleTimeoutMillis: 15000
     });
     _pgPool.on('error', (err) => {
@@ -230,10 +241,16 @@ function mapSqliteTypeToPg(sqliteType) {
     return 'TEXT';
 }
 
+const _tableMetaCache = new Map();
+
 /**
  * Inspects local SQLite3 schema for a table and ensures the matching table + columns exist in Supabase PostgreSQL.
  */
-async function ensurePgTableForSqlite(pgClient, sqliteDb, tableName) {
+async function ensurePgTableForSqlite(pgClient, sqliteDb, tableName, forceDdl = false) {
+    if (!forceDdl && _schemaProvisioned && _tableMetaCache.has(tableName)) {
+        return _tableMetaCache.get(tableName);
+    }
+
     const cols = await sqliteDb.all(`PRAGMA table_info("${tableName}")`);
     if (!cols || !cols.length) return null;
 
@@ -248,32 +265,61 @@ async function ensurePgTableForSqlite(pgClient, sqliteDb, tableName) {
         colDefs.push(`PRIMARY KEY (${pkList})`);
     }
 
-    await pgClient.query(`CREATE TABLE IF NOT EXISTS "${tableName}" (${colDefs.join(', ')})`);
-
-    // Ensure any newly-added columns exist in PostgreSQL as well
-    for (const c of cols) {
+    const addColClauses = cols.map((c) => {
         const pgType = mapSqliteTypeToPg(c.type);
-        await pgClient.query(`ALTER TABLE "${tableName}" ADD COLUMN IF NOT EXISTS "${c.name}" ${pgType}`);
-    }
+        return `ADD COLUMN IF NOT EXISTS "${c.name}" ${pgType}`;
+    }).join(', ');
 
-    return {
+    await pgClient.query(`
+        CREATE TABLE IF NOT EXISTS "${tableName}" (${colDefs.join(', ')});
+        ALTER TABLE "${tableName}" ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE "${tableName}" ${addColClauses};
+    `);
+
+    const meta = {
         columns: cols.map((c) => c.name),
         pkColumns: pkCols.map((c) => c.name)
     };
+    _tableMetaCache.set(tableName, meta);
+    return meta;
 }
 
 /**
- * Ensures all EDF tables exist in Supabase PostgreSQL.
+ * Ensures all EDF tables exist in Supabase PostgreSQL in a single batched pass.
  */
 async function ensureSupabaseSchema(pgClient, sqliteDb) {
     const metaMap = new Map();
+    const ddlStatements = [];
+
     for (const table of SYNC_TABLES_ORDERED) {
-        try {
-            const meta = await ensurePgTableForSqlite(pgClient, sqliteDb, table);
-            if (meta) metaMap.set(table, meta);
-        } catch (err) {
-            console.warn(`Schema provision warning for table ${table}:`, err.message);
+        const cols = await sqliteDb.all(`PRAGMA table_info("${table}")`).catch(() => []);
+        if (!cols || !cols.length) continue;
+
+        const pkCols = cols.filter((c) => Number(c.pk) > 0).sort((a, b) => Number(a.pk) - Number(b.pk));
+        const colDefs = cols.map((c) => `"${c.name}" ${mapSqliteTypeToPg(c.type)}`);
+        if (pkCols.length > 0) {
+            colDefs.push(`PRIMARY KEY (${pkCols.map((c) => `"${c.name}"`).join(', ')})`);
         }
+        const addColClauses = cols.map((c) => `ADD COLUMN IF NOT EXISTS "${c.name}" ${mapSqliteTypeToPg(c.type)}`).join(', ');
+
+        if (!_schemaProvisioned) {
+            ddlStatements.push(
+                `CREATE TABLE IF NOT EXISTS "${table}" (${colDefs.join(', ')});`,
+                `ALTER TABLE "${table}" ENABLE ROW LEVEL SECURITY;`,
+                `ALTER TABLE "${table}" ${addColClauses};`
+            );
+        }
+
+        const meta = {
+            columns: cols.map((c) => c.name),
+            pkColumns: pkCols.map((c) => c.name)
+        };
+        metaMap.set(table, meta);
+        _tableMetaCache.set(table, meta);
+    }
+
+    if (ddlStatements.length > 0) {
+        await pgClient.query(ddlStatements.join('\n'));
     }
     _schemaProvisioned = true;
     return metaMap;
@@ -411,6 +457,10 @@ async function onLocalWrite(sqlText, params) {
     const parsed = parseWriteStatement(sqlText);
     if (!parsed || !SYNC_TABLE_SET.has(parsed.table)) return;
     if (parsed.table.startsWith('_sync_')) return;
+    // Skip high-frequency read-only session presence pings (`UPDATE users SET last_seen = ...`)
+    if (parsed.table === 'users' && parsed.op === 'UPDATE' && /^\s*UPDATE\s+users\s+SET\s+last_seen\s*=/i.test(String(sqlText || ''))) {
+        return;
+    }
 
     _dirtyTables.add(parsed.table);
     const url = getConfiguredDbUrl();
@@ -517,18 +567,16 @@ async function runFullSync(mode = 'bidirectional') {
                     const meta = metaMap.get(table);
                     if (!meta) continue;
 
-                    // If pure push or if local DELETEs happened in outbox, mirror deletions first
+                    // If local DELETEs happened in outbox, mirror deletions first
                     const delRow = await _sqliteDb.get(
                         `SELECT COUNT(*) as c FROM _sync_outbox WHERE table_name = ? AND op_type = 'DELETE' AND synced = 0`,
                         [table]
                     );
-                    if ((mode === 'push' || (delRow && delRow.c > 0)) && meta.pkColumns.length === 1 && meta.pkColumns[0] === 'id') {
+                    if (delRow && delRow.c > 0 && meta.pkColumns.length === 1 && meta.pkColumns[0] === 'id') {
                         const localIds = await _sqliteDb.all(`SELECT id FROM "${table}"`);
                         const idList = localIds.map((r) => Number(r.id)).filter((n) => Number.isFinite(n));
                         if (idList.length === 0) {
-                            if (mode === 'push' || (delRow && delRow.c > 0)) {
-                                await client.query(`DELETE FROM "${table}"`);
-                            }
+                            await client.query(`DELETE FROM "${table}"`);
                         } else {
                             await client.query(`DELETE FROM "${table}" WHERE id != ALL($1::bigint[])`, [idList]);
                         }
